@@ -118,7 +118,7 @@ namespace graphics
 	void DirectX11::EndFrame()
 	{
 		const bool vsync = Engine::GetInstance()->VSync();
-		Present(1, 0);
+		Present(vsync ? 1 : 0, 0);
 #ifdef _PROFILE
 		m_IntContext->End(m_FrameQuery);
 		while (S_OK != m_IntContext->GetData(m_FrameQuery, &m_Frequency, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0))

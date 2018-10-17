@@ -519,6 +519,11 @@ u64 Engine::LoadSprite(const std::string& path)
 	return myAssetsContainer->LoadSprite(m_VirtualFileSystem.GetFile(path));
 }
 
+u64 Engine::LoadShader(const std::string& path, const std::string& entrypoint)
+{
+	return myAssetsContainer->LoadShader(path, entrypoint);
+}
+
 void Engine::AddTexture(Texture* pTexture, u64 key)
 {
 	myAssetsContainer->AddTexture(pTexture, key);

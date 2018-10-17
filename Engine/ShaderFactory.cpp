@@ -40,37 +40,37 @@ void ShaderFactory::LoadShader(Effect* anEffect)
 	if (reader.DocumentHasMember("VertexShader"))
 	{
 		const JSONElement& el = reader.GetElement("VertexShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.OptionalReadElement(el, "sampler"), eShaderType::VERTEX, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::VERTEX, anEffect);
 	}
 
 	if (reader.DocumentHasMember("PixelShader"))
 	{
 		const JSONElement& el = reader.GetElement("PixelShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.OptionalReadElement(el, "sampler"), eShaderType::PIXEL, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::PIXEL, anEffect);
 	}
 
 	if (reader.DocumentHasMember("GeometryShader"))
 	{
 		const JSONElement& el = reader.GetElement("GeometryShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.OptionalReadElement(el, "sampler"), eShaderType::GEOMETRY, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::GEOMETRY, anEffect);
 	}
 
 	if (reader.DocumentHasMember("HullShader"))
 	{
 		const JSONElement& el = reader.GetElement("HullShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.OptionalReadElement(el, "sampler"), eShaderType::HULL, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::HULL, anEffect);
 	}
 
 	if (reader.DocumentHasMember("DomainShader"))
 	{
 		const JSONElement& el = reader.GetElement("DomainShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.OptionalReadElement(el, "sampler"), eShaderType::DOMAINS, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::DOMAINS, anEffect);
 	}
 
 	if (reader.DocumentHasMember("ComputeShader"))
 	{
 		const JSONElement& el = reader.GetElement("ComputeShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.OptionalReadElement(el, "sampler"), eShaderType::COMPUTE, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::COMPUTE, anEffect);
 	}
 }
 
@@ -94,7 +94,26 @@ char* CheckType(eShaderType type)
 	return "invalid";
 }
 
-void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect)
+eShaderType CheckType(std::string type)
+{
+	if (type.find("vs") != type.npos)
+		return eShaderType::VERTEX;
+	else if (type.find("ps") != type.npos)
+		return eShaderType::PIXEL;
+	else if (type.find("gs") != type.npos)
+		return eShaderType::GEOMETRY;
+	else if (type.find("hs") != type.npos)
+		return eShaderType::HULL;
+	else if (type.find("ds") != type.npos)
+		return eShaderType::DOMAINS;
+	else if (type.find("cs") != type.npos)
+		return eShaderType::COMPUTE;
+
+	assert(false && "failed to find shader type");
+	return NOF_TYPES;
+}
+
+void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, eShaderType type, Effect* effect)
 {
 	std::string full_path = "data/shaders/";
 	full_path += filepath;
@@ -113,15 +132,43 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	effect->m_Shaders[type] = shader;
 
 #ifndef FINAL
-	full_path = "data/shaders/";
-	full_path += filepath;
+	full_path = "data/shaders/" + filepath;
 	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
 	ASSERT(effect, "Effect pointer was null");
-
 	m_Shaders[hash_key]->RegisterReload(effect);
-
-	//m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 #endif
+}
+
+u64 ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint)
+{
+
+
+
+
+	std::string full_path = "data/shaders/";
+	full_path += filepath;
+	full_path += entrypoint;
+
+	u64 hash_key = cl::Hash(full_path.c_str());
+
+	if (m_Shaders.find(hash_key) != m_Shaders.end())
+		return hash_key;
+
+
+	const size_t pos = filepath.rfind(".");
+	const eShaderType type = CheckType(filepath.substr(pos + 1));
+
+	CompiledShader* shader = CreateShader(full_path, entrypoint, type);
+	assert(shader && "Shader was null, failed to create the shader!");
+
+	if (m_Shaders.find(hash_key) == m_Shaders.end())
+		m_Shaders.emplace(hash_key, shader);
+	
+#ifndef FINAL
+	full_path = "data/shaders/" + filepath;
+	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
+#endif
+	return hash_key;
 }
 
 CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type)

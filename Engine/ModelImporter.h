@@ -710,7 +710,7 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	const s32 ins_Start = 0;
 	const s32 ins_Stride = sizeof(GPUModelData);
 	const s32 ins_ByteOffset = 0;
-	const s32 ins_InstanceCount = 4000;
+	const s32 ins_InstanceCount = 300;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
 	const s32 ins_IndicesPerInstance = data.myIndexCount;
 

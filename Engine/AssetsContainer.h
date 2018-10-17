@@ -57,8 +57,11 @@ public:
 	u64 LoadSprite(std::string path);
 	u64 LoadMaterial(std::string path);
 
+	u64 LoadShader(std::string path, std::string entrypoint);
+
 
 	CompiledShader* GetShader(const char* key) const;
+	CompiledShader* GetShader(const u64 key) const;
 
 	ShaderFactory* GetShaderFactory();
 private:

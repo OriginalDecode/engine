@@ -9,7 +9,11 @@ namespace graphics
 	RenderNodeGeneral::RenderNodeGeneral()
 	{
 		Engine* engine = Engine::GetInstance();
-		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base_instanced.vsmain");
+		AssetsContainer* ac = engine->GetAssetsContainer();
+		const u64 vtx = ac->LoadShader("deferred_base_instanced.vs", "main");
+	
+		m_Shaders[VERTEX] = ac->GetShader(vtx);
+		//m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
 		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
 
 #ifdef _DEBUG
@@ -29,7 +33,7 @@ namespace graphics
 
 
 		rc.GetContext().SetDepthState(graphics::Z_ENABLED, 1);
-		rc.GetContext().SetRasterState(graphics::CULL_NONE);
+		rc.GetContext().SetRasterState(graphics::CULL_BACK);
 		rc.GetContext().SetBlendState(graphics::BLEND_FALSE);
 		rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
 		rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x1);
@@ -42,6 +46,9 @@ namespace graphics
 			for (ModelInstance& instance : list)
 			{
 				model = static_cast<Model*>(instance.GetModel());
+				//model->SetOrientation(instance.GetOrientation());
+				//model->Render(rc);
+
 				model->AddOrientation(instance.GetOrientation());
 				instance.UpdateMaterial();
 			}

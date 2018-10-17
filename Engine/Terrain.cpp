@@ -122,7 +122,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetBlendState(graphics::BLEND_FALSE);
 
-	ctx.SetRasterState(graphics::CULL_NONE);
+	ctx.SetRasterState(graphics::CULL_BACK);
 
 	//UpdateConstantBuffer(rc);
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);

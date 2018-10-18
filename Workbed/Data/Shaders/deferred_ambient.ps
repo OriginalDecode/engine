@@ -183,7 +183,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	if(depth.r <= 0.0) //hard dependency
 		discard;
 
-	float roughness = normal.a;
+	float roughness = 1 - normal.a;
 	float metalness = albedo.a;
 	normal.rgb * 2 - 1;
 	

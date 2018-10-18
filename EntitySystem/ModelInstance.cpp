@@ -39,7 +39,7 @@ void ModelInstance::UpdateMaterial()
 	if (m_Surface && m_Material)
 	{
 		m_Model->SetSurface0(m_Surface);
-		m_Model->SetMaterial(m_Material);
+		//m_Model->SetMaterial(m_Material);
 	}
 }
 

@@ -107,7 +107,7 @@ namespace graphics
 	void DirectX11::BeginFrame()
 	{
 #ifdef _PROFILE
-		m_IntContext->Begin(m_FrameQuery);
+		//m_IntContext->Begin(m_FrameQuery);
 #endif
 		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
@@ -117,13 +117,14 @@ namespace graphics
 
 	void DirectX11::EndFrame()
 	{
+		PROFILE_FUNCTION(profiler::colors::Red);
 		const bool vsync = Engine::GetInstance()->VSync();
 		Present(vsync ? 1 : 0, 0);
 #ifdef _PROFILE
-		m_IntContext->End(m_FrameQuery);
+	/*	m_IntContext->End(m_FrameQuery);
 		while (S_OK != m_IntContext->GetData(m_FrameQuery, &m_Frequency, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0))
 		{
-		}
+		}*/
 #endif
 	}
 

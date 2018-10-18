@@ -80,8 +80,6 @@ private:
 	volatile bool m_QuitFlag = false;
 	u16 m_CurrentBuffer = 0;
 
-	void* m_MainMemory = nullptr;
-
 };
 
 __forceinline bool Synchronizer::HasQuit()

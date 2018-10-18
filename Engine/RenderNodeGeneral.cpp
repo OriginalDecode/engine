@@ -31,6 +31,7 @@ namespace graphics
 
 	void RenderNodeGeneral::Draw(const RenderContext& rc)
 	{
+		PROFILE_FUNCTION(profiler::colors::Red);
 		auto& ctx = rc.GetContext();
 		ctx.SetVertexShader(m_Shaders[VERTEX]);
 
@@ -55,18 +56,17 @@ namespace graphics
 		{
 			std::vector<ModelInstance>& list = object.second;
 			
-			for (ModelInstance& instance : list)
+			for (int i = 0; i < list.size(); i++)
 			{
+				ModelInstance& instance = list[i];
+				if (i == 0)
+				{
+					instance.UpdateMaterial();
+				}
+
 				model = static_cast<Model*>(instance.GetModel());
-				//model->SetOrientation(instance.GetOrientation());
-				//model->Render(rc);
-
 				model->AddOrientation(instance.GetOrientation());
-				instance.UpdateMaterial();
 			}
-
-			//if(Surface* s = model->GetSurface())
-			//	s->Activate(rc);
 
 			model->Render(rc);
 			model = nullptr;

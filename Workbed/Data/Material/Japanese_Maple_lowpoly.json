@@ -1,0 +1,28 @@
+{
+"material":{
+"albedo":"Data/model/trees/japanese maple/lowpoly/T_Cap_02_BaseColor.dds",
+"normal":"Data/model/trees/japanese maple/lowpoly/T_Cap_02_Normal.dds",
+"metalness":"Data/model/trees/japanese maple/lowpoly/T_Cap_02_Specular.dds",
+"roughness":""}
+}
+{
+"material":{
+"albedo":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleLeaf_2_BaseColor.dds",
+"normal":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleLeaf_2_Normal.dds",
+"metalness":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleLeaf_2_Specular.dds",
+"roughness":""}
+}
+{
+"material":{
+"albedo":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleBark_BaseColor.dds",
+"normal":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleBark_Normal.dds",
+"metalness":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleBark_Specular.dds",
+"roughness":""}
+}
+{
+"material":{
+"albedo":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleLeaf_1_BaseColor.dds",
+"normal":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleLeaf_1_Normal.dds",
+"metalness":"Data/model/trees/japanese maple/lowpoly/T_JapaneseMapleLeaf_1_Specular.dds",
+"roughness":""}
+}

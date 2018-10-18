@@ -212,15 +212,6 @@ void Renderer::Render()
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
 	m_TerrainSystem->Draw();
-
-
-
-	auto& ctx = m_RenderContext.GetContext();
-
-	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
-	ctx.SetDepthState(graphics::Z_ENABLED, 1);
-	ctx.SetRasterState(graphics::CULL_BACK);
-	ctx.SetBlendState(graphics::BLEND_FALSE);
 	
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{

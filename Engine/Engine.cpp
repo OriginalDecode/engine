@@ -401,6 +401,16 @@ Effect* Engine::GetEffect(const char* key)
 }
 
 
+CompiledShader* Engine::GetShader(const char* key)
+{
+	return GetShader(cl::Hash(key));
+}
+
+CompiledShader* Engine::GetShader(u64 key)
+{
+	return myAssetsContainer->GetShader(key);
+}
+
 Sprite* Engine::GetSprite(u64 key)
 {
 	return myAssetsContainer->GetSprite(key);
@@ -517,6 +527,11 @@ u64 Engine::LoadEffect(const std::string& path)
 u64 Engine::LoadSprite(const std::string& path)
 {
 	return myAssetsContainer->LoadSprite(m_VirtualFileSystem.GetFile(path));
+}
+
+u64 Engine::LoadShader(const std::string& path, const std::string& entrypoint)
+{
+	return myAssetsContainer->LoadShader(path, entrypoint);
 }
 
 void Engine::AddTexture(Texture* pTexture, u64 key)

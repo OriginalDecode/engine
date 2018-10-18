@@ -73,9 +73,10 @@ public:
 
 
 
+	u64 LoadShader(const std::string& filepath, const std::string& entrypoint);
 private:
 
-	void LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect);
+	void LoadShader(const std::string& filepath, const std::string& entrypoint, eShaderType type, Effect* effect);
 	CompiledShader* CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type);
 	std::map<u64, CompiledShader*> m_Shaders;
 #ifndef FINAL 

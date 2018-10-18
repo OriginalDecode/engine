@@ -9,6 +9,7 @@ namespace graphics
 		Z_DISABLED,
 		READ_NO_WRITE,
 		READ_NO_WRITE_PARTICLE,
+		Z_EQUAL,
 		NOF_DSS
 	};
 

@@ -44,7 +44,6 @@ namespace test
 		void Reset();
 		Terrain* m_Terrain = nullptr;
 
-
 		bool isNeighbour(test::Leaf* leaf);
 
 	};
@@ -54,7 +53,7 @@ namespace test
 	class QuadTree
 	{
 	public:
-		QuadTree() = default;
+		QuadTree();
 
 		void Init(Position xy);
 		void Insert(Position xy);
@@ -63,9 +62,12 @@ namespace test
 
 
 		void Update(float x, float y);
+		bool m_RenderDepth = true;
 
 	private:
 		Leaf* m_Root = nullptr;
+
+		CompiledShader* m_Shaders[4];
 
 	};
 

@@ -79,12 +79,12 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 		{
 			fwrite(&data[i], sizeof(VertexData), 1, pOut);
 
-			VertexData vtx_data;
+			/*VertexData vtx_data;
 			memcpy(&vtx_data, &data[i], sizeof(VertexData));
 			output << vtx_data << "\n";
 			
 			
-			g_ByteSize += sizeof(VertexData);
+			g_ByteSize += sizeof(VertexData);*/
 		}
 	}
 

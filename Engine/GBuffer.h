@@ -18,6 +18,7 @@ namespace graphics
 
 		void Clear(const float* clear_color, const RenderContext& render_context);
 		void SetAsRenderTarget(Texture* depth, const RenderContext& render_context);
+		void SetDepthTarget(const RenderContext& render_context);
 
 		Texture* GetDiffuse() const { return m_Albedo; }
 		Texture* GetNormal() const { return m_Normal; }
@@ -29,6 +30,7 @@ namespace graphics
 		Texture* GetMetalness() const { return m_Metalness; }
 #endif
 	private:
+		float4 m_Depth; // r, emissive, spec, ao
 #endif
 #ifdef IS_SHADER
 struct  GBuffer
@@ -37,7 +39,6 @@ struct  GBuffer
 
 		float4 m_Albedo; // rgb, metal
 		float4 m_Normal; // rgb, rough
-		float4 m_Depth; // r, emissive, spec, ao
 		float4 m_Emissive;
 	
 #ifdef _DEBUG 

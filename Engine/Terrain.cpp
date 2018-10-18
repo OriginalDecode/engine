@@ -113,35 +113,25 @@ void Terrain::CleanUp()
 
 void Terrain::Render(const graphics::RenderContext& rc)
 {
-	// 	if (!m_Material)
-	// 		return;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	graphics::IGraphicsAPI& api = rc.GetAPI();
 
-	ctx.SetDepthState(graphics::Z_ENABLED, 1);
+	//ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetBlendState(graphics::BLEND_FALSE);
 
-	ctx.SetRasterState(graphics::CULL_NONE);
+	ctx.SetRasterState(graphics::CULL_BACK);
 
-	//UpdateConstantBuffer(rc);
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
 	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
 
-	rc.GetContext().VSSetSamplerState(0, 1, graphics::POINT_CLAMP);
-	rc.GetContext().PSSetSamplerState(0, 1, graphics::POINT_CLAMP);
+	ctx.VSSetSamplerState(0, 1, graphics::POINT_CLAMP);
+	ctx.PSSetSamplerState(0, 1, graphics::POINT_CLAMP);
 
-	rc.GetContext().DSSetSamplerState(0, 1, graphics::POINT_CLAMP);
-	rc.GetContext().DSSetSamplerState(1, 1, graphics::LINEAR_CLAMP);
+	ctx.DSSetSamplerState(0, 1, graphics::POINT_CLAMP);
+	ctx.DSSetSamplerState(1, 1, graphics::LINEAR_CLAMP);
 
-	//mySurface->Activate(rc);
-	//ctx.DrawIndexed(this, m_Effect);
-
-
-	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
-	//m_Material->Use(m_Effect);
 	ctx.DrawIndexed(this, m_Effect);
-	//mySurface->Deactivate();
 }
 
 void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)

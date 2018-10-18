@@ -79,12 +79,13 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	// output.Albedo = AlbedoTexture.SampleLevel(sampler0, input.worlduv * 128 , 0);// * _color;// float4(color, 1); //float4(color, 1); 
 	output.m_Albedo = AlbedoTexture.Sample(sampler0, input.worlduv * 128); 
 	output.m_Albedo = pow(output.m_Albedo, 2.2);
+	output.m_Albedo.a = 0;
 
 	float roughness = 1; //RoughnessTexture.Sample(sampler0, input.worlduv * 128).r;
 
-	output.m_Normal = float4(input.normal, 1);
+	output.m_Normal = float4(input.normal, 1 - roughness);
 	
-	output.m_Depth = float4(1 - input.pos.z, 1 - roughness, 0, 0);
+	// output.m_Depth = float4(1 - input.pos.z, 1 - roughness, 0, 0);
 	
 	output.m_Emissive = 0;
 
@@ -102,10 +103,15 @@ GBuffer wireframe(DS_OUTPUT input) : SV_Target
 	output.m_Albedo =  0; //float4(0,1,0,1);
 	output.m_Normal = float4(float3(0,1,0), metalness);
 	
-	output.m_Depth = float4(input.pos.z,1,0,1);
+	// output.m_Depth = float4(input.pos.z,1,0,1);
 	
 	output.m_Emissive = float4(0,0,0,0);
 
 	return output;
 
+}
+
+float4 depth(DS_OUTPUT input) : SV_Target
+{
+	return 1 - input.pos.z;
 }

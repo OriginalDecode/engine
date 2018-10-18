@@ -213,9 +213,19 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 	return hash;
 }
 
+u64 AssetsContainer::LoadShader(std::string path, std::string entrypoint)
+{
+	return m_ShaderFactory->LoadShader(path, entrypoint);
+}
+
 CompiledShader* AssetsContainer::GetShader(const char* key) const
 {
-	return m_ShaderFactory->GetShader(cl::Hash(key));
+	return GetShader(cl::Hash(key));
+}
+
+CompiledShader* AssetsContainer::GetShader(const u64 key) const
+{
+	return m_ShaderFactory->GetShader(key);
 }
 
 ShaderFactory* AssetsContainer::GetShaderFactory()

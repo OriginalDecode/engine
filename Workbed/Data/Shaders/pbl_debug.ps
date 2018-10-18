@@ -58,8 +58,6 @@ cbuffer idBuffer : register(b1)
 
 GBuffer main(VS_OUTPUT input) : SV_Target
 {
-
-
 	
 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	// _normal.z = sqrt( 1 - pow((2*_normal.x), 2) + pow((2*_normal.y), 2)) / 2 + 0.5;
@@ -90,16 +88,16 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 		discard;
 
 	albedo.rgb = pow(albedo.rgb, 2.2);
-	output.m_Albedo = float4(albedo.rgb,1);
+	output.m_Albedo = float4(albedo.rgb, metalness_override.r);
+    output.m_Normal = float4(_normal, 1 - roughness_override.r);
 	
 	// output.Albedo.a = override_pbl ? 1 : roughness_override;
 
-    output.m_Normal = float4(_normal, 1);
 	
-    output.m_Depth.x = 1 - input.pos.z;
+    // output.m_Depth.x = 1 - input.pos.z;
 
-	output.m_Depth.y = 1 - roughness_override.r;
-	output.m_Depth.z = metalness_override.r;
+	// output.m_Depth.y = 1 - roughness_override.r;
+	// output.m_Depth.z = metalness_override.r;
 	output.m_Emissive = 0;//input.displaced;
 #ifdef _DEBUG
     output.m_EntityIDTexture = float4(r,g,b,a); //ToColor(m_ID);

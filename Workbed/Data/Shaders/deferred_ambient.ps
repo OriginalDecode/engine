@@ -175,8 +175,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	CubeMap.GetDimensions(0, width, height, nMips);
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
-	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
-
+	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 
 	float4 base_col = float4(albedo.rgb, 1);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
@@ -184,8 +183,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	if(depth.r <= 0.0) //hard dependency
 		discard;
 
-	float roughness = 1 - depth.y;
-	float metalness = depth.z;
+	float roughness = normal.a;
+	float metalness = albedo.a;
+	normal.rgb * 2 - 1;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);

@@ -1,0 +1,27 @@
+SamplerState Sampler 	: register (s0);
+Texture2D DepthBuffer 	: register (t0);
+
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION;
+	float4 normal : NORMAL;
+	float2 uv : TEXCOORD;
+	float4 binorm : BINORMAL;
+	float4 tang : TANGENT;
+	float4 worldpos : POSITION;
+#ifdef _DEBUG
+	unsigned int entity_id : ID;
+#endif
+};
+
+float4 main(VS_OUTPUT input) : SV_Target
+{
+	// float z = (1000) / (1000 - 0.01) * ( 1 - ( 0.01 / input.pos.z));
+
+	float alpha = DepthBuffer.Sample(Sampler, input.uv).a;
+	if(alpha <= 0.f)
+		discard;
+
+
+	return 1 - input.pos.z;
+}

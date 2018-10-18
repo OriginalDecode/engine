@@ -23,7 +23,7 @@ bool ShadowPass::CleanUp()
 
 void ShadowPass::ProcessShadows(Camera* camera)
 {
-	m_Renderer->Render3DShadows(camera->GetOrientation(), camera);
+	//m_Renderer->Render3DShadows(camera->GetOrientation(), camera);
 }
 
 void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight)

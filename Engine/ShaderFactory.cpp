@@ -141,10 +141,6 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 
 u64 ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint)
 {
-
-
-
-
 	std::string full_path = "data/shaders/";
 	full_path += filepath;
 	full_path += entrypoint;
@@ -205,9 +201,6 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	{
 		CompiledShader* shader = m_Shaders[hash_key];
 		new_shader = CreateShader(file_path, shader->m_Entrypoint, shader->m_Type);
-
-		//auto container = Engine::GetInstance()->GetAssetsContainer();
-		//container->InsertShader(cl::Hash(file_path.c_str()), new_shader);
 
 		if (new_shader != nullptr)
 		{

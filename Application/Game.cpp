@@ -107,11 +107,11 @@ void Game::Initiate(const std::string& level)
 	//curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
 	//building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
 	//pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
 
 
-	//m_World.AddDwellers(dwellers); 
+	m_World.AddDwellers(dwellers); 
 
 
 
@@ -136,7 +136,7 @@ void Game::Initiate(const std::string& level)
 */
 
 
-	int tree_count = RANDOM(128, 255);
+	int tree_count = 0;// RANDOM(128, 255);
 	for (int i = 0; i < tree_count; ++i)
 	{
 		float x = RANDOM(0.f, 1024.f);

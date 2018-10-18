@@ -50,6 +50,7 @@ public:
 	Effect* GetEffect() { return m_Effect; }
 private:
 
+
 	void SetupTextures();
 
 	void AddSurface(Surface* p) override { delete p; p = nullptr; }

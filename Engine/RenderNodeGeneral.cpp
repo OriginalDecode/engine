@@ -11,14 +11,17 @@ namespace graphics
 		Engine* engine = Engine::GetInstance();
 		AssetsContainer* ac = engine->GetAssetsContainer();
 		const u64 vtx = ac->LoadShader("deferred_base_instanced.vs", "main");
-	
+		const u64 fragment = ac->LoadShader("pbl_debug.ps", "main");
+		const u64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");
+
 		m_Shaders[VERTEX] = ac->GetShader(vtx);
-		//m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
-		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
+		m_Shaders[PIXEL] = ac->GetShader(fragment);
+		m_DepthShader = ac->GetShader(depth_frag);
 
 #ifdef _DEBUG
 		m_Shaders[VERTEX]->RegisterReload(this);
 		m_Shaders[PIXEL]->RegisterReload(this);
+		m_DepthShader->RegisterReload(this);
 #endif
 	}
 
@@ -28,15 +31,24 @@ namespace graphics
 
 	void RenderNodeGeneral::Draw(const RenderContext& rc)
 	{
-		rc.GetContext().SetVertexShader(m_Shaders[VERTEX]);
-		rc.GetContext().SetPixelShader(m_Shaders[PIXEL]);
+		auto& ctx = rc.GetContext();
+		ctx.SetVertexShader(m_Shaders[VERTEX]);
 
+		if (!m_DrawDepth)
+		{
+			ctx.SetPixelShader(m_Shaders[PIXEL]);
+			ctx.SetDepthState(graphics::Z_EQUAL, 1);
+		}
+		else
+		{
+			ctx.SetPixelShader(m_DepthShader);
+			ctx.SetDepthState(graphics::Z_ENABLED, 1);
+		}
 
-		rc.GetContext().SetDepthState(graphics::Z_ENABLED, 1);
-		rc.GetContext().SetRasterState(graphics::CULL_BACK);
-		rc.GetContext().SetBlendState(graphics::BLEND_FALSE);
-		rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
-		rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x1);
+		ctx.SetRasterState(graphics::CULL_BACK);
+		ctx.SetBlendState(graphics::BLEND_FALSE);
+		ctx.PSSetSamplerState(0, 1, graphics::MSAA_x1);
+		ctx.VSSetSamplerState(0, 1, graphics::MSAA_x1);
 
 		Model * model = nullptr;
 		for (auto& object : m_Models)
@@ -59,6 +71,8 @@ namespace graphics
 			model->Render(rc);
 			model = nullptr;
 		}
+
+		m_DrawDepth = !m_DrawDepth;
 	}
 
 	void RenderNodeGeneral::Reload(CompiledShader* shader)

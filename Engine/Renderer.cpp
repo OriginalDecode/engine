@@ -179,9 +179,6 @@ Renderer::~Renderer()
 
 void Renderer::PrepareFrame()
 {
-
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 }
 
 void Renderer::Render()
@@ -193,18 +190,30 @@ void Renderer::Render()
 	}
 
 	PROFILE_FUNCTION(profiler::colors::Magenta);
+
 	m_RenderContext.GetAPI().BeginFrame();
 	m_RenderContext.GetAPI().ResetViewport();
-
-	
-
-
-	PrepareFrame();
-
-
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	m_TerrainSystem->Update(); //should not be updated here
+	m_TerrainSystem->Update();
+
+
+
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	m_GBuffer.SetDepthTarget(m_RenderContext);
+	
+	
+	for (graphics::IRenderNode* node : m_RenderNodes)
+	{
+		node->Draw(m_RenderContext);
+	}
 	m_TerrainSystem->Draw();
+
+
+	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
+
+	m_TerrainSystem->Draw();
+
+
 
 	auto& ctx = m_RenderContext.GetContext();
 
@@ -220,9 +229,7 @@ void Renderer::Render()
 
 #ifdef _DEBUG
 	WriteDebugTextures();
-
 	const u32 selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-
 	//Draw(m_SelectedTexture, selected);
 #endif
 	DrawIBL();
@@ -260,9 +267,6 @@ void Renderer::Render()
 	m_RenderContext.GetAPI().EndFrame();
 	m_Synchronizer->WaitForLogic();
 	m_Synchronizer->RenderIsDone();
-
-
-
 
 }
 
@@ -322,384 +326,6 @@ void Renderer::WriteDebugTextures()
 	m_DebugQuad->Render(false);
 }
 #endif
-
-void Renderer::ProcessWater()
-{
-	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
-	Camera* old_camera = m_Camera;
-	m_Camera = m_WaterCamera;
-
-	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext);
-	m_InstancingManager.DoInstancing(m_RenderContext, false);
-
-	CU::Vector3f position0 = old_camera->GetPosition();
-	m_Camera->SetPosition(position0);
-
-	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
-	position0.y -= distance;
-	m_Camera->SetPosition(position0);
-	m_Camera->InvertAll();
-	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext);
-	m_InstancingManager.DoInstancing(m_RenderContext, false);
-
-	position0.y += distance;
-	m_Camera->SetPosition(position0);
-
-	m_Camera = old_camera;
-}
-
-void Renderer::RenderNonDeferred3DCommands()
-{
-
-	PROFILE_FUNCTION(profiler::colors::Amber);
-	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<ModelCommandNonDeferred*>(commands[i]);
-		ASSERT(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-
-		//m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
-		model->SetOrientation(command->m_Orientation);
-		//m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-		model->Render(m_RenderContext);
-
-	}
-}
-
-void Renderer::Render3DCommands()
-{
-	PROFILE_FUNCTION(profiler::colors::Green);
-
-	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-
-	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
-	ctx.SetDepthState(graphics::Z_ENABLED, 1);
-	ctx.SetRasterState(graphics::CULL_BACK);
-	ctx.SetBlendState(graphics::BLEND_FALSE);
-
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	for (s32 j = 0; j < 8; j++)
-	{
-		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
-
-		for (s32 i = 0; i < commands.Size(); i++)
-		{
-			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-			ASSERT(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
-			if (model->IsInstanced())
-			{
-				ProcessModelCommand(commands, i, m_RenderContext.GetEngine());
-				continue;
-			}
-
-#ifdef _DEBUG
-			//model->SetEntityID(command->m_EntityID);
-#endif
-			model->SetOrientation(command->m_Orientation);
-			model->Render(m_RenderContext);
-		}
-	}
-}
-
-void Renderer::Render3DCommandsInstanced()
-{
-	PROFILE_FUNCTION(profiler::colors::Green);
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	Engine& engine = m_RenderContext.GetEngine();
-	const memory::MemorySegmentHandle& mem_handle = engine.GetMemorySegmentHandle();
-	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
-	{
-		const auto& commands = mem_handle.GetCommandAllocator(current_buffer, top_tree_node);
-		for (s32 i = 0; i < commands.Size(); i++)
-		{
-			ProcessModelCommand(commands, i, engine);
-		}
-	}
-
-}
-
-void Renderer::RenderTerrain(bool /*override_effect*/)
-{
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-
-	ctx.SetDepthState(graphics::Z_ENABLED, 1);
-#ifdef _DEBUG
-	ctx.SetRasterState(terrainWireframe ? graphics::WIREFRAME : graphics::CULL_BACK);
-#else
-	ctx.SetRasterState(graphics::CULL_BACK);
-#endif
-	ctx.SetBlendState(graphics::BLEND_FALSE);
-	PROFILE_FUNCTION(profiler::colors::Green);
-	for (Terrain* terrain : myTerrainArray)
-	{
-		if (!terrain->HasLoaded())
-			continue;
-
-		terrain->Render(m_RenderContext);
-	}
-}
-
-void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
-{
-	PROFILE_FUNCTION(profiler::colors::Green);
-
-	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-
-
-	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
-	ctx.SetDepthState(graphics::Z_ENABLED, 1);
-	ctx.SetBlendState(graphics::BLEND_FALSE);
-
-	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
-	//m_TerrainSystem->DrawShadow();
-
-	ctx.SetRasterState(graphics::CULL_NONE);
-
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	for (s32 j = 0; j < 8; ++j)
-	{
-		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
-
-		for (s32 i = 0; i < commands.Size(); ++i)
-		{
-			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-			ASSERT(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
-			if (model->IsInstanced())
-			{
-				ProcessModelCommand(commands, i, m_RenderContext.GetEngine());
-				continue;
-			}
-
-#ifdef _DEBUG
-			//model->SetEntityID(command->m_EntityID.);
-#endif
-			model->SetOrientation(command->m_Orientation);
-			Engine::GetInstance()->GetEffect("Shaders/render_depth.json")->Use();
-			model->ShadowRender(m_RenderContext);
-		}
-	}
-
-	Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json")->Use();
-	m_InstancingManager.DoInstancing(m_RenderContext, true);
-	Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json")->Clear();
-
-
-}
-
-void Renderer::Render2DCommands()
-{
-	PROFILE_FUNCTION(profiler::colors::Red);
-	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-
-
-	ctx.SetDepthState(graphics::Z_DISABLED, 0);
-	ctx.SetRasterState(graphics::CULL_NONE);
-
-	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<TextCommand*>(commands[i]);
-		ASSERT(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
-		m_Text->SetText(command->m_TextBuffer);
-		m_Text->SetPosition(command->m_Position);
-		m_Text->Render(m_RenderContext);
-	}
-
-
-	//m_Text->Render(m_Camera);
-
-	// 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
-	// 	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	// 
-	// 	//_________________________
-	// 	// RenderSpriteCommands function?
-	// 	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
-	// 	const auto commands0 = m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
-	// 	for (s32 i = 0; i < commands0.Size(); i++)
-	// 	{
-	// 		auto command = reinterpret_cast<SpriteCommand*>(commands0[i]);
-	// 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPRITE, "Expected Sprite command type");
-	// 		Sprite* sprite = m_Engine->GetSprite(command->m_Key);
-	// 		sprite->SetPosition(command->m_Position);
-	// 		sprite->Render(m_Camera);
-	// 		//mySprite->SetPosition(command->m_Position);
-	// 		//mySprite->SetShaderView(command->m_Resource);
-	// 		//mySprite->Render(m_Camera);
-	// 	}
-	// 
-	// 	//_________________________
-	// 	// RenderTextCommands function?
-	// 	const auto commands1 = m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
-	// 	for (s32 i = 0; i < commands1.Size(); i++)
-	// 	{
-	// 		auto command = reinterpret_cast<TextCommand*>(commands1[i]);
-	// 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
-	// 		myText->SetText(command->m_TextBuffer);
-	// 		myText->SetPosition(command->m_Position);
-	// 		myText->Render(m_Camera);
-	// 	}
-	// 
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-
-}
-
-void Renderer::RenderSpotlight()
-{
-	// Should be instanced
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-
-	PROFILE_FUNCTION(profiler::colors::Purple);
-
-	SpotlightData data;
-	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
-
-	auto& ctx = m_RenderContext.GetContext();
-
-	PROFILE_BLOCK("Spotlight Command Loop", profiler::colors::Red);
-
-	ctx.SetRasterState(graphics::CULL_NONE);
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
-		ASSERT(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
-
-		data.myAngle = command->m_Angle;
-		data.myRange = command->m_Range;
-		data.myLightColor = command->m_Color;
-		data.myLightPosition = command->m_Orientation.GetPosition();
-
-		data.myOrientation = command->m_Orientation; //I don't want this matrix to be scaled since it would have strange implications on how light is handled.
-
-		data.m_Intensity = command->m_Intensity;
-
-		SpotLight* light = m_Spotlights[command->m_LightID];
-		light->SetData(data);
-
-		CU::Matrix44f shadow_mvp;
-
-		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
-
-	}
-	PROFILE_BLOCK_END;
-}
-
-void Renderer::RenderPointlight()
-{
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-
-	//Should be instanced
-	PROFILE_FUNCTION(profiler::colors::Purple);
-	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
-	auto& ctx = m_RenderContext.GetContext();
-
-
-	PROFILE_BLOCK("Pointlight Command Loop", profiler::colors::Red);
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
-
-		ASSERT(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
-		myPointLight->SetPosition(command->m_Orientation.GetPosition());
-		myPointLight->SetRange(command->m_Range);
-		//myPointLight->SetRange(debug::DebugHandle::GetInstance()->m_Range);
-		myPointLight->SetColor(CU::Vector4f(command->m_Color.x, command->m_Color.y, command->m_Color.z, 1));
-		myPointLight->Update();
-		CU::Matrix44f shadow_mvp;
-#if !defined(_FINAL) && !defined(_PROFILE)
-		ctx.SetRasterState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE);
-#else
-		ctx.SetRasterState(graphics::CULL_NONE);
-#endif
-		m_LightPass->RenderPointlight(myPointLight, m_Camera->GetOrientation(), m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
-	}
-	PROFILE_BLOCK_END;
-}
-
-void Renderer::RenderParticles(Effect* effect)
-{
-	auto& ctx = m_RenderContext.GetContext();
-
-	ctx.SetBlendState(graphics::PARTICLE_BLEND);
-	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
-		ASSERT(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
-		m_ParticleEmitter->SetPosition(command->m_Position);
-
-		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
-
-		ctx.SetRasterState(graphics::CULL_NONE);
-		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
-	}
-}
-
-void Renderer::RenderLines()
-{
-
-	PROFILE_FUNCTION(profiler::colors::Amber);
-	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
-	PROFILE_BLOCK("Line Command Loop", profiler::colors::Red);
-
-
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<LineCommand*>(commands[i]);
-		const bool result = command->m_CommandType == RenderCommand::LINE;
-		if (!result)
-			return;
-		ASSERT(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
-		m_Line->AddLine(command->m_Points);
-	}
-	m_Line->Render(m_RenderContext);
-	PROFILE_BLOCK_END;
-}
-
-void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine)
-{
-	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-	const bool result = (command->m_CommandType == RenderCommand::MODEL);
-	ASSERT(result == true, "Incorrect command type! Expected MODEL");
-
-	RefPointer<Model> model = engine.GetModel<Model>(command->m_Key);
-	Material* material = model->GetMaterial() ? model->GetMaterial() : engine.GetMaterial(command->m_MaterialKey);
-	if (!material)
-		return;
-
-	const u64 key = material->GetKey();
-
-
-	if (!m_InstancingManager.FindInstanceObject(key))
-	{
-		InstanceObject new_instance;
-		new_instance.m_Material = material;
-		new_instance.m_Model = model;
-		new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
-		m_InstancingManager.AddInstanceObject(new_instance);
-	}
-
-	GPUModelData model_data;
-	model_data.m_Orientation = command->m_Orientation;
-
-#ifdef _DEBUG
-	model_data.m_ID = command->m_EntityID;
-	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetHoveredEntity() ? 1 : 0);
-#endif
-	m_InstancingManager.AddGPUDataToInstance(key, model->GetKey(), model_data);
-}
 
 //Move this to some kind of light manager
 int Renderer::RegisterLight()

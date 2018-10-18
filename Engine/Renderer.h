@@ -48,58 +48,34 @@ class Renderer
 #endif
 public:
 	Renderer(Synchronizer* synchronizer);
+	~Renderer();
 
 	void InitiateDebug();
 
-	~Renderer();
-
 
 	void Render();
-
 	void DrawIBL();
+	graphics::IRenderNode* GetNode(u64 type);
 
-
-	void ProcessWater();
 
 	void AddTerrain(Terrain* someTerrain);
-
-	void Render3DShadows(const CU::Matrix44f& orientation, Camera* camera);
+	TerrainSystem* GetTerrainSystem() const { return m_TerrainSystem; }
 
 	int RegisterLight();
 	void SetDirection(const CU::Vector3f& dir) { m_Direction = dir; }
 	CU::Vector3f GetLightDirection() { return m_Direction; }
 	Camera* GetDirectionalCamera() { return m_DirectionalShadow.GetCamera(); }
 
-	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
-
 	void MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution = 16);
 
-	graphics::IRenderNode* GetNode(u64 type);
+	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 
-	TerrainSystem* GetTerrainSystem() const { return m_TerrainSystem; }
 
 private:
 	float m_CubemapTimer = 0.f;
 
 
 	void PrepareFrame();
-
-	void RenderNonDeferred3DCommands();
-	void Render3DCommands();
-
-	void Render3DCommandsInstanced();
-
-	void ProcessModelCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine);
-
-	void RenderTerrain(bool override_effect);
-
-	void Render2DCommands();
-
-	void RenderPointlight();
-	void RenderSpotlight();
-
-	void RenderParticles(Effect* effect);
-	void RenderLines();
 
 	CU::GrowingArray<graphics::IRenderNode*> m_RenderNodes;
 	CU::GrowingArray<Terrain*> myTerrainArray;

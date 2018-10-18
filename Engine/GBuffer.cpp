@@ -109,7 +109,6 @@ namespace graphics
 		{
 			m_Albedo->GetRenderTargetView(),
 			m_Normal->GetRenderTargetView(),
-			m_Depth->GetRenderTargetView(),
 			m_Emissive->GetRenderTargetView(),
 #ifdef _DEBUG
 			m_EntityIDTexture->GetRenderTargetView(),
@@ -119,6 +118,11 @@ namespace graphics
 		};
 
 		render_context.GetContext().OMSetRenderTargets(ARRAYSIZE(target), target, render_context.GetAPI().GetDepthView());
+	}
+
+	void GBuffer::SetDepthTarget(const RenderContext& render_context)
+	{
+		render_context.GetContext().OMSetRenderTargets(1, m_Depth->GetRenderTargetRef(), render_context.GetAPI().GetDepthView());
 	}
 
 };

@@ -108,6 +108,9 @@ public:
 	Texture* GetTexture(u64 key);
 	Effect* GetEffect(u64 key);
 
+	CompiledShader* GetShader(u64 key);
+	CompiledShader* GetShader(const char* key);
+
 	template<typename T>
 	RefPointer<T> GetModel(u64 key);
 	Sprite* GetSprite(u64 key);

@@ -401,6 +401,16 @@ Effect* Engine::GetEffect(const char* key)
 }
 
 
+CompiledShader* Engine::GetShader(const char* key)
+{
+	return GetShader(cl::Hash(key));
+}
+
+CompiledShader* Engine::GetShader(u64 key)
+{
+	return myAssetsContainer->GetShader(key);
+}
+
 Sprite* Engine::GetSprite(u64 key)
 {
 	return myAssetsContainer->GetSprite(key);

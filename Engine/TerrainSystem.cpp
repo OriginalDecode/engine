@@ -9,6 +9,8 @@
 
 #include <engine/profile_defines.h>
 #include <Engine/TerrainManager.h>
+#include <Engine/Engine.h>
+#include <Engine/IGraphicsContext.h>
 
 #include "TGA32.h"
 
@@ -272,9 +274,26 @@ bool test::Leaf::Insert(Position pos)
 
 void test::QuadTree::Draw()
 {
-	m_Root->m_Terrain->GetEffect()->Use();
+	if (!m_RenderDepth)
+		m_Root->m_Terrain->GetEffect()->Use();
+	else
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			auto& ctx = Engine::GetInstance()->GetRenderer()->GetRenderContext().GetContext();
+			ctx.SetVertexShader(m_Shaders[0]);
+			ctx.SetDomainShader(m_Shaders[1]);
+			ctx.SetHullShader(m_Shaders[2]);
+			ctx.SetPixelShader(m_Shaders[3]);
+		}
+	}
+
 	m_Root->Render();
-	m_Root->m_Terrain->GetEffect()->Clear();
+
+	if(!m_RenderDepth)
+		m_Root->m_Terrain->GetEffect()->Clear();
+
+	m_RenderDepth = !m_RenderDepth;
 }
 
 void test::QuadTree::DrawShadow()
@@ -292,6 +311,24 @@ void test::QuadTree::Update(float x, float y)
 	m_Root->Reset();
 	if (m_Root->m_AABB.Intersect(pos, 64.f))
 		m_Root->Insert(pos);
+
+}
+
+test::QuadTree::QuadTree()
+{
+
+	Engine* engine = Engine::GetInstance();
+
+	const u64 vtx	=	engine->LoadShader("gpu_terrain.vs", "main");
+	const u64 ds	=	engine->LoadShader("gpu_terrain.ds", "main");
+	const u64 hs	=	engine->LoadShader("gpu_terrain.hs", "main");
+	const u64 frag	=	engine->LoadShader("gpu_terrain.ps", "depth");
+
+	
+	m_Shaders[0] = engine->GetShader(vtx);
+	m_Shaders[1] = engine->GetShader(ds);
+	m_Shaders[2] = engine->GetShader(hs);
+	m_Shaders[3] = engine->GetShader(frag);
 
 }
 

@@ -21,6 +21,9 @@ namespace graphics
 		u64 GetType() const { return Type; }
 	private:
 		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
+		CompiledShader* m_DepthShader = nullptr;
+
+		bool m_DrawDepth = true;
 
 		std::unordered_map<u64, std::vector<ModelInstance>> m_Models;
 

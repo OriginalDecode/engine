@@ -84,8 +84,6 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
-	if(albedo.a <= 0.1)
-		discard;
 
 	albedo.rgb = pow(albedo.rgb, 2.2);
 	output.m_Albedo = float4(albedo.rgb, metalness_override.r);

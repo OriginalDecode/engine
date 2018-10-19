@@ -41,8 +41,6 @@ void Model::Initiate(const std::string& filename)
 		desc.m_CPUAccessFlag = graphics::WRITE;
 		desc.m_ByteWidth = max_instance_count * sizeof(GPUModelData);
 		SetInstanceBuffer(Engine::GetAPI()->GetDevice().CreateBuffer(desc, filename + "-instance_buffer"));
-
-
 	}
 
 
@@ -124,10 +122,33 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 {
 	PROFILE_FUNCTION(profiler::colors::Amber);
 
-
+	graphics::IGraphicsContext& ctx = rc.GetContext();
 	if (m_IsRoot)
 	{
-		rc.GetContext().UpdateConstantBuffer(m_InstanceBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
+		if (m_IsInstanced)
+		{
+			ctx.UpdateConstantBuffer(m_InstanceBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
+		}
+		else
+		{
+			m_ObjectData.orientation = m_Orientation;
+			ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ObjectData, sizeof(m_ObjectData));
+			ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+		}
+
+		cl::Color color(m_Hash.m_Lower);
+		float fColor[4];
+		fColor[0] = color.r;
+		fColor[1] = color.g;
+		fColor[2] = color.b;
+		fColor[3] = color.a;
+
+		ctx.UpdateConstantBuffer(m_ModelID, &fColor[0], sizeof(fColor));
+		ctx.PSSetConstantBuffer(1, 1, &m_ModelID);
+
+		ctx.UpdateConstantBuffer(m_IsSelectedBuffer, &m_IsSelected, sizeof(int) * 4);
+		ctx.PSSetConstantBuffer(2, 1, &m_IsSelectedBuffer);
+		
 	}
 
 	for (Model* child : m_Children)
@@ -146,10 +167,6 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 		RemoveGPUData();
 		return;
 	}
-
-
-	UpdateConstantBuffer(rc);
-
 
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 
@@ -258,31 +275,6 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 {
 	if (m_IsRoot)
 		return;
-
-	graphics::IGraphicsContext& ctx = rc.GetContext();
-	if (m_InstanceWrapper.GetInstanceBuffer())
-	{
-		cl::Color color(m_Hash.m_Lower);
-		float fColor[4];
-		fColor[0] = color.r;
-		fColor[1] = color.g;
-		fColor[2] = color.b;
-		fColor[3] = color.a;
-
-		ctx.UpdateConstantBuffer(m_ModelID, &fColor[0], sizeof(fColor));
-		ctx.PSSetConstantBuffer(1, 1, &m_ModelID);
-
-		ctx.UpdateConstantBuffer(m_IsSelectedBuffer, &m_IsSelected, sizeof(int) * 4);
-		ctx.PSSetConstantBuffer(2, 1, &m_IsSelectedBuffer);
-
-	}
-	else
-	{
-
-		m_ObjectData.orientation = m_Orientation;
-		ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ObjectData, sizeof(m_ObjectData));
-		ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
-	}
 }
 
 void Model::AddChild(Model* aChild)

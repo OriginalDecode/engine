@@ -9,20 +9,6 @@
 
 class Texture;
 
-
-
-struct MaterialData //Should be loaded from external file? Reload if needed?
-{
-	enum MaterialTypes
-	{
-		DEFAULT,
-		NOF_TYPES
-	};
-
-	float x, y, z, w;
-
-};
-
 class Material
 {
 	friend class ModelExporter;
@@ -32,7 +18,6 @@ public:
 		IShaderResourceView* m_Resource;
 		TextureSlot m_Slot;
 		std::string m_ResourceName;
-
 	};
 
 	Material() = default;
@@ -51,8 +36,6 @@ public:
 	const CU::GrowingArray<ResourceBinding>& GetResourceBindings() const;
 
 private:
-	MaterialData* m_Data = nullptr;
-
 	std::string GetFilename(TextureSlot slot);
 
 	u64 m_Key = 0;
@@ -62,4 +45,8 @@ private:
 
 	CU::GrowingArray<ResourceBinding> m_Resources;
 };
+
+const int n = sizeof(Material::ResourceBinding) *16;
+const int x = (sizeof(Material) + n) * 96;
+
 

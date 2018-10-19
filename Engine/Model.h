@@ -79,11 +79,14 @@ public:
 	const CU::GrowingArray<Model*>& GetChildren() const { return m_Children; }
 
 private:
+	void SetInstanceBuffer(IBuffer* const buffer);
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
 	CU::GrowingArray<Model*> m_Children;
 
 	IBuffer* m_ModelID = nullptr;
+
+	IBuffer* m_InstanceBuffer = nullptr;
 
 	HashType m_Hash;
 	IBuffer* m_IsSelectedBuffer = nullptr;

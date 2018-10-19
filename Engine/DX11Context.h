@@ -81,7 +81,7 @@ namespace graphics
 		void DrawInstanced(BaseModel* model, Effect* fx = nullptr) override;
 
 		void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) override;
-		void DrawIndexedInstanced(Model* model, Effect* fx = nullptr) override;
+		void DrawIndexedInstanced(Model* model, IBuffer* instance_buffer, size_t stride) override;
 
 
 

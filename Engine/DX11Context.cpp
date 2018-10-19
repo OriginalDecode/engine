@@ -593,7 +593,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::DrawIndexedInstanced(Model* model, Effect* fx /*= nullptr*/)
+	void DX11Context::DrawIndexedInstanced(Model* model, IBuffer* instance_buffer, size_t stride)
 	{
 		auto& vtx = model->GetVertexWrapper();
 		auto& idx = model->GetIndexWrapper();
@@ -606,17 +606,17 @@ namespace graphics
 
 		ID3D11Buffer* buffers[] = {
 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
-			static_cast<ID3D11Buffer*>(ins.GetInstanceBuffer())
+			static_cast<ID3D11Buffer*>(instance_buffer)
 		};
 
 		u32 strides[] = {
 			vtx.GetStride(),
-			ins.GetStride()
+			stride
 		};
 
 		u32 byte_offsets[] = {
 			vtx.GetByteOffset(),
-			ins.GetByteOffset()
+			0
 		};
 
 		m_Context->IASetVertexBuffers(ins.GetStart(),
@@ -628,14 +628,6 @@ namespace graphics
 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
-
-		//if (fx)
-		//{
-		//	//fx->Use();
-		//	m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
-		//	//fx->Clear();
-		//	return;
-		//}
 
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 

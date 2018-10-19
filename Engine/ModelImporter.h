@@ -708,77 +708,33 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 
 	const s32 ins_BufferCount = 1;
 	const s32 ins_Start = 0;
-	const s32 ins_Stride = sizeof(GPUModelData);
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 300;
-	const s32 ins_Size = ins_InstanceCount * ins_Stride;
 	const s32 ins_IndicesPerInstance = data.myIndexCount;
 
-	graphics::BufferDesc desc;
+	/*
+		There's an optimization right here.
+		
+		This should not be created for every single instance wrapper.
+
+		Only if it's a root model.
+
+
+	*/
+	//const s32 ins_Stride = sizeof(GPUModelData);
+	//const s32 ins_Size = ins_InstanceCount * ins_Stride;
+
+	/*graphics::BufferDesc desc;
 	desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	desc.m_CPUAccessFlag = graphics::WRITE;
 	desc.m_ByteWidth = ins_Size;
 
-	IBuffer* buffer = m_Device->CreateBuffer(desc, data.m_Filename + "InstanceBuffer");
+	IBuffer* buffer = m_Device->CreateBuffer(desc, data.m_Filename + "InstanceBuffer");*/
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
-	//Reflect build input layout and compare the self made one from the model?
-	// This should definitively create the vertex thing
-
-
-	/*	
-		This is standard for vertex shader and could be a thing to just include as a const and it could be changed based on what content
-	*/
-
-
-	/*
-		if I were to write a shader strictly in cpp how would I write it?
-
-		Shader->AddBuffer(cbuffer_struct);
 	
-		void Shader::AddBuffer(cbuffer_struct) 
-		{
-			m_BufferCount;
-			const char _buffer[] = R"Buffer(
-
-				//Here we would have to break things down
-
-
-			)Buffer";
-			
-
-		}
-	
-	*/
-
-
-	const char per_frame[] = R"per_frame(
-		
-		cbuffer per_frame : register ( b0 );
-		{
-			row_major float4x4 camera_view_x_proj;
-		};		
-	
-
-	)per_frame";
-
-	/*const char* per_frame[] = {
-		"cbuffer per_frame : register( b0 )\n",
-		"{\n",
-		"	row_major float4x4 camera_view_x_proj;\n",
-		"};\n"
-	};
-
-
-	const char* input_layout[] = {
-		"struct vs_input\n",
-		"{\n",
-	};*/
-
-	//void AddElement(semantic, vertexformat, slot, offset, instanced , semantic_index )
-
  	graphics::SInputLayout _layout;
 	_layout.m_Elements = element;
 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 0);
@@ -793,12 +749,12 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 
  	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), _layout);
 
-	ins.SetBuffer(buffer);
+	ins.SetBuffer(nullptr);
 	ins.SetInputLayout(layout);
 	ins.SetIndexCountPerInstance(ins_IndicesPerInstance);
 	ins.SetInstanceCount(ins_InstanceCount);
 	ins.SetByteOffset(ins_ByteOffset);
-	ins.SetStride(ins_Stride);
+	ins.SetStride(sizeof(GPUModelData));
 	ins.SetBufferCount(ins_BufferCount);
 	instanced = true;
 

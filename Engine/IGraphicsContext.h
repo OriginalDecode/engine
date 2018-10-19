@@ -91,7 +91,7 @@ namespace graphics
 		virtual void DrawInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
 
 		virtual void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
-		virtual void DrawIndexedInstanced(Model* model, Effect* fx = nullptr) = 0;
+		virtual void DrawIndexedInstanced(Model* model, IBuffer* instance_buffer, size_t stride) = 0;
 
 
 

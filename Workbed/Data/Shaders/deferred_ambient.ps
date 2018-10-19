@@ -178,78 +178,35 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 
 	float4 base_col = float4(albedo.rgb, 1);
-	float4 depth = DepthTexture.Sample(sampler0, input.uv);
+	float depth = DepthTexture.Sample(sampler0, input.uv).r;
 	
-	if(depth.r <= 0.0) //hard dependency
+	if(depth <= 0.0) //hard dependency
 		discard;
 
 	float roughness = 1 - normal.a;
 	float metalness = albedo.a;
-	normal.rgb * 2 - 1;
+	normal.rgb = normal.rgb * 2 - 1;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
-	float3 light_dir = -light_direction.xyz;
-    float NdL = max(0,dot(normal.xyz, -light_dir));
+	float3 light_dir = light_direction.xyz;
+    float NdL = max(0,dot(normal.xyz, light_dir));
 
-
-
-    float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
+    float4 pixel_pos = getWorldPos(input.uv, 1 - depth);
 
 	float4 to_eye = normalize(camera_position - pixel_pos);
 
-	float3 half_vec = normalize(light_dir - to_eye); 
+	float3 half_vec = normalize((-light_dir) - to_eye); 
 	float HdotN = dot(half_vec, normal);
 	float NdV = dot(normal, to_eye); 
-	float LdV = dot(light_dir, to_eye);
+	float LdV = dot(-light_dir, to_eye);
 	float VdH = saturate(dot(to_eye, half_vec));
 
 	float3 refVec = normalize(reflect(-to_eye.xyz, normal.xyz));
-	float4 metalness_albedo = albedo - albedo * metalness;
+	float4 metalness_albedo = albedo - (albedo * metalness);
 	float4 substance = (0.04 - 0.04 * metalness) + albedo * metalness;
 	
-	float4 newPos = pixel_pos + (normal * 0.4);
-	newPos.w = 1;
-	float4 shadowVec = mul(newPos, ShadowMVP);
-	shadowVec.xyz /= shadowVec.w;
-	shadowVec.y *= -1;
-	shadowVec.xy += 1;
-	shadowVec.xy *= 0.5;
-	float compareValue = shadowVec.z;
-	const bool in_view = shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1 && shadowVec.z > 0;
-
-	float pcfCount = 3;
-	float texCount = (pcfCount * 2 + 1) *  (pcfCount * 2 + 1);
-	float mapSize = 2048;
-	float texelSize = 1 / mapSize;
-	float total = 0.0;
-
-	for( int x = -pcfCount; x < pcfCount; x++)
-	{
-		for( int y = -pcfCount; y < pcfCount; y++)
-		{
-			float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy + float2(x,y) * texelSize).r;
-			const bool in_shadow = (sampleValue < compareValue) && in_view; 
-			total += in_shadow ? 1 : 0;
-		}
-	}	
-
-	total /= texCount;
-	total = 1 - total;
-
-
-	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, light_dir, half_vec, 1 - roughnessOffsetted), 1);
-
-
-// float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vec, float roughness)
-	// float LdotH = saturate(dot(normal.xyz, to_eye));
-	// LdotH = 1.0f - LdotH;
-	// LdotH = max(0, min(pow(LdotH, 5), 1)); //max(0, min(pow(LdotH, 5), 1));
-	// float3 fresnel = LdotH * (1.f - substance);
-	// fresnel = fresnel / (6 - 5 * (1 - roughnessOffsetted));
-	// fresnel = substance + fresnel;
-	// return float4(fresnel, 1);
-
+	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, -light_dir, half_vec, 1 - roughnessOffsetted), 1);
 
 	float4 radiance = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float3 irradiance = CubeMap.SampleLevel(sampler1, normal, nMips).rgb * metalness_albedo.rgb * ( 1 - reflection_fresnel.rgb);
@@ -265,10 +222,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 light_col = float3(1, 1, 1);
 	float3 directDiffuse = 0, directSpec = 0;
-	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) ) * 1;// * ( 1 - in_shadow);
-	directSpec = (saturate(F * D * G) * NdL * light_col ) * 1;// * (1 - in_shadow);
-	
-	// return float4(ambient.rgb, 1);// * float4(albedoTint, 1);
+	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) ) * 1;
+	directSpec = (saturate(F * D * G) * NdL * light_col ) * 1; 
 
 	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1);
 

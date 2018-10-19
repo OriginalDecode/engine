@@ -22,6 +22,7 @@ Model::~Model()
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 	Engine::GetAPI()->ReleasePtr(m_ModelID);
 	Engine::GetAPI()->ReleasePtr(m_IsSelectedBuffer);
+	Engine::GetAPI()->ReleasePtr(m_InstanceBuffer);
 
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
@@ -30,7 +31,21 @@ Model::~Model()
 
 void Model::Initiate(const std::string& filename)
 {
-	
+	if (m_IsRoot)
+	{
+		const s32 max_instance_count = 300;
+
+		graphics::BufferDesc desc;
+		desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+		desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+		desc.m_CPUAccessFlag = graphics::WRITE;
+		desc.m_ByteWidth = max_instance_count * sizeof(GPUModelData);
+		SetInstanceBuffer(Engine::GetAPI()->GetDevice().CreateBuffer(desc, filename + "-instance_buffer"));
+
+
+	}
+
+
 	m_GPUData.Init(250);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
@@ -83,6 +98,16 @@ void Model::Render(const graphics::RenderContext& rc)
 
 }
 
+void Model::SetInstanceBuffer(IBuffer* const buffer)
+{
+	m_InstanceBuffer = buffer;
+	for (Model* child : m_Children)
+	{
+		child->SetInstanceBuffer(buffer);
+	}
+	
+}
+
 void Model::RenderCube(const graphics::RenderContext& rc)
 {
 	UpdateConstantBuffer(rc);
@@ -98,6 +123,12 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_effect)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber);
+
+
+	if (m_IsRoot)
+	{
+		rc.GetContext().UpdateConstantBuffer(m_InstanceBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
+	}
 
 	for (Model* child : m_Children)
 	{
@@ -124,7 +155,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 
 	if (m_Surfaces.Size() > 0 && m_Surfaces[0])
 		m_Surfaces[0]->Activate(rc);
-	rc.GetContext().DrawIndexedInstanced(this, override_effect);
+	rc.GetContext().DrawIndexedInstanced(this, m_InstanceBuffer, sizeof(GPUModelData));
 
 	PROFILE_BLOCK_END;
 
@@ -231,12 +262,6 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	if (m_InstanceWrapper.GetInstanceBuffer())
 	{
-		if (m_GPUData.Empty())
-			return;
-
-		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
-		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
-
 		cl::Color color(m_Hash.m_Lower);
 		float fColor[4];
 		fColor[0] = color.r;

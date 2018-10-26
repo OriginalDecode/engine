@@ -160,7 +160,7 @@ namespace graphics
 		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 
 		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
-		ctx->m_SamplerStates[POINT_CLAMP] = sampler;
+		ctx->m_SamplerStates[POINT_WRAP] = sampler;
 #ifndef _FINAL
 		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "point wrap Sampler");

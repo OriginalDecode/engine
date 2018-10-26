@@ -280,6 +280,12 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 		m_StateStack->PopCurrentMainState();
 
+	if (input_wrapper->OnDown(KButton::NUMADD))
+		Engine::GetInstance()->GetRenderer()->font_scale += 0.25f;
+
+	if (input_wrapper->OnDown(KButton::NUMMINUS))
+		Engine::GetInstance()->GetRenderer()->font_scale -= 0.25f;
+
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 

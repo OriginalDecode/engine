@@ -49,7 +49,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
-	m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 12, 0);
+	m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 8, 0);
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
@@ -105,6 +105,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	//m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
 
+	m_Text->SetText("The quick brown fox jumps over the lazy dog");
+	m_Text->SetScale({ 5, 5 });
+	m_Text->SetPosition({ 0.5f, 0.5f });
 }
 
 void Renderer::InitiateDebug()
@@ -218,6 +221,7 @@ void Renderer::Render()
 		node->Draw(m_RenderContext);
 	}
 
+
 #ifdef _DEBUG
 	WriteDebugTextures();
 	const u32 selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
@@ -254,6 +258,8 @@ void Renderer::Render()
 	}
 
 #endif
+	m_Text->SetScale({ font_scale, font_scale });
+	m_Text->Render(m_RenderContext);
 
 	m_RenderContext.GetAPI().EndFrame();
 	m_Synchronizer->WaitForLogic();
@@ -324,13 +330,6 @@ int Renderer::RegisterLight()
 	SpotLight* s = new SpotLight;
 	m_Spotlights.Add(s);
 	return (m_Spotlights.Size() - 1);
-}
-
-
-//Terrain Manager not good enough to just loop through?
-void Renderer::AddTerrain(Terrain* someTerrain)
-{
-	myTerrainArray.Add(someTerrain);
 }
 
 

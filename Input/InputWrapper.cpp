@@ -54,7 +54,6 @@ void InputWrapper::Update()
 		myMouse->Acquire();
 	}
 
-
 	//memcpy_s(&m_PrevButtonState, sizeof(m_PrevButtonState), &m_ButtonState, sizeof(m_ButtonState));
 	//hr = m_PS4->GetDeviceState(sizeof(DIJOYSTATE), (VOID**)&m_ButtonState);
 	//if (FAILED(hr))

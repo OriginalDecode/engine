@@ -4,16 +4,15 @@
 
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
-struct FT_GlyphRec_;
-struct FT_GlyphSlotRec_;
 
 struct SCharData
 {
-	CU::Math::Vector2<float> myTopLeftUV;
-	CU::Math::Vector2<float> myBottomRightUV;
+	CU::Vector2f myTopLeftUV;
+	CU::Vector2f myBottomRightUV;
 
 	short myWidth;
 	short myHeight;
+	short m_Kerning = 0; //pixels to move back
 	short myAdvanceX; //Distance to next character.
 	short myBearingX;
 	short myBearingY;
@@ -22,8 +21,14 @@ struct SCharData
 
 struct SFontData
 {
-	~SFontData();
-	std::unordered_map<char, SCharData> myCharData;
+	~SFontData()
+	{
+		Engine::GetAPI()->ReleasePtr(m_AtlasView);
+		delete[] myAtlas;
+	}
+
+
+	std::unordered_map<int, SCharData> myCharData;
 	short myAtlasWidth;
 	short myAtlasHeight;
 	float myLineSpacing;
@@ -46,37 +51,15 @@ public:
 	void Initiate();
 	CFont* LoadFont(const s8* aFontPath, u16 aFontWidth, u16 aBorderWidth);
 private:
-	void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
-		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth = 0);
+	void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY, FT_FaceRec_* aFace);
 
-	void LoadOutline(const int index, const int atlasX, const int atlasY
-		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth);
+	void CalculateUV(SCharData &glyphData, int x_pos, int y_pos);
 
-	void DumpAtlas(SFontData* fontData, int atlasSize);
-	void DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline = false);
+	void CreateAtlas(const int atlas_size);
 
-	FT_LibraryRec_* myLibrary;
-	const char* myFontPath;
+	FT_LibraryRec_* m_Library = nullptr;
 	std::map<std::string, SFontData*> myFontData;
 
-	void CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderWidth);
-	void CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph);
-
-	struct SCountData
-	{
-		int xNCount = 0;
-		int xPCount = 0;
-		int yNCount = 0;
-		int yPCount = 0;
-	};
-
-	void CountOffsets(const int& x, const int& y, const int& width, const int& height, SCountData& countData);
-	void CountDeltas(const int& width, const int& height, int& deltaX, int& deltaY, SCountData& countData);
-	struct SOutlineOffset
-	{
-		int xDelta = 0;
-		int yDelta = 0;
-
-	} myOffset;
+	SFontData* m_FontToLoad = nullptr;
 
 };

@@ -58,7 +58,6 @@ public:
 	graphics::IRenderNode* GetNode(u64 type);
 
 
-	void AddTerrain(Terrain* someTerrain);
 	TerrainSystem* GetTerrainSystem() const { return m_TerrainSystem; }
 
 	int RegisterLight();
@@ -70,7 +69,7 @@ public:
 
 	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 
-
+	float font_scale = 1.f;
 private:
 	float m_CubemapTimer = 0.f;
 

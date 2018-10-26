@@ -6,7 +6,7 @@
 #include <Engine/Engine.h>
 
 #include <DXTex/DirectXTex.h>
-
+#include <wincodec.h>
 Texture::Texture(IShaderResourceView* srv)
 	: m_ShaderResource(srv)
 {
@@ -372,7 +372,7 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 
 }
 
-void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex)
+void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex, texture_format::FORMAT format)
 {
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
@@ -381,6 +381,18 @@ void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex)
 	DirectX::ScratchImage image;
 	HRESULT hr = DirectX::CaptureTexture(device, ctx, (ID3D11Texture2D*)tex, image);
 	ASSERT(hr == S_OK, "Failed to capture texture");
+
+	switch (format)
+	{
+	case texture_format::DDS:
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, path);
+		break;
+	case texture_format::PNG:
+	DirectX::SaveToWICFile(image.GetImages(), image.GetImageCount(), DirectX::WIC_FLAGS_NONE, GUID_ContainerFormatPng, path, &GUID_WICPixelFormat24bppBGR);
+		break;
+	default:
+		ASSERT(false, "no implementation to save in this format!");
+	}
+
 	ctx->Release();
 }

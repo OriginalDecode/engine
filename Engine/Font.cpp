@@ -125,7 +125,7 @@ void CFont::Render(const graphics::RenderContext& rc)
 	auto& ctx = Engine::GetAPI()->GetContext();
 
 	ctx.SetBlendState(graphics::ALPHA_BLEND);
-	ctx.PSSetSamplerState(0, 1, graphics::POINT_WRAP);
+	ctx.PSSetSamplerState(0, 1, graphics::POINT_CLAMP);
 
 	m_Buffer.Bind(0, graphics::ConstantBuffer::VERTEX, rc);
 	ctx.DrawIndexed(this, m_Effect[1]);

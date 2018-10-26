@@ -4,6 +4,16 @@
 #include <Utilities.h>
 #include <Engine/IGraphicsAPI.h>
 
+namespace texture_format
+{
+	enum FORMAT
+	{
+		DDS,
+		PNG,
+		JPG,
+		TGA,
+	};
+};
 struct TextureDesc
 {
 	s32 m_Width = 0;
@@ -45,7 +55,7 @@ public:
 	void Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 	//void Create3DTexture(Texture* textures[], s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 
-	static void SaveToDisk(const wchar_t* path, ITexture2D* tex);
+	static void SaveToDisk(const wchar_t* path, ITexture2D* tex, texture_format::FORMAT format = texture_format::DDS);
 
 
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }

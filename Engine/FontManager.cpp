@@ -51,11 +51,13 @@ CFontManager::~CFontManager()
 void CFontManager::Initiate()
 {
 	int error = FT_Init_FreeType(&m_Library);
-	ASSERT(!error, "Failed to initiate FreeType.");
+	ASSERT(error == 0, "Failed to initiate FreeType.");
 }
 
 CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 {
+
+	//Check for windows default fonts
 	std::string fontFolder = aFontPath;
 	if (!cl::substr(aFontPath, "/"))
 	{
@@ -63,7 +65,10 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		TCHAR dir[32];
 		GetSystemDirectory(dir, 32);
 		fontFolder += dir;
-		fontFolder = cl::substr(fontFolder, "\\", true, 0);
+
+		size_t pos = fontFolder.find("\\");
+		fontFolder = fontFolder.substr(0, pos); 
+
 		fontFolder += "\\Fonts\\";
 		fontFolder += aFontPath;
 	}
@@ -73,13 +78,14 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	atlasSize = int(cl::nearest_Pow(atlasSize));
 	FONT_LOG("Font Size %dx%d", atlasSize, atlasSize);
 
-	std::stringstream key;
-	key << aFontPath << "-" << font_width;
+	char key[255];
+	sprintf_s(key, "%s-%d", aFontPath, font_width);
 
-	if (myFontData.find(key.str()) != myFontData.end())
+
+	if (myFontData.find(key) != myFontData.end())
 	{
-		FONT_LOG("Font Data already found, creating Font Object with existing font data! %s", key.str().c_str());
-		return new CFont(myFontData[key.str()]);
+		FONT_LOG("Font Data already found, creating Font Object with existing font data! %s", key);
+		return new CFont(myFontData[key]);
 	}
 
 	m_FontToLoad = nullptr;
@@ -106,18 +112,18 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 
 	//Create a good spacing between words. 
 	error = FT_Load_Char(face, 'x', FT_LOAD_DEFAULT);
-	ASSERT(!error, "Failed to load glyph! x");
-	FT_GlyphSlot space = face->glyph;
-	m_FontToLoad->myWordSpacing = static_cast<short>(space->metrics.width / 256.f);
+	ASSERT(error == 0, "Failed to load glyph! x");
 
-	int currentMax = 127;
-	int currentI = 32;
+	m_FontToLoad->myWordSpacing = face->glyph->metrics.width / 256.f;
+
+	constexpr int end_char_index = 127;
+	constexpr int start_char_index = 32;
 
 
-	for (int i = currentI; i < currentMax; i++)
+	for (int i = start_char_index; i < end_char_index; ++i)
 	{
 		error = FT_Load_Char(face, i, FT_LOAD_RENDER);
-		ASSERT(!error, "Failed to load glyph!");
+		ASSERT(error == 0, "Failed to load glyph!");
 		FT_GlyphSlot slot = face->glyph;
 
 		if (atlasX + slot->bitmap.width >= atlasSize)
@@ -134,11 +140,11 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 
 	m_FontToLoad->myLineSpacing = (face->ascender - face->descender) / multiple_baseline;
 	FT_Done_Face(face);
-	myFontData[key.str()] = m_FontToLoad;
+	myFontData.emplace(key, m_FontToLoad);
 	return new CFont(m_FontToLoad);
 }
 
-void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY, FT_FaceRec_* face)
+void CFontManager::LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_FaceRec_* face)
 {
 	FT_Error error = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT);
 	ASSERT(error == 0, "Failed to load glyph!");
@@ -154,7 +160,7 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY, FT_
 	glyphData.myHeight = short(bitmap.rows);
 	glyphData.myWidth = short(bitmap.width);
 
-	CalculateUV(glyphData, atlasX, atlasY);
+	CalculateUV(glyphData, x_pos, y_pos);
 
 	glyphData.myAdvanceX = slot->metrics.horiAdvance / multiple_baseline;
 	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / multiple_baseline);
@@ -170,29 +176,23 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY, FT_
 		DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 	}
 
-	for (int x = 0; x < glyphData.myWidth; x++)
+	for (int x = 0; x < glyphData.myWidth; ++x)
 	{
-		for (int y = 0; y < glyphData.myHeight; y++)
+		for (int y = 0; y < glyphData.myHeight; ++y)
 		{
-			if (x < 0 || y < 0)
-				continue;
-
-
-			int& saved = m_FontToLoad->myAtlas[((atlasY) + y) * int(m_FontToLoad->myAtlasWidth) + (atlasX + x)];
+			int& saved = m_FontToLoad->myAtlas[((y_pos) + y) * int(m_FontToLoad->myAtlasWidth) + (x_pos + x)];
 			saved |= bitmap.buffer[y * glyphData.myWidth + x];
 
-			if (y + (atlasY + y_offset) > maxY)
-			{
-				maxY = y + (atlasY + y_offset);
-			}
+			if (y + (y_pos + y_offset) > maxY)
+				maxY = y + (y_pos + y_offset);
 
-		//https://github.com/rougier/freetype-gl/blob/master/texture-font.c
 		}
 	}
 
-	atlasX = atlasX + glyphData.myWidth + x_offset;
+	x_pos = x_pos + glyphData.myWidth + x_offset;
 	m_FontToLoad->myCharData[index] = glyphData;
 }
+
 
 void CFontManager::CalculateUV(SCharData& glyphData, int x_pos, int y_pos)
 {

@@ -32,7 +32,7 @@ struct SFontData
 	short myAtlasWidth;
 	short myAtlasHeight;
 	float myLineSpacing;
-	short myWordSpacing;
+	float myWordSpacing;
 	short myFontHeightWidth;
 	int* myAtlas;
 
@@ -51,7 +51,7 @@ public:
 	void Initiate();
 	CFont* LoadFont(const s8* aFontPath, u16 aFontWidth, u16 aBorderWidth);
 private:
-	void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY, FT_FaceRec_* aFace);
+	void LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_FaceRec_* aFace);
 
 	void CalculateUV(SCharData &glyphData, int x_pos, int y_pos);
 

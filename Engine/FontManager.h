@@ -7,6 +7,12 @@ struct FT_FaceRec_;
 
 struct SCharData
 {
+	~SCharData()
+	{
+		/*delete m_Data;
+		m_Data = nullptr;*/
+	}
+
 	CU::Vector2f myTopLeftUV;
 	CU::Vector2f myBottomRightUV;
 
@@ -17,6 +23,9 @@ struct SCharData
 	short myBearingX;
 	short myBearingY;
 	char myChar;
+
+	char* m_Data = nullptr;
+
 };
 
 struct SFontData
@@ -56,6 +65,7 @@ private:
 	void CalculateUV(SCharData &glyphData, int x_pos, int y_pos);
 
 	void CreateAtlas(const int atlas_size);
+	void SaveTexture(const SCharData& _char);
 
 	FT_LibraryRec_* m_Library = nullptr;
 	std::map<std::string, SFontData*> myFontData;

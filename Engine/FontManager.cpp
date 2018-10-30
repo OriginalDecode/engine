@@ -10,11 +10,8 @@
 #include <Utilities.h>
 #include "EngineDefines.h"
 #include "Font.h"
-#define COBJMACROS
-#include <d3d11.h>
 #include "Engine.h"
-#include <vector>
-#include <ScreenGrab.h>
+
 #define SAVE
 #ifdef SAVE
 #define SAVE_DDS
@@ -22,6 +19,8 @@
 #define SAVE_PNG
 #endif
 #endif
+
+//#define COBJMACROS
 
 
 #include <Engine/IGraphicsAPI.h>
@@ -67,7 +66,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		fontFolder += dir;
 
 		size_t pos = fontFolder.find("\\");
-		fontFolder = fontFolder.substr(0, pos); 
+		fontFolder = fontFolder.substr(0, pos);
 
 		fontFolder += "\\Fonts\\";
 		fontFolder += aFontPath;
@@ -96,6 +95,8 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	ZeroMemory(m_FontToLoad->myAtlas, total_size * sizeof(int));
 
 	m_FontToLoad->myFontHeightWidth = font_width;
+	m_FontToLoad->myAtlasWidth = atlasSize;
+	m_FontToLoad->myAtlasHeight = atlasSize;
 
 	FT_Face face;
 	FT_Error error = FT_New_Face(m_Library, fontFolder.c_str(), 0, &face);
@@ -131,7 +132,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 			atlasX = x_start;
 			atlasY = currentMaxY;
 		}
-		
+
 		LoadGlyph(i, atlasX, atlasY, currentMaxY, face);
 
 	}
@@ -150,11 +151,11 @@ void CFontManager::LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_Fa
 	ASSERT(error == 0, "Failed to load glyph!");
 
 	FT_GlyphSlot slot = face->glyph;
-	error = FT_Render_Glyph(slot, FT_RENDER_MODE_LCD);
-	ASSERT(error == 0, "Failed to load glyph!");
+	error = FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
+	ASSERT(error == 0, "Failed to render glyph!");
 
-	FT_Bitmap bitmap = slot->bitmap;
-	
+	const FT_Bitmap& bitmap = slot->bitmap;
+
 	SCharData glyphData;
 	glyphData.myChar = char(index);
 	glyphData.myHeight = short(bitmap.rows);
@@ -180,7 +181,7 @@ void CFontManager::LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_Fa
 	{
 		for (int y = 0; y < glyphData.myHeight; ++y)
 		{
-			int& saved = m_FontToLoad->myAtlas[((y_pos) + y) * int(m_FontToLoad->myAtlasWidth) + (x_pos + x)];
+			int& saved = m_FontToLoad->myAtlas[(y_pos + y) * int(m_FontToLoad->myAtlasWidth) + (x_pos + x)];
 			saved |= bitmap.buffer[y * glyphData.myWidth + x];
 
 			if (y + (y_pos + y_offset) > maxY)
@@ -198,13 +199,13 @@ void CFontManager::CalculateUV(SCharData& glyphData, int x_pos, int y_pos)
 {
 	glyphData.myTopLeftUV.x = float(x_pos) / m_FontToLoad->myAtlasWidth;
 	glyphData.myTopLeftUV.y = float(y_pos) / m_FontToLoad->myAtlasHeight;
-	
+
 	glyphData.myBottomRightUV.x = float(x_pos + glyphData.myWidth) / m_FontToLoad->myAtlasWidth;
 	glyphData.myBottomRightUV.y = float(y_pos + glyphData.myHeight) / m_FontToLoad->myAtlasHeight;
 
 }
 
-void CFontManager::CreateAtlas(const int atlas_size)
+void CFontManager::CreateAtlas(const int size)
 {
 	graphics::Texture2DDesc _desc;
 	_desc.m_Width = (u32)m_FontToLoad->myAtlasWidth;
@@ -220,7 +221,7 @@ void CFontManager::CreateAtlas(const int atlas_size)
 	auto* api = Engine::GetAPI();
 
 	const s32 channel_count = 4; //RGBA 
-	const s32 pitch = atlas_size * channel_count;
+	const s32 pitch = m_FontToLoad->myAtlasWidth * channel_count;
 	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, (s8*)m_FontToLoad->myAtlas, pitch, "AtlasTexture");
 	ASSERT(texture != nullptr, "Texture is nullptr!");
 
@@ -229,6 +230,40 @@ void CFontManager::CreateAtlas(const int atlas_size)
 #ifdef SAVE
 	CreateDirectory("Atlas", NULL);
 	Texture::SaveToDisk(L"Atlas/atlas.dds", texture);
+#endif
+	api->ReleasePtr(texture);
+}
+
+void CFontManager::SaveTexture(const SCharData& _char)
+{
+	if (_char.myWidth <= 0 || _char.myHeight <= 0)
+		return;
+
+
+	graphics::Texture2DDesc _desc;
+	_desc.m_Width = (u32)_char.myWidth;
+	_desc.m_Height = (u32)_char.myHeight;
+	_desc.m_Format = graphics::RGBA8_UNORM;
+	_desc.m_CPUAccessFlag = graphics::WRITE;
+	_desc.m_Binding = graphics::BIND_SHADER_RESOURCE;
+	_desc.m_Usage = graphics::DYNAMIC_USAGE;
+	_desc.m_MipLevels = 1;
+	_desc.m_SampleCount = 1;
+	_desc.m_ArraySize = 1;
+
+	auto* api = Engine::GetAPI();
+
+	const s32 channel_count = 4; //RGBA 
+	const s32 pitch = 4;
+	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, _char.m_Data, pitch, "glyph");
+	ASSERT(texture != nullptr, "Texture is nullptr!");
+
+#ifdef SAVE
+	CreateDirectory("Glyphs", NULL);
+
+	wchar_t temp[100];
+	swprintf_s(temp, L"Glyphs/%c.png", _char.myChar);
+	Texture::SaveToDisk(temp, texture, texture_format::PNG);
 #endif
 	api->ReleasePtr(texture);
 }

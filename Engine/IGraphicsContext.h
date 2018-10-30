@@ -2,7 +2,7 @@
 #include <Engine/engine_shared.h>
 #include <Engine/graphics_flags.h>
 
-class CompiledShader;
+struct CompiledShader;
 class BaseModel;
 class CEmitterInstance;
 class Quad;

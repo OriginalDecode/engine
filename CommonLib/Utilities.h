@@ -96,9 +96,11 @@ namespace cl
 
 		union
 		{
-			unsigned int color; //4byte
-			unsigned char colors[4]; //4byte
-			struct {
+			unsigned int color; 
+			unsigned char colors[4];
+
+			struct 
+			{
 				unsigned char r, g, b, a; 
 			};
 		};
@@ -218,38 +220,3 @@ inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
 	mutex->serving++;
 };
-
-
-class ScopedMutex
-{
-public:
-	ScopedMutex(Ticket_Mutex& mutex, const char* name = "unknown")
-		:m_Mutex(mutex)
-	{
-#ifdef _PROFILER
-		std::string mutex_name = "mutex - ";
-		mutex_name += name;
-		PROFILE_BLOCK(mutex_name.c_str());
-#endif
-
-		BeginTicketMutex(&m_Mutex);
-
-	}
-
-	~ScopedMutex()
-	{
-		EndTicketMutex(&m_Mutex);
-
-#ifdef _PROFILER
-		PROFILE_BLOCK_END();
-#endif
-	}
-
-
-private:
-	Ticket_Mutex & m_Mutex;
-
-};
-
-#define SCOPEDMUTEX(x, y) ScopedMutex(x, y);
-

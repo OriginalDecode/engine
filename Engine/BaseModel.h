@@ -44,8 +44,7 @@ public:
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
 	virtual void AddSurface(Surface* surface) = 0;
-	virtual void SetMaterial(Material* pMaterial) {};
-	//Material* GetMaterial() { return m_Material; }
+	virtual void SetMaterial(Material*) {};
 	virtual void SetIsInstanced(bool is_instanced)
 	{
 		m_IsInstanced = is_instanced;

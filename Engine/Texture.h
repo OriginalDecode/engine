@@ -50,8 +50,8 @@ public:
 	void InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name);
 
 	//Used for cubemaps or 3d textures
-	void CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename);
-	void CreateTextureArray(Texture* textures[], const s32 const num_tex, const char* filename);
+	void CreateTextureArray(const char* paths[], const s32 num_tex, const char* filename);
+	void CreateTextureArray(Texture* textures[], const s32 num_tex, const char* filename);
 	void Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 	//void Create3DTexture(Texture* textures[], s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 

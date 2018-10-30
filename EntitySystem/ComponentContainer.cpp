@@ -58,7 +58,7 @@ void CComponentContainer::AddComponent(Entity anEntity, BaseComponent* aComponen
 BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
 {
 	/*Error Handling*/
-	
+	BaseComponent* component = nullptr;
 	for ( EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_Entity == anEntity )
@@ -66,10 +66,13 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 			
 			int componentIndex = ec.m_EntityArray[aComponentID];
 			ASSERT(componentIndex >= 0, "invalid component index!");
-			return *myComponents[aComponentID][componentIndex];
+			component = myComponents[aComponentID][componentIndex];
 		}
 	}
-	DL_ASSERT("Failed to find component index!");
+	
+	ASSERT(component, "Failed to find component");
+	return *component;
+
 }
 
 void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)

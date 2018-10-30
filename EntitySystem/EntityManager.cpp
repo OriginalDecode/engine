@@ -55,7 +55,7 @@ void EntityManager::Clear()
 void EntityManager::Update(float dt)
 {
 
-	const CU::GrowingArray<Entity>& entities = GetEntities();
+	//const CU::GrowingArray<Entity>& entities = GetEntities();
 	
 	/*for ( Entity e : entities )
 	{

@@ -45,18 +45,16 @@ void DebugSystem::Update(float /*dt*/, bool)
 	if (entities.Empty())
 		return;
 
-	for (s32 i = 0; i < entities.Size(); i++)
-	{
-		Entity e = entities[i];
-		DebugComponent& debug = GetComponent<DebugComponent>(e);
-		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		//RenderBox(debug, translation.m_Orientation);
-	}
-
-	return;	
+	//for (s32 i = 0; i < entities.Size(); i++)
+	//{
+	//	Entity e = entities[i];
+	//	DebugComponent& debug = GetComponent<DebugComponent>(e);
+	//	TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+	//	//RenderBox(debug, translation.m_Orientation);
+	//}
 }
 
-void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
+void DebugSystem::HandleEvent(u64 event, void*)
 {
 	if (event == cl::Hash("pick_entity"))
 	{

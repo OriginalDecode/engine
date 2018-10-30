@@ -75,8 +75,6 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 #endif
 
 		CU::Matrix44f world;
-		//world.SetPosition({ 512, 0, 512, 1 });
-		return;
 		for (const ModelInstanceCmpt& instance : render.m_Instances)
 		{
 
@@ -103,11 +101,10 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& direction, const CU::Vector4f& pos)
 {
-	return true;
 	CU::Vector4f position = translation + (direction * pos);
 	if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 		return true;
-	return false;
+	return true;
 }
 
 void RenderSystem::AddRenderCommand(const ModelCommand& command)

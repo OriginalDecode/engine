@@ -20,11 +20,11 @@ public:
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
 	btRigidBody* InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices);
 	btRigidBody* InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition);
-	btRigidBody* InitWithMeshCollision(s8* const vertices, s8* const indices, const s32 const idx_count, const s32 const vtx_count);
+	btRigidBody* InitWithMeshCollision(s8* const vertices, s8* const indices, const s32 idx_count, const s32 vtx_count);
 	btRigidBody* InitAsBox(float width, float height, float depth, CU::Vector3f position);
 	btRigidBody* InitAsBox(CU::Vector4f whd, CU::Vector3f position);
 	btRigidBody* Capsule(CU::Vector3f pos);
-	btRigidBody* ConvexMesh(s8* const vertices, s8* const indices, const s32 const idx_count, const s32 const vtx_count);
+	btRigidBody* ConvexMesh(s8* const vertices, s8* const indices, const s32 idx_count, const s32 vtx_count);
 
 	void SetResistanceDensity(float aDensity);
 	void SetPosition(const CU::Vector3f& aPosition);

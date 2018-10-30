@@ -16,7 +16,7 @@ PhysicsSystem::PhysicsSystem(_EntityManager& anEntityManager)
 	myPhysicsManager = Engine::GetInstance()->GetPhysicsManager();
 }
 
-void PhysicsSystem::Update(float dt, bool paused)
+void PhysicsSystem::Update(float dt, bool)
 {
 #ifdef _DEBUG
 	if (debug::DebugHandle::s_PausePhysics)

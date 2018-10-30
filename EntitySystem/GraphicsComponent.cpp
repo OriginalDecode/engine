@@ -32,7 +32,7 @@ void ModelInstanceCmpt::Deserialize(const rapidjson::Value& json_value, ModelIns
 	}
 	if (json_value.FindMember(s_RelativePos) != json_value.MemberEnd())
 	{
-		auto& pos = json_value[s_RelativePos].GetArray();
+		//auto& pos = json_value[s_RelativePos].GetArray();
 		//instance.m_Orientation.SetPosition({ (float)pos[0].GetDouble(), (float)pos[1].GetDouble(), (float)pos[2].GetDouble(), 1.f });
 	}
 

@@ -159,9 +159,8 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 
 }
 
-void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename)
+void Texture::CreateTextureArray(const char* paths[], const s32 num_tex, const char* filename)
 {
-	graphics::IGraphicsAPI* api = Engine::GetAPI();
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
@@ -200,10 +199,10 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 
 	for (u32 i = 0; i < tex_count; i++)
 	{
-		ID3D11Resource* resource = nullptr;
-		src[i]->GetResource(&resource);
+		ID3D11Resource* texture_resource = nullptr;
+		src[i]->GetResource(&texture_resource);
 		//target, index, x,y,z, resource, index, optional box
-		ctx->CopySubresourceRegion(texArray, i, 0, 0, 0, resource, 0, nullptr);
+		ctx->CopySubresourceRegion(texArray, i, 0, 0, 0, texture_resource, 0, nullptr);
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
@@ -224,9 +223,8 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 	ctx->Release();
 }
 
-void Texture::CreateTextureArray(Texture* textures[], const s32 const num_tex, const char* filename)
+void Texture::CreateTextureArray(Texture* textures[], const s32 num_tex, const char* filename)
 {
-	graphics::IGraphicsAPI* api = Engine::GetAPI();
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
@@ -266,13 +264,13 @@ void Texture::CreateTextureArray(Texture* textures[], const s32 const num_tex, c
 
 	for (u32 i = 0; i < tex_count; i++)
 	{
-		ID3D11Resource* resource = nullptr;
-		src[i]->GetResource(&resource);
+		ID3D11Resource* texture_resource = nullptr;
+		src[i]->GetResource(&texture_resource);
 		//target, index, x,y,z, resource, index, optional box
-		for (s32 j = 0; j < desc.MipLevels; j++)
+		for (u32 j = 0; j < desc.MipLevels; j++)
 		{
 
-			ctx->CopySubresourceRegion(texArray, (i * desc.MipLevels) + j, 0, 0, 0, resource, j, nullptr);
+			ctx->CopySubresourceRegion(texArray, (i * desc.MipLevels) + j, 0, 0, 0, texture_resource, j, nullptr);
 		}
 	}
 
@@ -294,7 +292,7 @@ void Texture::CreateTextureArray(Texture* textures[], const s32 const num_tex, c
 	ctx->Release();
 }
 
-void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* debug_name)
+void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32, const char*)
 {
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
@@ -343,11 +341,11 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 			region_box.back = 1;
 
 
-			ID3D11Resource* resource = nullptr;
-			_tex->GetResource(&resource);
+			ID3D11Resource* texture_resource = nullptr;
+			_tex->GetResource(&texture_resource);
 			//target, index, x,y,z, resource, index, optional box
-			ctx->CopySubresourceRegion(tex, 0, 0, 0, z, resource, 0, &region_box);
-			resource->Release();
+			ctx->CopySubresourceRegion(tex, 0, 0, 0, z, texture_resource, 0, &region_box);
+			texture_resource->Release();
 			z++;
 		}
 	}

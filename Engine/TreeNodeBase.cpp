@@ -23,9 +23,8 @@ TreeNodeBase::~TreeNodeBase()
 
 }
 
-void TreeNodeBase::Update(float dt, bool paused)
+void TreeNodeBase::Update(float, bool)
 {
-	return;
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	m_DwellerCount = m_Dwellers.Size();
 	//RenderBox();

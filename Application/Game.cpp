@@ -141,7 +141,7 @@ void Game::Initiate(const std::string& level)
 	{
 		float x = RANDOM(0.f, 1024.f);
 		float z = RANDOM(0.f, 1024.f);
-		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(x,z);
+		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(int(x), int(z));
 
 		CU::Matrix44f orientation;
 		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));

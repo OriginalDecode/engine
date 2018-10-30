@@ -136,4 +136,5 @@ RefPointer<T> AssetsContainer::GetModel(u64 key)
 	if (it != m_Models.end())
 		return it->second;
 
+	return nullptr;
 }

@@ -60,7 +60,6 @@ void WaterPlane::UpdateConstantBuffer(const graphics::RenderContext& rc)
 void WaterPlane::Render(const graphics::RenderContext& rc)
 {
 	auto& ctx = rc.GetContext();
-	auto& api = rc.GetAPI();
 
 	ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetBlendState(graphics::BLEND_FALSE);

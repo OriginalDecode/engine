@@ -30,7 +30,6 @@ ShaderFactory::~ShaderFactory()
 static Ticket_Mutex shader_factory_mutex;
 void ShaderFactory::LoadShader(Effect* anEffect)
 {
-	SCOPEDMUTEX(shader_factory_mutex, "ShaderFactory");
 	std::string path = anEffect->m_FileName;
 	size_t pos = path.rfind("/");
 	std::string sub = path.substr(0, pos + 1);

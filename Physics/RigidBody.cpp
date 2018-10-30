@@ -250,8 +250,7 @@ btRigidBody* RigidBody::GetBody()
 
 const CU::Matrix44f& RigidBody::GetOrientation()
 {
-	if (!m_Shape)
-		return CU::Matrix44f();
+	ASSERT(m_Shape, "Rigidbody had no shape!");
 
 
 	myWorldTranslation->getOpenGLMatrix(&m_Orientation.myMatrix[0]);

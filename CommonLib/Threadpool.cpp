@@ -7,14 +7,14 @@ void Threadpool::Initiate(const std::string& debug_name)
 	const int thread_count = std::thread::hardware_concurrency();
 	myWorkers.Init(thread_count);
 
-	for (unsigned int i = 0; i < thread_count; i++)
+	for (int i = 0; i < thread_count; i++)
 	{
 		Worker worker;
 		myWorkers.Add(worker);
 	}
 	myWorkers.Optimize();
 
-	for (unsigned int i = 0; i < thread_count; i++)
+	for (int i = 0; i < thread_count; i++)
 	{
 		std::stringstream ss;
 		ss << debug_name << i;

@@ -2,12 +2,12 @@
 
 
 
-void DebugComponent::Serialize(JsonWriter& writer) const
+void DebugComponent::Serialize(JsonWriter&) const
 {
 	assert(false && "not implemented");
 }
 
-void DebugComponent::Deserialize(const rapidjson::Value& value)
+void DebugComponent::Deserialize(const rapidjson::Value&)
 {
 	assert(false && "not implemented");
 }

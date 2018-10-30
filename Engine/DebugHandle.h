@@ -9,7 +9,6 @@
 
 class Texture;
 class Material;
-struct ModelInstance;
 
 namespace debug
 {

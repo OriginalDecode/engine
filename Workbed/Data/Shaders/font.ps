@@ -10,8 +10,7 @@ struct VS_OUTPUT
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float4 text = FontTexture.Sample(sampler0, input.uv);// * float4(input.color.rgb, 1);	
-	text.a = 1;
+	float4 text = FontTexture.Sample(sampler0, input.uv).rrrr;
 	return text;
 };
 

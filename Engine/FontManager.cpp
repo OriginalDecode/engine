@@ -147,7 +147,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 
 void CFontManager::LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_FaceRec_* face)
 {
-	FT_Error error = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT);
+	FT_Error error = FT_Load_Char(face, index, FT_LOAD_DEFAULT);
 	ASSERT(error == 0, "Failed to load glyph!");
 
 	FT_GlyphSlot slot = face->glyph;
@@ -239,23 +239,22 @@ void CFontManager::SaveTexture(const SCharData& _char)
 	if (_char.myWidth <= 0 || _char.myHeight <= 0)
 		return;
 
-
-	graphics::Texture2DDesc _desc;
-	_desc.m_Width = (u32)_char.myWidth;
-	_desc.m_Height = (u32)_char.myHeight;
-	_desc.m_Format = graphics::RGBA8_UNORM;
-	_desc.m_CPUAccessFlag = graphics::WRITE;
-	_desc.m_Binding = graphics::BIND_SHADER_RESOURCE;
-	_desc.m_Usage = graphics::DYNAMIC_USAGE;
-	_desc.m_MipLevels = 1;
-	_desc.m_SampleCount = 1;
-	_desc.m_ArraySize = 1;
+	graphics::Texture2DDesc tex_desc;
+	tex_desc.m_Width = (u32)_char.myWidth;
+	tex_desc.m_Height = (u32)_char.myHeight;
+	tex_desc.m_Format = graphics::RGBA8_UNORM;
+	tex_desc.m_CPUAccessFlag = graphics::WRITE;
+	tex_desc.m_Binding = graphics::BIND_SHADER_RESOURCE;
+	tex_desc.m_Usage = graphics::DYNAMIC_USAGE;
+	tex_desc.m_MipLevels = 1;
+	tex_desc.m_SampleCount = 1;
+	tex_desc.m_ArraySize = 1;
 
 	auto* api = Engine::GetAPI();
 
 	const s32 channel_count = 4; //RGBA 
 	const s32 pitch = 4;
-	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, _char.m_Data, pitch, "glyph");
+	ITexture2D* texture = api->GetDevice().CreateTexture2D(tex_desc, _char.m_Data, pitch, "glyph");
 	ASSERT(texture != nullptr, "Texture is nullptr!");
 
 #ifdef SAVE

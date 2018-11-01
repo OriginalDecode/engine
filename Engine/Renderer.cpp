@@ -105,7 +105,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	//m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
 
-	m_Text->SetText("The quick brown fox jumps over the lazy dog");
+	// m_Text->SetText("The quick brown fox jumps over the lazy dog");
+	m_Text->SetText("=>?@ABC");
 	m_Text->SetScale({ 5, 5 });
 	m_Text->SetPosition({ 0.5f, 0.5f });
 }

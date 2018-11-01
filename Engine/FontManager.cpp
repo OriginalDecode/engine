@@ -117,24 +117,12 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 
 	m_FontToLoad->myWordSpacing = face->glyph->metrics.width / 256.f;
 
-	constexpr int end_char_index = 127;
 	constexpr int start_char_index = 32;
-
+	constexpr int end_char_index = 127;
 
 	for (int i = start_char_index; i < end_char_index; ++i)
 	{
-		error = FT_Load_Char(face, i, FT_LOAD_RENDER);
-		ASSERT(error == 0, "Failed to load glyph!");
-		FT_GlyphSlot slot = face->glyph;
-
-		if (atlasX + slot->bitmap.width >= atlasSize)
-		{
-			atlasX = x_start;
-			atlasY = currentMaxY;
-		}
-
 		LoadGlyph(i, atlasX, atlasY, currentMaxY, face);
-
 	}
 
 	CreateAtlas(atlasSize);
@@ -145,23 +133,33 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	return new CFont(m_FontToLoad);
 }
 
-void CFontManager::LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_FaceRec_* face)
+void CFontManager::LoadGlyph(int index, int& pen_x, int& pen_y, int& maxY, FT_FaceRec_* face)
 {
-	FT_Error error = FT_Load_Char(face, index, FT_LOAD_DEFAULT);
+	FT_Error error = FT_Load_Char(face, index, FT_LOAD_DEFAULT | FT_LOAD_TARGET_LIGHT);
 	ASSERT(error == 0, "Failed to load glyph!");
 
 	FT_GlyphSlot slot = face->glyph;
-	error = FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
+	error = FT_Render_Glyph(slot, FT_RENDER_MODE_LCD);
 	ASSERT(error == 0, "Failed to render glyph!");
 
 	const FT_Bitmap& bitmap = slot->bitmap;
 
+	slot->subglyphs;
+
 	SCharData glyphData;
 	glyphData.myChar = char(index);
-	glyphData.myHeight = short(bitmap.rows);
-	glyphData.myWidth = short(bitmap.width);
+	glyphData.myHeight = u16(bitmap.rows);
+	glyphData.myWidth = u16(bitmap.width);
+	glyphData.m_Pitch = u16(bitmap.pitch);
 
-	CalculateUV(glyphData, x_pos, y_pos);
+
+	if (pen_x + glyphData.myWidth  > m_FontToLoad->myAtlasWidth)
+	{
+		pen_x = x_start;
+		pen_y = maxY;
+	}
+
+	CalculateUV(glyphData, pen_x, pen_y);
 
 	glyphData.myAdvanceX = slot->metrics.horiAdvance / multiple_baseline;
 	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / multiple_baseline);
@@ -177,21 +175,27 @@ void CFontManager::LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_Fa
 		DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 	}
 
-	for (int x = 0; x < glyphData.myWidth; ++x)
+	for (u16 row = 0; row < glyphData.myHeight; ++row)
 	{
-		for (int y = 0; y < glyphData.myHeight; ++y)
+		for (u16 col = 0; col < glyphData.myWidth; ++col)
 		{
-			int& saved = m_FontToLoad->myAtlas[(y_pos + y) * int(m_FontToLoad->myAtlasWidth) + (x_pos + x)];
-			saved |= bitmap.buffer[y * glyphData.myWidth + x];
+			const int x = pen_x + col;
+			const int y = pen_y + row;
+			const int tex_width = m_FontToLoad->myAtlasWidth;
 
-			if (y + (y_pos + y_offset) > maxY)
-				maxY = y + (y_pos + y_offset);
+
+			int& saved = m_FontToLoad->myAtlas[y * tex_width + x];
+			saved |= bitmap.buffer[row * bitmap.pitch + col];
 
 		}
+
+		if (row + (pen_y + y_offset) > maxY)
+			maxY = row + (pen_y + y_offset);
 	}
 
-	x_pos = x_pos + glyphData.myWidth + x_offset;
-	m_FontToLoad->myCharData[index] = glyphData;
+	pen_x += glyphData.myWidth + x_offset;
+
+	m_FontToLoad->myCharData.emplace(index, glyphData);
 }
 
 

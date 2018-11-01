@@ -16,8 +16,9 @@ struct SCharData
 	CU::Vector2f myTopLeftUV;
 	CU::Vector2f myBottomRightUV;
 
-	short myWidth;
-	short myHeight;
+	unsigned short myWidth;
+	unsigned short myHeight;
+	unsigned short m_Pitch = 0;
 	short m_Kerning = 0; //pixels to move back
 	short myAdvanceX; //Distance to next character.
 	short myBearingX;
@@ -60,9 +61,9 @@ public:
 	void Initiate();
 	CFont* LoadFont(const s8* aFontPath, u16 aFontWidth, u16 aBorderWidth);
 private:
-	void LoadGlyph(int index, int& x_pos, int& y_pos, int& maxY, FT_FaceRec_* aFace);
+	void LoadGlyph(int index, int& pen_x, int& pen_y, int& maxY, FT_FaceRec_* aFace);
 
-	void CalculateUV(SCharData &glyphData, int x_pos, int y_pos);
+	void CalculateUV(SCharData &glyphData, int pen_x, int pen_y);
 
 	void CreateAtlas(const int atlas_size);
 	void SaveTexture(const SCharData& _char);

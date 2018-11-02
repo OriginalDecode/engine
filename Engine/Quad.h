@@ -19,6 +19,9 @@ public:
 	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
 
 	void SetTexture(Texture* texture) { m_QuadTexture = texture; }
+	Texture* GetTexture() const { return m_QuadTexture; }
+
+
 	void Resize(float new_width, float new_height);
 private:
 	void FillVertexData(float half_width, float half_height);

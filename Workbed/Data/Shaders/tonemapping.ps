@@ -50,7 +50,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 color = output * lumScale;
 
 	color = saturate(color  * color1); 
-	color = saturate(color1);
+	// color = saturate(color1);
 	return pow(color, .4545);
 	
 }

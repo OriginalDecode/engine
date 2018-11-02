@@ -33,6 +33,8 @@ public:
 
 	void OnResize();
 
+	Effect* GetAmbientEffect() { return m_AmbientPassShader; }
+
 private:
 	void UpdateConstantBuffer(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
 

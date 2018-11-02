@@ -50,6 +50,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
 	m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 8, 0);
+	//m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 8, 0);
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
@@ -101,6 +102,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
+
+	//m_DeferredRenderer->GetAmbientEffect()->AddShaderResource(m_Background->GetTexture(), TextureSlot::REGISTER_2);
 
 	//m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
@@ -273,11 +276,12 @@ void Renderer::DrawIBL()
 	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
+	m_DeferredRenderer->Draw();
+
 	m_Atmosphere.UpdateBuffer(m_RenderContext, m_Camera);
 	auto& ctx = m_RenderContext.GetContext();
-	ctx.SetDepthState(graphics::Z_DISABLED, 1);
+	ctx.SetDepthState(graphics::READ_NO_WRITE, 1);
 	m_Background->Render(true);
-	m_DeferredRenderer->Draw();
 }
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -421,6 +425,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 	Texture* cubemap[NOF_SIDES];
 	s32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
+
 
 
 

@@ -15,14 +15,28 @@ namespace graphics
 	// 	D3D11_DEPTH_STENCILOP_DESC FrontFace;
 	// 	D3D11_DEPTH_STENCILOP_DESC BackFace;
 
-	void DirectX11::CreateDepthStencilStates()
+	void DirectX11::CreateDepthStencil(s32 slot, const D3D11_DEPTH_STENCIL_DESC& desc, const std::string& debug_name)
 	{
+
 		DX11Device* dx11device = static_cast<DX11Device*>(m_Device);
 		ID3D11Device* device = dx11device->GetDevice();
 		DX11Context* ctx = static_cast<DX11Context*>(m_Context);
-
-		//__________________________________________________________
 		ID3D11DepthStencilState* depthstencil = nullptr;
+
+		HRESULT hr = device->CreateDepthStencilState(&desc, &depthstencil);
+		ctx->m_DepthStencilStates[Z_DISABLED] = depthstencil;
+#ifndef FINAL
+		std::string depth_stencil_debug_name = "DepthstencilState";
+		depth_stencil_debug_name += debug_name;
+
+		SetDebugName(depthstencil, depth_stencil_debug_name);
+		HandleErrors(hr, "Failed to create DepthStencilState!");
+#endif
+
+	}
+
+	void DirectX11::CreateDepthStencilStates()
+	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 
@@ -43,26 +57,14 @@ namespace graphics
 		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		
+		CreateDepthStencil(Z_ENABLED, stencilDesc, "Z_Enable");
 
-		HRESULT hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		ctx->m_DepthStencilStates[Z_ENABLED] = depthstencil;
-#ifndef FINAL
-		SetDebugName(depthstencil, "DepthstencilState Z_Enable");
-		HandleErrors(hr, "Failed to create DepthStencilState!");
-#endif
-		depthstencil = nullptr;
 
 		//__________________________________________________________
 
 		stencilDesc.DepthEnable = false;
-		 
-		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		ctx->m_DepthStencilStates[Z_DISABLED] = depthstencil;
-#ifndef FINAL
-		SetDebugName(depthstencil, "DepthstencilState Z_Disable");
-		HandleErrors(hr, "Failed to create DepthStencilState!");
-#endif
-		depthstencil = nullptr;
+		CreateDepthStencil(Z_DISABLED, stencilDesc, "Z_Disable");
 
 		//__________________________________________________________
 
@@ -83,14 +85,8 @@ namespace graphics
 		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
-
-		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		ctx->m_DepthStencilStates[READ_NO_WRITE] = depthstencil;
-#ifndef FINAL
-		SetDebugName(depthstencil, "DepthstencilState ReadNoWrite");
-		HandleErrors(hr, "Failed to create DepthStencilState!");
-#endif 
-		depthstencil = nullptr;
+		
+		CreateDepthStencil(READ_NO_WRITE, stencilDesc, "ReadNoWrite");
 
 		//__________________________________________________________
 
@@ -112,13 +108,8 @@ namespace graphics
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
-		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		ctx->m_DepthStencilStates[READ_NO_WRITE_PARTICLE] = depthstencil;
-#ifndef FINAL
-		SetDebugName(depthstencil, "DepthStencilState ReadNoWriteParticle");
-		HandleErrors(hr, "Failed to create DepthStencilState!");
-#endif
-		depthstencil = nullptr;
+
+		CreateDepthStencil(READ_NO_WRITE_PARTICLE, stencilDesc, "ReadNoWriteParticle");
 
 		stencilDesc.DepthEnable = true;
 		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -138,14 +129,7 @@ namespace graphics
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		ctx->m_DepthStencilStates[Z_EQUAL] = depthstencil;
-#ifndef FINAL
-		SetDebugName(depthstencil, "DepthstencilState Z_EQUAL");
-		HandleErrors(hr, "Failed to create DepthStencilState!");
-#endif
-		depthstencil = nullptr;
-
+		CreateDepthStencil(Z_EQUAL, stencilDesc, "Z_EQUAL");
 
 
 	}

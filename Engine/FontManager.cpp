@@ -27,8 +27,8 @@
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsDevice.h>
 
-constexpr s32 x_offset = 8;
-constexpr s32 y_offset = 8;
+constexpr s32 x_offset = 1;
+constexpr s32 y_offset = 1;
 constexpr s32 x_start = 0;
 
 constexpr s32 multiple_baseline = 64;
@@ -73,7 +73,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	}
 
 	u16 font_width = aSize;
-	int atlasSize = (font_width * font_width) * dpi;
+	int atlasSize = (font_width * font_width) * 2; // *dpi;
 	atlasSize = int(cl::nearest_Pow(atlasSize));
 	FONT_LOG("Font Size %dx%d", atlasSize, atlasSize);
 
@@ -104,7 +104,8 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	ASSERT(error == 0, "Failed to load requested font.");
 
 	FT_F26Dot6 ftSize = (FT_F26Dot6)(m_FontToLoad->myFontHeightWidth * multiple_baseline);
-	error = FT_Set_Char_Size(face, ftSize, 0, dpi * multiple_baseline, 0); // 96 = 100% scaling in Windows. 
+	//error = FT_Set_Char_Size(face, ftSize, 0, dpi * multiple_baseline, 0); // 96 = 100% scaling in Windows. 
+	error = FT_Set_Pixel_Sizes(face, aSize, 0);
 	ASSERT(error == 0, "Failed to set pixel size!");
 
 	int atlasX = x_start;
@@ -160,6 +161,8 @@ void CFontManager::LoadGlyph(int index, int& pen_x, int& pen_y, int& maxY, FT_Fa
 	}
 
 	CalculateUV(glyphData, pen_x, pen_y);
+
+	slot->advance.x; //width???
 
 	glyphData.myAdvanceX = slot->metrics.horiAdvance / multiple_baseline;
 	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / multiple_baseline);

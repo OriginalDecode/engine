@@ -59,6 +59,7 @@ namespace graphics
 		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
 
 		void CreateDeviceAndSwapchain();
+		void CreateDepthStencil(s32 slot, const D3D11_DEPTH_STENCIL_DESC& desc, const std::string& debug_name);
 		void CreateDepthStencilStates();
 
 		void CreateDepthBuffer();

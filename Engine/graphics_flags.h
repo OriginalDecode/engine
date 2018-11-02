@@ -10,6 +10,7 @@ namespace graphics
 		READ_NO_WRITE,
 		READ_NO_WRITE_PARTICLE,
 		Z_EQUAL,
+		Z_READ_NO_WRITE,
 		NOF_DSS
 	};
 

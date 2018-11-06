@@ -218,6 +218,7 @@ void Renderer::Render()
 
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
+	m_RenderContext.GetContext().SetDepthState(graphics::Z_EQUAL, 1);
 	m_TerrainSystem->Draw();
 	
 	for (graphics::IRenderNode* node : m_RenderNodes)
@@ -276,12 +277,14 @@ void Renderer::DrawIBL()
 	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
-	m_DeferredRenderer->Draw();
 
 	m_Atmosphere.UpdateBuffer(m_RenderContext, m_Camera);
 	auto& ctx = m_RenderContext.GetContext();
-	ctx.SetDepthState(graphics::READ_NO_WRITE, 1);
+	ctx.SetDepthState(graphics::Z_DISABLED, 0);
 	m_Background->Render(true);
+	m_DeferredRenderer->Draw();
+
+
 }
 
 #if !defined(_PROFILE) && !defined(_FINAL)

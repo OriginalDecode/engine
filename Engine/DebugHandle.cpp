@@ -712,15 +712,7 @@ namespace debug
 			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
 			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
 			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage()); /* does not show individual cores */
-			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());/*
-			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
-			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
-			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
-			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
-			ImGui::Text("Sprite Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
-			ImGui::Text("Text Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
-			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());*/
-
+			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
 			ImGui::Separator();
 
 			std::stringstream camera_pos;
@@ -728,6 +720,10 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 			ImGui::Separator();
+
+
+			// ImGui::Checkbox("Wireframe Terrain", )
+
 
 			if (m_SelectedModel.m_Hash > 0)
 			{
@@ -997,4 +993,23 @@ namespace debug
 
 
 };
+
+// void DebugHandle::RegisterVariable(const char* lable, bool* boolean)
+// {
+// 	m_DebugVariables.push_back(DebugVariable(lable, boolean));
+// }
+
+// void DebugHandle::RegisterVariable(const char* lable, float* floating)
+// {
+	
+// }
+
+// void DebugHandle::RegisterVariable(const char* lable, int* integer)
+// {
+	
+// }
+
+
+
 #endif
+

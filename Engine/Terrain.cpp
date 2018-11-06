@@ -4,17 +4,6 @@
 #include <Engine/Effect.h>
 #define DIVIDE 255.f
 
-
-
-const char* GrayTile = "Data/Textures/GrayTile.dds";
-const char* Britannia = "Data/Textures/terrain/britannia.dds";
-const char* BritanniaNomrmal = "Data/Textures/terrain/brit_n.dds";
-const char* Flat = "Data/Textures/flat_height.dds";
-const char* Grass = "Data/Material/grass/grass1-albedo3.dds";
-
-#define ALBEDO GrayTile
-#define HEIGHTMAP Britannia
-
 void Terrain::SetupTextures()
 {
 	Engine::GetInstance()->LoadTexture(HEIGHTMAP);
@@ -25,7 +14,7 @@ void Terrain::SetupTextures()
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(ALBEDO), TextureSlot::REGISTER_0);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-rough.dds"), TextureSlot::ROUGHNESS);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), TextureSlot::REGISTER_7);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(BritanniaNomrmal), TextureSlot::NORMAL);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(BritanniaNormal), TextureSlot::NORMAL);
 
 	//m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
@@ -127,6 +116,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 	ctx.VSSetSamplerState(0, 1, graphics::POINT_CLAMP);
 	ctx.PSSetSamplerState(0, 1, graphics::POINT_CLAMP);
+	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 
 	ctx.DSSetSamplerState(0, 1, graphics::POINT_CLAMP);
 	ctx.DSSetSamplerState(1, 1, graphics::LINEAR_CLAMP);

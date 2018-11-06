@@ -84,7 +84,39 @@ namespace debug
 		void SetHoveredModel(HashType hash) { m_HoveredModel = hash; }
 		const HashType& GetModelHash() const { return m_SelectedModel; }
 		void SetTextureToDraw(Texture* tex) { m_TextureToDraw = tex; }
+
+
+
+		void RegisterVariable(const char* lable, bool* boolean);
+		void RegisterVariable(const char* lable, float* floating);
+		void RegisterVariable(const char* lable, int* integer);
+
 	private:
+
+		enum eVariableType
+		{
+			eBool,
+			eInteger,
+			eFloat,
+			nof_var_types
+		};
+
+	struct DebugVariable
+	{
+		DebugVariable(void* var, const char* lable)
+			: m_Variable(var)
+			, m_Lable(lable)
+		{
+		}
+
+		void* m_Variable = nullptr;
+		std::string m_Lable;
+	};
+
+
+		std::vector<DebugVariable> m_DebugVariables[nof_var_types];
+
+
 		Texture* m_TextureToDraw = nullptr;
 		void ConfirmModel();
 		HashType m_SelectedModel;

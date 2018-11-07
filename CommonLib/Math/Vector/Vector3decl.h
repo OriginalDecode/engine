@@ -6,7 +6,7 @@ namespace CommonUtilities
 	namespace Math
 	{
 		template<typename T>
-		//The alignment will change the size of the vector to 16 from 12, breaking the shaders.
+		//The alignment will change the size of the vector to 16 from 12, breaking the shaders. Shoul be aligned tho.
 		class /*__declspec(align(16))*/ Vector3
 		{
 		public:
@@ -28,20 +28,17 @@ namespace CommonUtilities
 			}
 
 			~Vector3();
-			T x;
-			T y;
-			T z;
 
-
-// 			template<typename T>
-// 			inline Vector3<T> operator-(const Vector3<T>& rhs)
-// 			{
-// 				return Vector3<T>((aFirstVector.x - aSecondVector.x),
-// 					(aFirstVector.y - aSecondVector.y),
-// 								  (aFirstVector.z - aSecondVector.z));
-// 			}
-
-
+			union
+			{
+				struct 
+				{
+					T x;
+					T y;
+					T z;
+				};
+				T vector[3];
+			};
 		} ;
 	};
 };

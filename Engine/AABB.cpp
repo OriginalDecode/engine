@@ -4,7 +4,7 @@
 
 namespace cl
 {
-	AABB::AABB(float width, float height, float depth, CU::Vector4f center)
+	AABB::AABB(float width, float height, float depth, CU::Vector3f center)
 		: m_Position(center)
 	{
 		m_MinSize.x = m_Position.x - width;
@@ -17,7 +17,6 @@ namespace cl
 
 
 	}
-
 
 	bool AABB::Intersect(const CU::Vector4f& position)
 	{

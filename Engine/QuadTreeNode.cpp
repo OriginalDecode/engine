@@ -6,7 +6,7 @@ QuadTreeNode::QuadTreeNode(float halfwidth, CU::Vector4f pos)
 	: m_Position(pos)
 	, m_HalfWidth(halfwidth)
 {
-	m_AABB = cl::AABB(halfwidth, halfwidth, halfwidth, pos);
+	m_AABB = cl::AABB(halfwidth, halfwidth, halfwidth, pos.AsVec3());
 
 	for (s32 i = 0; i < 4; i++)
 	{
@@ -20,7 +20,7 @@ QuadTreeNode::QuadTreeNode(float halfwidth, CU::Vector4f pos, s32 index)
 	, m_HalfWidth(halfwidth)
 	, m_Index(index)
 {
-	m_AABB = cl::AABB(halfwidth, halfwidth, halfwidth, pos);
+	m_AABB = cl::AABB(halfwidth, halfwidth, halfwidth, pos.AsVec3());
 
 	for (s32 i = 0; i < 4; i++)
 	{

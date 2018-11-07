@@ -45,23 +45,7 @@
 
 static float s_CamSpeed = 50.f;
 
-//#define LOAD_LEVEL
-#ifndef LOAD_LEVEL
-//#define SUNTEMPEL
-#ifdef SUNTEMPEL
-u64 building = 0;
-#else
-u64 building = 0;
-u64 pole = 0;
-u64 curtain = 0;
-#endif
-#endif
-HashType japMap;
-
-CU::GrowingArray<CU::Matrix44f> positions;
-
 static const char* camera_file = "camera_pos";
-
 void Game::InitState(StateStack* state_stack)
 {
 	CU::TimeManager timer;
@@ -88,57 +72,16 @@ void Game::Initiate(const std::string& level)
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
 	m_World.Initiate(CU::Vector3f(1024, 1024, 1024)); //Might be a v2 instead and a set y pos 
-
-	//m_Player = new Player;
-	//m_World.AddDweller(m_Player->Initiate());
-	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-
-#ifdef LOAD_LEVEL
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
-	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
-	m_World.AddDwellers(dwellers);
-#else
-
-#ifdef SUNTEMPEL
-	building = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
-#else
-	//curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
-	//building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
-	//pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
+	// CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 
 
-	//m_World.AddDwellers(dwellers); 
-
-
-
-#endif
-#endif
-	//HashType sun_temple = m_Engine->LoadModelA("Data/model/sun_temple/SunTemple/SunTemple.fbx", "Shaders/deferred_base.json", false);
-	//HashType sun_temple = m_Engine->LoadModelA("Data/exported/SunTemple.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false, ModelImportUtil::FLIP_NORMAL);
-	japMap = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	//Model* pModel = m_Engine->GetModelDirect(cl::Hash("data/exported/cube_100x100.LPMF"));
-	//Model* pModel = m_Engine->GetModelDirect(cl::Hash("data/exported/cube_100x100.LPMF"));
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 
-
-
-
-	/*ModelInstance instance;
-
-	instance.SetMaterialKey(cl::Hash("tree"));
-	instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap.m_Lower));
-	pNode->AddInstance(instance);
-*/
-
-
+	HashType hash = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
 	int tree_count = RANDOM(128, 255);
 	for (int i = 0; i < tree_count; ++i)
 	{
+		break;
 		float x = RANDOM(0.f, 1024.f);
 		float z = RANDOM(0.f, 1024.f);
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(int(x), int(z));
@@ -151,7 +94,7 @@ void Game::Initiate(const std::string& level)
 
 		instance.SetOrientation(orientation);
 		instance.SetMaterialKey(cl::Hash("tree"));
-		instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap.m_Lower));
+		instance.SetModel(Engine::GetInstance()->GetModelDirect(hash.m_Lower));
 		pNode->AddInstance(instance);
 
 	}
@@ -241,18 +184,6 @@ void Game::Reload()
 	m_Engine->GetEntityManager().Reset();
 }
 
-#include <engine/engine_shared.h>
-static float _lifetime = 0.f;
-static float _lifeTime2 = 0.f;
-static int _pointCount = 0;
-
-static bool second_curve = false;
-static bool done = false;
-static int _index = 0;
-static bool skip = true;
-
-CU::Vector3f _position;
-std::vector<CU::Vector3f> _pointList;
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();

@@ -123,27 +123,9 @@ bool test::Leaf::Draw(bool shadow)
 		}
 	}
 
-	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
-
-	CU::Vector3f pos0 = { m_AABB.m_Pos.x, 0, m_AABB.m_Pos.y };
-	pos0 += m_AABB.m_Halfwidth;
-
-	CU::Vector3f pos1 = { m_AABB.m_Pos.x, 0, m_AABB.m_Pos.y };
-	pos1 -= m_AABB.m_Halfwidth;
-
-	LinePoint p0, p1, p2, p3;
-	p0.position = CU::Vector4f(pos1.x, 0.0f, pos1.z, 1);
-	p1.position = CU::Vector4f(pos0.x, 0.0f, pos0.z, 1);
-	p2.position = CU::Vector4f(pos1.x, 0.0f, pos0.z, 1);
-	p3.position = CU::Vector4f(pos0.x, 0.0f, pos1.z, 1);
-
 	if (m_Terrain && !rendered)
 	{
 
-		//sync->AddRenderCommand(LineCommand(p0, p2, false));
-		//sync->AddRenderCommand(LineCommand(p2, p1, false));
-		//sync->AddRenderCommand(LineCommand(p1, p3, false));
-		//sync->AddRenderCommand(LineCommand(p3, p0, false));
 
 		m_Terrain->SetPosition(CU::Vector2f(m_AABB.m_Pos.x, m_AABB.m_Pos.y));
 
@@ -274,25 +256,27 @@ bool test::Leaf::Insert(Position pos)
 
 void test::QuadTree::Draw()
 {
+	Effect* terrain_shader = m_Root->m_Terrain->GetEffect();
 	if (!m_RenderDepth)
-		m_Root->m_Terrain->GetEffect()->Use();
+	{
+		terrain_shader->Use();
+	}
 	else
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			auto& ctx = Engine::GetInstance()->GetRenderer()->GetRenderContext().GetContext();
-			ctx.SetVertexShader(m_Shaders[0]);
-			ctx.SetDomainShader(m_Shaders[1]);
-			ctx.SetHullShader(m_Shaders[2]);
-			ctx.SetPixelShader(m_Shaders[3]);
-		}
+		auto& ctx = Engine::GetInstance()->GetRenderer()->GetRenderContext().GetContext();
+		ctx.SetVertexShader(m_Shaders[0]);
+		ctx.SetDomainShader(m_Shaders[1]);
+		ctx.SetHullShader(m_Shaders[2]);
+		ctx.SetPixelShader(m_Shaders[3]);
+		ctx.DSSetShaderResource(TextureSlot::REGISTER_7, 1, Engine::GetInstance()->GetTexture(HEIGHTMAP)->GetShaderViewRef());
 	}
 
 	m_Root->Render();
 
 	if(!m_RenderDepth)
-		m_Root->m_Terrain->GetEffect()->Clear();
-
+	{
+		terrain_shader->Clear();
+	}
 	m_RenderDepth = !m_RenderDepth;
 }
 
@@ -329,6 +313,9 @@ test::QuadTree::QuadTree()
 	m_Shaders[1] = engine->GetShader(ds);
 	m_Shaders[2] = engine->GetShader(hs);
 	m_Shaders[3] = engine->GetShader(frag);
+
+
+
 
 }
 

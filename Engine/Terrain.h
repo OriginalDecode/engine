@@ -3,6 +3,19 @@
 #include "ConstantBuffer.h"
 class Surface;
 
+
+namespace
+{
+	const char* GrayTile = "Data/Textures/GrayTile.dds";
+	const char* Britannia = "Data/Textures/terrain/britannia.dds";
+	const char* BritanniaNormal = "Data/Textures/terrain/brit_n.dds";
+	const char* Flat = "Data/Textures/flat_height.dds";
+	const char* Grass = "Data/Material/grass/grass1-albedo3.dds";
+};
+#define ALBEDO GrayTile
+#define HEIGHTMAP Britannia
+
+
 struct SHeightMap
 {
 	u32 myWidth;

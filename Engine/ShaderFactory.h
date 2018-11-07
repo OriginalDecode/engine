@@ -2,14 +2,11 @@
 
 #include <CommonLib/DataStructures/GrowingArray.h>
 #include <CommonLib/DataStructures/StaticArray.h>
+#include <Engine/IGraphicsAPI.h>
 
 #include "engine_shared.h"
 
 #include <map>
-#include <Engine/IGraphicsAPI.h>
-
-
-
 
 struct CompiledShader;
 class ShaderReload
@@ -17,13 +14,8 @@ class ShaderReload
 public:
 	ShaderReload() = default;
 	virtual ~ShaderReload() {};
-
-
 	virtual void Reload(CompiledShader* shader) = 0;
-
-protected:
 };
-
 
 class FileWatcher;
 class Effect;
@@ -44,13 +36,11 @@ struct CompiledShader
 
 	eShaderType m_Type;
 	std::string m_Entrypoint;
-
 #ifndef _FINAL
 	void RegisterReload(ShaderReload* reload)
 	{
 		m_Reloaders.Add(reload);
 	}
-
 	CU::GrowingArray<ShaderReload*> m_Reloaders; //used to rebuild shaders in runtime.
 #endif
 };
@@ -70,8 +60,6 @@ public:
 	IShaderBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type);
 
 	__declspec(noinline) CompiledShader* GetShader(u64 key) const;
-
-
 
 	u64 LoadShader(const std::string& filepath, const std::string& entrypoint);
 private:

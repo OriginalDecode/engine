@@ -141,17 +141,8 @@ private:
 
 
 	Texture* m_DebugTexture = nullptr;
-	Texture* m_HoverTexture = nullptr;
-	Texture* m_SelectedTexture = nullptr;
-	RefPointer<Model> m_HoverModel = nullptr;
-	RefPointer<Model> m_SelectedModel = nullptr;
-
-	Effect* m_RenderHoverEffect = nullptr;
-	Effect* m_SelectedEffect = nullptr;
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
-
-	void DrawModel(Texture* pTex, u32 selection);
 
 	bool m_CreateCubemaps = false;
 	Texture* m_Cubemap = nullptr;

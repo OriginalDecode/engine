@@ -117,28 +117,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 void Renderer::InitiateDebug()
 {
 #ifdef _DEBUG
-	WindowSize window_size;
-	window_size.m_Height = Engine::GetAPI()->GetInfo().m_WindowHeight;
-	window_size.m_Width = Engine::GetAPI()->GetInfo().m_WindowWidth;
-
-	TextureDesc desc;
-	desc.m_Width = window_size.m_Width;
-	desc.m_Height = window_size.m_Height;
-	desc.m_Usage = graphics::DEFAULT_USAGE;
-	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
-	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
-	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
-	m_HoverTexture = new Texture;
-	m_HoverTexture->Initiate(desc, "HoverTexture");
-	m_RenderHoverEffect = Engine::GetInstance()->GetEffect("Shaders/hover.json");
-	m_SelectedEffect = Engine::GetInstance()->GetEffect("Shaders/selected.json");
-	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
-	m_SelectedTexture = new Texture;
-	m_SelectedTexture->Initiate(desc, "SelectedTexture");
-
+	const graphics::CreateInfo& info = Engine::GetAPI()->GetInfo();
 	m_DebugTexture = new Texture;
-	m_DebugTexture->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
+	m_DebugTexture->InitiateAsRenderTarget(info.m_WindowWidth, info.m_WindowHeight, "diffuse, albedo");
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
@@ -164,8 +145,6 @@ Renderer::~Renderer()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugTexture);
 	SAFE_DELETE(m_DebugQuad);
-	SAFE_DELETE(m_HoverTexture);
-	SAFE_DELETE(m_SelectedTexture);
 #endif
 	SAFE_DELETE(m_Text);
 
@@ -226,12 +205,6 @@ void Renderer::Render()
 		node->Draw(m_RenderContext);
 	}
 
-
-#ifdef _DEBUG
-	WriteDebugTextures();
-	const u32 selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	//Draw(m_SelectedTexture, selected);
-#endif
 	DrawIBL();
 
 	m_RenderContext.GetAPI().SetDefaultTargets();
@@ -247,10 +220,6 @@ void Renderer::Render()
 		m_RenderContext.GetAPI().SetDefaultTargets();
 		m_DeferredRenderer->Finalize();
 	}
-
-#ifdef _DEBUG
-	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-#endif
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -288,36 +257,6 @@ void Renderer::DrawIBL()
 }
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-
-static CU::Matrix44f prev;
-static CU::Matrix44f orientation;
-
-void Renderer::DrawModel(Texture* pTex, u32 selection)
-{
-	if (selection <= 0)
-		return;
-
-	//auto& ctx = m_RenderContext.GetContext();
-	//ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
-	//ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
-	//Engine& engine = m_RenderContext.GetEngine();
-
-	//Model* pModel = Engine::GetInstance()->GetModelDirect(selection);
-
-
-	//prev = orientation;
-	//orientation = translation.GetOrientation();
-
-
-	//const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale)  * instance.m_Orientation;
-	////m_HoverModel = engine.GetModel<Model>(e);
-	//if (/*m_HoverModel.GetData()*/0)
-	//{
-	//	m_HoverModel->AddOrientation(relative * prev);
-	//	m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
-	//}
-}
-
 void Renderer::WriteDebugTextures()
 {
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");

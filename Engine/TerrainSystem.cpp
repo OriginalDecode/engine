@@ -35,22 +35,22 @@ static std::vector<u64> s_HashTerrain;
 TerrainSystem::TerrainSystem()
 {
 	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
-	int width = 512;
+	float width = 1024;
 	for (int i = 0; i < MAX_DEPTH; i++)
 	{
-		Terrain* terrain = new Terrain((float)width);
+		Terrain* terrain = new Terrain(width);
 		s_HashTerrain.push_back(cl::Hash(s_TerrainLevels[i]));
 		manager->AddTerrain(s_HashTerrain[i], terrain);
-		width /= 2;
+		width /= 2.f;
 	}
 	
 	s_RootTerrainHash = cl::Hash("2048");
-	manager->AddTerrain(s_RootTerrainHash, new Terrain(1024.f));
+	manager->AddTerrain(s_RootTerrainHash, new Terrain(2048.f));
 
 
 	test::Position pos;
-	pos.x = 512;
-	pos.y = 512;
+	pos.x = 1024;
+	pos.y = 1024;
 	m_Tree.Init(pos);
 
 
@@ -323,7 +323,7 @@ void test::QuadTree::Init(Position xy)
 {
 	m_Root = new Leaf;
 	m_Root->m_AABB.m_Pos = xy;
-	m_Root->m_AABB.m_Halfwidth = 1024.f / 2;
+	m_Root->m_AABB.m_Halfwidth = 1024.f;
 	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
 	Terrain* terrain = manager->GetTerrain(s_RootTerrainHash);
 	m_Root->m_Terrain = terrain;

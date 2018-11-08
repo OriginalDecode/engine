@@ -38,6 +38,8 @@ Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
 
 	m_Buffer.RegisterVariable(&m_Orientation);
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
+	m_HalfWidth = TERRAIN_HALFWIDTH;
+	m_Buffer.RegisterVariable(&m_HalfWidth);
 	m_Buffer.Initiate();
 
 	m_PixelBuffer.RegisterVariable(&m_Color);
@@ -58,7 +60,9 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color )
 	m_IsRoot = false;
 
 	m_Buffer.RegisterVariable(&m_Orientation);
-	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
+	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());	
+	m_HalfWidth = TERRAIN_HALFWIDTH;
+	m_Buffer.RegisterVariable(&m_HalfWidth);
 	m_Buffer.Initiate();
 
 	m_PixelBuffer.RegisterVariable(&m_Color);
@@ -81,11 +85,12 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
 	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), TextureSlot::DIFFUSE);
 
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Terrain ConstantBuffer");
-
-
+	// m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Terrain ConstantBuffer");
 	m_Buffer.RegisterVariable(&m_Orientation);
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
+
+	m_HalfWidth = TERRAIN_HALFWIDTH;
+	m_Buffer.RegisterVariable(&m_HalfWidth);
 	m_Buffer.Initiate();
 
 	m_HasLoaded = true;
@@ -109,7 +114,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	//ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetBlendState(graphics::BLEND_FALSE);
 
-	ctx.SetRasterState(graphics::WIREFRAME);
+	ctx.SetRasterState(draw_wireframe ? graphics::WIREFRAME : graphics::CULL_BACK);
 
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
 	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);

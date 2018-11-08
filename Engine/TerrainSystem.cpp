@@ -13,44 +13,34 @@
 #include <Engine/IGraphicsContext.h>
 
 #include "TGA32.h"
+constexpr int MAX_DEPTH = 4;
 
-#define MAX_DEPTH 4
 
 static u64 s_RootTerrainHash = 0;
-static const char* s_TerrainLevels[] = {
-	"1024",
-	"512",
-	"256",
-	"128",
-	"64",
-	"32",
-	"16",
-	"8",
-	"4",
-	"2"
-};
-
 static std::vector<u64> s_HashTerrain;
 
 TerrainSystem::TerrainSystem()
 {
 	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
-	float width = 1024;
+	float width = TERRAIN_HALFWIDTH;
 	for (int i = 0; i < MAX_DEPTH; i++)
 	{
+		char temp[255];
+		sprintf_s(temp, "%.0f", width);
+
 		Terrain* terrain = new Terrain(width);
-		s_HashTerrain.push_back(cl::Hash(s_TerrainLevels[i]));
+		s_HashTerrain.push_back(cl::Hash(temp));
 		manager->AddTerrain(s_HashTerrain[i], terrain);
 		width /= 2.f;
 	}
 	
 	s_RootTerrainHash = cl::Hash("2048");
-	manager->AddTerrain(s_RootTerrainHash, new Terrain(2048.f));
+	manager->AddTerrain(s_RootTerrainHash, new Terrain(TERRAIN_HALFWIDTH*2));
 
 
 	test::Position pos;
-	pos.x = 1024;
-	pos.y = 1024;
+	pos.x = TERRAIN_HALFWIDTH;
+	pos.y = TERRAIN_HALFWIDTH;
 	m_Tree.Init(pos);
 
 
@@ -88,27 +78,17 @@ void TerrainSystem::Draw()
 
 float TerrainSystem::GetHeight(int x, int y)
 {
-	float yScale = 128.f / 255.f;
-	yScale *= 0.2f;
-	return m_Heightmap.myData[(m_Heightmap.myDepth - (1 + y)) * m_Heightmap.myWidth + x] *yScale;
-
-	//int pos = static_cast<int>(x * y);
-	//float height = m_Heightmap.myData[pos];
-	//return height;
+	return m_Heightmap.myData[y * x];
 }
 
 void test::Leaf::Render()
 {
-
 	Draw(false);
-	//Draw([&](Terrain* terrain) { terrain ? terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext()) : 0; });
 }
 
 void test::Leaf::DrawShadow()
 {
 	Draw(true);
-	//Draw([&](Terrain* terrain) { terrain ? terrain->ShadowRender(Engine::GetInstance()->GetRenderer()->GetRenderContext()) : 0; });
-
 }
 
 bool test::Leaf::Draw(bool shadow)
@@ -125,15 +105,12 @@ bool test::Leaf::Draw(bool shadow)
 
 	if (m_Terrain && !rendered)
 	{
-
-
 		m_Terrain->SetPosition(CU::Vector2f(m_AABB.m_Pos.x, m_AABB.m_Pos.y));
 
 		if (shadow)
 			m_Terrain->ShadowRender(Engine::GetInstance()->GetRenderer()->GetRenderContext());
 		else
 			m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
-		
 		return true;
 	}
 
@@ -323,7 +300,7 @@ void test::QuadTree::Init(Position xy)
 {
 	m_Root = new Leaf;
 	m_Root->m_AABB.m_Pos = xy;
-	m_Root->m_AABB.m_Halfwidth = 1024.f;
+	m_Root->m_AABB.m_Halfwidth = TERRAIN_HALFWIDTH;
 	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
 	Terrain* terrain = manager->GetTerrain(s_RootTerrainHash);
 	m_Root->m_Terrain = terrain;

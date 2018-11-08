@@ -207,6 +207,10 @@ void Renderer::Render()
 
 	DrawIBL();
 
+#ifdef _DEBUG
+	WriteDebugTextures();
+#endif
+
 	m_RenderContext.GetAPI().SetDefaultTargets();
 	m_DeferredRenderer->Finalize();
 

@@ -5,7 +5,6 @@ class Terrain;
 
 namespace test
 {
-
 	struct Position
 	{
 		float x, y;

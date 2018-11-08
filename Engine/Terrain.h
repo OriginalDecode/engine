@@ -3,7 +3,7 @@
 #include "ConstantBuffer.h"
 
 class Surface;
-
+constexpr float TERRAIN_HALFWIDTH = 512.f;
 
 namespace
 {
@@ -62,15 +62,16 @@ public:
 	void SetPosition(const CU::Vector4f& v) override { m_Orientation.SetPosition(v); }
 
 	Effect* GetEffect() { return m_Effect; }
+	bool draw_wireframe = false;
 private:
 
-
+	float m_HalfWidth = 0.f;
 	void SetupTextures();
 
 	void AddSurface(Surface* p) override { delete p; p = nullptr; }
 
 	bool m_HasLoaded = false;
-	void UpdateConstantBuffer(const graphics::RenderContext& rc) { };
+	void UpdateConstantBuffer(const graphics::RenderContext&) { };
 
 	void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
 	void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);

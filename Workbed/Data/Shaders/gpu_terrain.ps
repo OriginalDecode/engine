@@ -62,7 +62,11 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 {
 	GBuffer output = (GBuffer)0;
 
-	float4 _color = float4(lerp(float3(0,0,0), float3(1,1,1), input.worldpos.y / 255), 1);
+	float height_col =  input.worldpos.y;
+	float4 _color = height_col.xxxx;
+
+
+	// float4 _color = float4(lerp(float3(0,0,0), float3(1,1,1), input.worldpos.y / 255), 1);
 
 
 	// float3 _normal = NormalTexture.Sample(sampler0, input.worlduv).rgb * 2 - 1; //input.normal * 2 - 1; //float3(0,1,0);
@@ -77,7 +81,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 
 
 	// output.Albedo = AlbedoTexture.SampleLevel(sampler0, input.worlduv * 128 , 0);// * _color;// float4(color, 1); //float4(color, 1); 
-	output.m_Albedo = AlbedoTexture.Sample(sampler0, input.worlduv * 128); 
+	output.m_Albedo = _color; //AlbedoTexture.Sample(sampler0, input.worlduv * 128); 
 	output.m_Albedo = pow(output.m_Albedo, 2.2);
 	output.m_Albedo.a = 0;
 

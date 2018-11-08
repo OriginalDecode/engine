@@ -7,6 +7,7 @@ cbuffer Matrices : register(b1)
 {
 	row_major float4x4 orientation;
 	row_major float4x4 camera;
+	float4 dummy;
 };
 
 struct VS_INPUT

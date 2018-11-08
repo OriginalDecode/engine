@@ -81,14 +81,13 @@ void Game::Initiate(const std::string& level)
 	int tree_count = RANDOM(128, 255);
 	for (int i = 0; i < tree_count; ++i)
 	{
-		break;
 		float x = RANDOM(0.f, 1024.f);
 		float z = RANDOM(0.f, 1024.f);
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(int(x), int(z));
 
 		CU::Matrix44f orientation;
 		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
-		orientation.SetTranslation({ x, 0, z, 1.f });
+		orientation.SetTranslation({ x , y , z  , 1.f });
 
 		ModelInstance instance;
 

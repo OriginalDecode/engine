@@ -81,6 +81,7 @@ void Game::Initiate(const std::string& level)
 	int tree_count = RANDOM(128, 255);
 	for (int i = 0; i < tree_count; ++i)
 	{
+		break;
 		float x = RANDOM(0.f, 1024.f);
 		float z = RANDOM(0.f, 1024.f);
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(int(x), int(z));
@@ -219,24 +220,6 @@ void Game::OldUpdate(float dt)
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 
-//#ifdef _DEBUG
-//	if (!input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnClick(MouseInput::RIGHT))
-//	{
-//		const CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-//		CU::Vector3f intersection = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir, 1000.f);
-//		p1.position = intersection;
-//
-//		pEventHandle->SendMessage(DebugEvents_OnRightClick, &intersection);
-//	}
-//	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::C))
-//		pEventHandle->SendMessage("copy_selected");
-//
-//	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::V))
-//		pEventHandle->SendMessage("paste_new");
-//	s_CamSpeed = debug::DebugHandle::GetInstance()->m_CameraSpeed;
-//#endif
-
-
 	ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
 	const ControllerState& input_state = input->GetState();
 	m_Camera->Update(input->GetState());
@@ -289,7 +272,12 @@ void Game::OldUpdate(float dt)
 		m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
 
-	
+	if(input_wrapper->IsDown(KButton::LSHIFT) && input_wrapper->OnDown(KButton::D))
+	{
+		m_StateStack->PushState(&m_DebugState, StateStack::SUB);
+	}
+
+
 	float mul = 1.f;
 
 	if (input_wrapper->IsDown(KButton::LCTRL))

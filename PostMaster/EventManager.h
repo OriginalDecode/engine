@@ -43,6 +43,9 @@ public:
 	void UnSubscribe(Subscriber* aSubscriber);
 	bool IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber);
 
+	static void Send(const u64& event, void* data);
+	static void Send(const char* event, void* data);
+
 	template<typename T>
 	void SendMessage(const T& aMessage);
 

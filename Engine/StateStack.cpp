@@ -36,7 +36,7 @@ void StateStack::PushState(State* game_state, eGameState game_state_type)
 {
 	if ( game_state_type == MAIN )
 	{
-		m_GameStates.Add(SubStateContainer(16));
+		m_GameStates.Add(SubStateContainer(4));
 		m_MainIndex = m_GameStates.Size() - 1; //what happens at size 0? state -1?
 		m_GameStates[m_MainIndex].Add(game_state);
 		State* state = m_GameStates[m_MainIndex].GetLast();
@@ -45,8 +45,7 @@ void StateStack::PushState(State* game_state, eGameState game_state_type)
 	else if ( game_state_type == SUB )
 	{
 		m_GameStates[m_MainIndex].Add(game_state);
-		State* state = m_GameStates[m_MainIndex][m_SubIndex];
-		state->InitState(this);
+		game_state->InitState(this);
 		m_SubIndex = m_GameStates[m_MainIndex].Size() - 1;
 	}
 }

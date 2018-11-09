@@ -1,12 +1,4 @@
 Engine Tasks:
-  <https://www.shadertoy.com/view/4sXcRS>
-  <https://www.gamedev.net/topic/686513-oneil-atmospheric-scattering/?hl=%2Batmosphere#entry5334595>
-  <https://www.gamedev.net/topic/602369-strange-issue-with-sean-oneils-atmospheric-scattering-ground/?hl=%2Batomspheric+%2Bscattering>
-  <https://github.com/wwwtyro/glsl-atmosphere/blob/master/example/index.js>
-  <https://www.shadertoy.com/view/lslXDr>
-  <http://developer.amd.com/wordpress/media/2012/10/GDC_02_HoffmanPreetham.pdf>
-  <http://mathworld.wolfram.com/TrigonometricPowerFormulas.html>
-  <http://http.download.nvidia.com/developer/GPU_Gems_2/CD/Index.html> //Demos
   Level / World:
     ✔ Quadtree / Octree @done (17-01-29 23:57)
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
@@ -16,7 +8,7 @@ Engine Tasks:
   Entities:
     ☐ Create and edit entities in engine. @low
     ☐ Standardize rotations in engine @high
-    ☐ Flag lights that should be able to cast shadows. @low
+    ☐ Flag lights that should be able to cast shadows. @low --This should be in the gameobject / entity not the light
     ✔ OBB click collision on entities @done (17-01-22 00:59)
       ✔ Add box around entity @done (17-01-18 21:05)
       ✘ Use physics for OBB click collision on entities @cancelled (17-01-18 18:43)
@@ -40,13 +32,11 @@ Engine Tasks:
     ☐ Emitter System
     ☐ Particles using a mesh
   Network:
-    <http://stackoverflow.com/questions/366257/everything-a-c-developer-should-know-about-network-programming/>
-    <https://developers.google.com/protocol-buffers/docs/cpptutorial>
     ☐ Add the network API to the engine and make the engine able to run without Graphics.
     ☐ NetworkComponent for Entities should be setting positions of the other entities.
     ☐ The level / world needs/Should be verified by the server with some kind of hash 
        (network_version + map_name) or something like that
-    ☐ FlatBuffers <https://google.github.io/flatbuffers/>
+    ☐ FlatBuffers 
     ☐ Handshake message
       ☐ Check MTU size of Client
     ☐ Reliability filter
@@ -56,59 +46,57 @@ Engine Tasks:
          ☐ Send a buffer of work to the shader
          ☐ read the data on the CPU
     Hull Shaders:
-      ☐ Implement
+      ✔ Implement @done (11/9/2018, 8:38:48 AM)
+      ☐ Improve and understand
     Domain Shaders:
-      ☐ Implement
+      ✔ Implement @done (11/9/2018, 8:38:47 AM)
+      ☐ Improve and understand
   Rendering:
     Resources
-    <https://github.com/Basez/Agnostik-Engine/>
     ☐ Abstract
-      ☐ All the calls should go through the interface and not through the API.  
+      ✔ All the calls should go through the interface and not through the API. @done (11/9/2018, 8:38:44 AM)
       ☐ Remove GetAPI()
     ☐ Resize Message 
     ☐ Finish the current render frame before initiating / removing a main/sub state.
     ☐ Add Vulkan to regular build instead of having its separate build
     ☐ Check if the compile platform is windows for DirectX
-    ☐ Soft Shadows
-    ✘ Separate light pass to its own texture @cancelled (17-02-20 13:15)
-    ☐ Move directional light to its own shader pass & not when the ambient runs.
+    ☐ Soft Shadows @started
+    ✘ Separate light pass to its own texture @cancelled (17-02-20 13:15) Rendering light to its own texture is a bad idea
+    ✘ Move directional light to its own shader pass & not when the ambient runs. @cancelled (11/9/2018, 8:38:12 AM)
     Postprocessing:
       ☐ HDR @started
-        ☐ Tonemapping
+        ✔ Tonemapping @done (11/9/2018, 8:37:51 AM)
         ☐ Good fade between dark and bright areas.
         ☐ Artist / Designer controlled exposure boxes
       ☐ Bloom
       ☐ Motion Blur
-      ☐ Color Correction
-      ☐ Contrast
-      ☐ Saturate
+      ✔ Color Correction @done (11/9/2018, 8:37:41 AM)
+      ✔ Contrast @done (11/9/2018, 8:37:45 AM)
+      ✔ Saturate @done (11/9/2018, 8:37:45 AM)
       ☐ Depth of Field
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
-    ☐ Debug State?
+    ☐ Debug State, this can be added as a layer ontop of what we already have. Substate.
     ☐ Keep Rendering through the state, copy current render buffer and just add new commands to it?
   Memory:
-    ☐ Investigate Memory Allocators 
-      This task will never really be done.
-    ☐ Implement custom memory allocators @high 
-      ☐ Linear Allocator
-      ✔ Command Allocator @done (2017-06-26 14:31:21)
-        This is an allocator used to place RenderCommands in, so that it is simpler to use different types of RenderCommands 
-
-    ☐ Rewrite the CommonLib containers 
   Physics:
     ☐ Physics Bodies
       ☐ Mesh
       ☐ Cube
       ☐ Sphere
-    ☐ ASync? Calculations on GPU?
+      ☐ Convex / Concave
+    ☐ Deferr physics to the GPU and when I need something I will query the result and request it for the next frame.
   Terrain:
-    ☐ Merge the render & physics body into one object
-      ☐ Placeholder
+    ☐ Merge the render & physics body into one object -> this is for saving it to disk and not generating the physics world everytime
+    ☐ Solve the mystery of fetching height position from the height map.
+    ☐ Continue investigation into tesellation
+      ☐ Tesellate more on slopes, less on flat lands.
+      ☐ Splatmapping
+      ☐ Volumetric Terrain @low
+      ☐ 
   Multi-Threading:
-    <https://msdn.microsoft.com/en-us/library/windows/desktop/ms682516(v=vs.85).aspx>
     ☐ Investigate fiber
-    ☐ Investigate possible performance gains (not that I need them right now) from internally threading physics
+    ☐ Investigate possible performance gains from internally threading physics
     ☐ Investigate grouping up vertex buffers & index buffers
       ☐ CommandBuffers / RenderCommands
       ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call. 
@@ -121,6 +109,47 @@ CommonLib:
         ☐ Convert quaternion rotation into matrix
         ☐ Convert matrix rotation into quaternion
   Containers:
-    ☐ GrowingArray might be broke
-    ☐ Rewrite with the use of custom allocators
+    ☐ Rewrite the CommonLib containers 
+      ☐ GrowingArray
+      ☐ StaticArray
+      ☐ HashMap
+        ☐ Look at the FlatHashMap from 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  <https://www.shadertoy.com/view/4sXcRS>
+  <https://www.gamedev.net/topic/686513-oneil-atmospheric-scattering/?hl=%2Batmosphere#entry5334595>
+  <https://www.gamedev.net/topic/602369-strange-issue-with-sean-oneils-atmospheric-scattering-ground/?hl=%2Batomspheric+%2Bscattering>
+  <https://github.com/wwwtyro/glsl-atmosphere/blob/master/example/index.js>
+  <https://www.shadertoy.com/view/lslXDr>
+  <http://developer.amd.com/wordpress/media/2012/10/GDC_02_HoffmanPreetham.pdf>
+  <http://mathworld.wolfram.com/TrigonometricPowerFormulas.html>
+  <http://http.download.nvidia.com/developer/GPU_Gems_2/CD/Index.html> //Demos
+  <http://stackoverflow.com/questions/366257/everything-a-c-developer-should-know-about-network-programming/>
+  <https://developers.google.com/protocol-buffers/docs/cpptutorial>
+  <https://google.github.io/flatbuffers/>
+  <https://github.com/Basez/Agnostik-Engine/>
+  <https://msdn.microsoft.com/en-us/library/windows/desktop/ms682516(v=vs.85).aspx>
+  <https://probablydance.com/2017/02/26/i-wrote-the-fastest-hashtable/>

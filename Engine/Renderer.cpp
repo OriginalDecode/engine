@@ -228,6 +228,7 @@ void Renderer::Render()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 
+
 	ImGui::Render();
 	if (m_CreateCubemaps)
 	{

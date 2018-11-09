@@ -24,7 +24,8 @@ namespace CommonUtilities
 		inline ObjectType& operator[](const SizeType& aIndex);
 		inline const ObjectType& operator[](const SizeType& aIndex) const;
 
-		inline void Add(const ObjectType& aObject);
+		//inline void Add(const ObjectType& aObject);
+		ObjectType& Add(const ObjectType& object);
 
 		inline void Insert(SizeType aIndex, ObjectType& aObject);
 		inline void DeleteCyclic(ObjectType& aObject);
@@ -200,10 +201,24 @@ namespace CommonUtilities
 		return myData[aIndex];
 	};
 
+	//template<typename ObjectType, typename SizeType>
+	//inline void GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
+	//{
+	//	ASSERT(myCapacity > 0 , "Capacity is 0 or less");
+	//	assert(this && "Growingarray not initilized. Failed to add");
+	//	assert(myData && "Data is broken, not inited!");
+	//	if (mySize >= myCapacity)
+	//	{
+	//		Resize(myCapacity * 2);
+	//	}
+	//	myData[mySize] = aObject;
+	//	mySize++;
+	//};
+
 	template<typename ObjectType, typename SizeType>
-	inline void GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
+	ObjectType& GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
 	{
-		ASSERT(myCapacity > 0 , "Capacity is 0 or less");
+		ASSERT(myCapacity > 0, "Capacity is 0 or less");
 		assert(this && "Growingarray not initilized. Failed to add");
 		assert(myData && "Data is broken, not inited!");
 		if (mySize >= myCapacity)
@@ -212,7 +227,11 @@ namespace CommonUtilities
 		}
 		myData[mySize] = aObject;
 		mySize++;
+
+		return myData[mySize - 1];
+
 	};
+
 
 	template<typename ObjectType, typename SizeType>
 	inline void GrowingArray<ObjectType, SizeType>::Insert(SizeType aIndex, ObjectType& aObject)

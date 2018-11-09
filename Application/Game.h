@@ -6,6 +6,7 @@
 #include "../EntitySystem/TranslationComponent.h"
 #include "PauseState.h"
 #include <PostMaster/Subscriber.h>
+#include "DebugState.h"
 class Synchronizer;
 class Engine;
 class CMousePicker;
@@ -20,25 +21,26 @@ class Game : public State, public Subscriber
 public:
 	Game() = default;
 
+
 	void InitState(StateStack* state_stack) override;
 	void EndState() override;
+	void Render(bool render_through) override;
+	void Update(float aDeltaTime) override;
 
 	void HandleEvent(u64 event, void* data) override;
 
 	void Initiate(const std::string& level);
 
-	void Update(float aDeltaTime) override;
 
 
 	void OldUpdate(float dt);
 
 	void HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt);
 
-	void Render(bool render_through) override;
 
 
 private:
-
+	DebugState m_DebugState;
 	void SaveCameraPosition();
 
 	void Reload();

@@ -181,6 +181,8 @@ namespace debug
 		mgr->Subscribe("copy_selected", this);
 		mgr->Subscribe("paste_new", this);
 		mgr->Subscribe("left_click", this);
+		mgr->Subscribe("Debug_State_Active", this);
+		mgr->Subscribe("Debug_State_Deactive", this);
 		m_RegisteredSampleTextures.Init(32);
 
 		ImGui::StyleColorsDark();
@@ -376,6 +378,8 @@ namespace debug
 	static char level_name[250];
 	void DebugHandle::Update()
 	{
+		if(!m_IsActive)
+			return;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 		if (ImGui::Begin("Window"))
@@ -665,6 +669,15 @@ namespace debug
 		{
 			ConfirmModel();
 		}
+		else if(event == cl::Hash("Debug_State_Active"))
+		{
+			m_IsActive = true;
+		}
+		else if(event == cl::Hash("Debug_State_Deactive"))
+		{
+			m_IsActive = false;
+		}
+		
 	}
 
 	void DebugHandle::AddLUT(const char* lable, Texture* tex)

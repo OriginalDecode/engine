@@ -91,8 +91,10 @@ namespace debug
 		void RegisterVariable(const char* lable, float* floating);
 		void RegisterVariable(const char* lable, int* integer);
 
+		
+		bool IsActive() const { return m_IsActive; }
 	private:
-
+		bool m_IsActive = false;
 		enum eVariableType
 		{
 			eBool,

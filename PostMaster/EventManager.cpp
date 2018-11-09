@@ -217,3 +217,14 @@ void EventManager::SendMessage(const char* event)
 {
 	SendMessage(event, nullptr);
 }
+
+
+void EventManager::Send(const u64& event, void* data)
+{
+	myInstance->SendMessage(event, data);
+}
+
+void EventManager::Send(const char* event, void* data)
+{
+	myInstance->SendMessage(event, data);
+}

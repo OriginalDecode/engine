@@ -339,32 +339,32 @@ void Camera::Move(eDirection aDirection, float acceleration)
 	{
 	case eDirection::FORWARD:
 		Move(position, m_Rotation.GetForward(), acceleration);
-		m_Direction += m_Rotation.GetForward().AsVec3();
+		m_Direction += cl::AsVector3(m_Rotation.GetForward());
 		break;
 	case eDirection::BACK:
 		Move(position, m_Rotation.GetForward(), acceleration);
-		m_Direction -= m_Rotation.GetForward().AsVec3();
+		m_Direction -= cl::AsVector3(m_Rotation.GetForward());
 		break;
 	case eDirection::UP:
 		Move(position, m_Rotation.GetUp(), acceleration);
-		m_Direction += m_Rotation.GetUp().AsVec3();
+		m_Direction += cl::AsVector3(m_Rotation.GetUp());
 		break;
 	case eDirection::DOWN:
 		Move(position, m_Rotation.GetUp(), acceleration);
-		m_Direction -= m_Rotation.GetUp().AsVec3();
+		m_Direction -= cl::AsVector3(m_Rotation.GetUp());
 		break;
 	case eDirection::RIGHT:
 		Move(position, m_Rotation.GetRight(), acceleration);
-		m_Direction += m_Rotation.GetRight().AsVec3();
+		m_Direction += cl::AsVector3(m_Rotation.GetRight());
 		break;
 	case eDirection::LEFT:
 		Move(position, m_Rotation.GetRight(), acceleration);
-		m_Direction -= m_Rotation.GetRight().AsVec3();
+		m_Direction -= cl::AsVector3(m_Rotation.GetRight());
 		break;
 	}
 	CU::Math::Normalize(m_Direction);
 	
-	m_TargetPosition = position.AsVec3() + (m_Direction * 10.f);
+	m_TargetPosition = cl::AsVector3(position) + (m_Direction * 10.f);
 	m_Orientation.SetTranslation(position);
 }
 

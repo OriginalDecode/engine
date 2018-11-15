@@ -10,6 +10,15 @@
 #include "../standard_datatype.hpp"
 namespace cl
 {
+	template<typename T>
+	CU::Math::Vector3<T> AsVector3(const CU::Math::Vector4<T>& rhs)
+	{
+		return CU::Math::Vector3<T>(rhs.x, rhs.y, rhs.z);
+	}
+	
+
+
+	
 	bool file_exist(std::string path);
 
 	unsigned long long nearest_Pow(unsigned long long aNum);

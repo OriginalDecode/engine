@@ -284,6 +284,17 @@ int Renderer::RegisterLight()
 	return (m_Spotlights.Size() - 1);
 }
 
+graphics::IRenderNode* Renderer::GetNode(u64 type)
+{
+	for (graphics::IRenderNode* node : m_RenderNodes)
+	{
+		if (node->GetType() == type)
+		{
+			return node;
+		}
+	}
+	return nullptr;
+}
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "DX11Device.h"
@@ -294,7 +305,6 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 {
 	delete m_Cubemap;
 	m_Cubemap = nullptr;
-
 
 	Engine* engine = Engine::GetInstance();
 	graphics::IGraphicsAPI* api = Engine::GetAPI();
@@ -444,15 +454,3 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 
 #endif
-
-graphics::IRenderNode* Renderer::GetNode(u64 type)
-{
-	for (graphics::IRenderNode* node : m_RenderNodes)
-	{
-		if (node->GetType() == type)
-		{
-			return node;
-		}
-	}
-	return nullptr;
-}

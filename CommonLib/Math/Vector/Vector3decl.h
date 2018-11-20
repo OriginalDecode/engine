@@ -11,13 +11,25 @@ namespace CommonUtilities
 		{
 		public:
 			
-			Vector3(T anX = 0, T anY = 0, T anZ = 0);
-			Vector3(const Vector2<T>& aVector, T aZ = 0);
-			Vector3(const Vector3<T>& vector)
+			Vector3(T X = 0, T Y = 0, T Z = 0)
+				: x(X)
+				, y(Y)
+				, z(Z)
 			{
-				x = vector.x;
-				y = vector.y;
-				z = vector.z;
+			}
+
+			Vector3(const Vector2<T>& vec, T Z = 0)
+				: x(vec.x)
+				, y(vec.y)
+				, z(Z)
+			{
+			}
+
+			Vector3(const Vector3<T>& vector)
+				: x(vector.x)
+				, y(vector.y)
+				, z(vector.z)
+			{
 			}
 
 			Vector3(T in[3])
@@ -27,7 +39,7 @@ namespace CommonUtilities
 			{
 			}
 
-			~Vector3();
+			~Vector3() { }
 
 			union
 			{

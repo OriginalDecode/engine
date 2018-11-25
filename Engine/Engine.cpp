@@ -128,7 +128,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	AssetFactory::Create();
 	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
-	Randomizer::Create();
 	m_CurrentSampler = graphics::MSAA_x16;
 
 
@@ -185,10 +184,7 @@ bool Engine::CleanUp()
 	m_NetManager->CleanUp();
 	SAFE_DELETE(m_NetManager);
 
-	m_InputHandle->CleanUp();
 	SAFE_DELETE(m_InputHandle);
-	if (m_InputHandle)
-		return false;
 
 	m_Threadpool.CleanUp();
 
@@ -208,7 +204,6 @@ bool Engine::CleanUp()
 	SAFE_DELETE(m_Synchronizer);
 	SAFE_DELETE(m_API);
 	EventManager::Destroy();
-	Randomizer::Destroy();
 	return true;
 }
 

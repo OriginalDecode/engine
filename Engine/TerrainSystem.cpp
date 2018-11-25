@@ -214,7 +214,7 @@ bool test::Leaf::Insert(Position pos)
 	if (!this)
 		return false;
 
-	if (!m_AABB.Intersect(pos, 64.f))
+	if (!m_AABB.Intersect(pos, 2048.f))
 		return false;
 
 	if (m_Depth >= MAX_DEPTH)
@@ -270,7 +270,7 @@ void test::QuadTree::Update(float x, float y)
 	pos.y = y;
 
 	m_Root->Reset();
-	if (m_Root->m_AABB.Intersect(pos, 64.f))
+	if (m_Root->m_AABB.Intersect(pos, 2048.f))
 		m_Root->Insert(pos);
 
 }
@@ -290,10 +290,6 @@ test::QuadTree::QuadTree()
 	m_Shaders[1] = engine->GetShader(ds);
 	m_Shaders[2] = engine->GetShader(hs);
 	m_Shaders[3] = engine->GetShader(frag);
-
-
-
-
 }
 
 void test::QuadTree::Init(Position xy)

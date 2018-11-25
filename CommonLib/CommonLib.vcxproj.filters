@@ -135,7 +135,6 @@
     <ClInclude Include="Math\Line\Line.h">
       <Filter>Math\Line</Filter>
     </ClInclude>
-    <ClInclude Include="reflector.h" />
     <ClInclude Include="XML\XMLReader.h" />
     <ClInclude Include="RefPointer.h" />
     <ClInclude Include="ReferenceCounter.h" />
@@ -160,16 +159,12 @@
     <ClCompile Include="FileWatcher.cpp">
       <Filter>FileWatcher</Filter>
     </ClCompile>
-    <ClCompile Include="Randomizer.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
       <Filter>DataStructures\Hashmap</Filter>
     </ClCompile>
-    <ClCompile Include="reflector.cpp" />
     <ClCompile Include="XML\XMLReader.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
     <ClCompile Include="XML\tinyxml2.cpp" />

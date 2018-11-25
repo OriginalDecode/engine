@@ -45,7 +45,7 @@ TGA32::Image* TGA32::Load(const char* aName)
 
 		FlipImageData(header, source, destination);
 
-		delete[](buffer);
+		delete[] buffer;
 
 		myImage->myBitDepth = 32;
 		return(myImage);

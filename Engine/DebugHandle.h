@@ -94,7 +94,7 @@ namespace debug
 		
 		bool IsActive() const { return m_IsActive; }
 	private:
-		bool m_IsActive = false;
+		bool m_IsActive = true;
 		enum eVariableType
 		{
 			eBool,

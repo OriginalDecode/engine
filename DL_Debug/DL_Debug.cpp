@@ -104,6 +104,10 @@ namespace DL_Debug
 		mbstowcs_s(&tempSize, wa, size, sstream.str().c_str(), size);
 
 		_wassert(wa, _CRT_WIDE(__FILE__), __LINE__);
+
+		delete[] wa;
+		wa = nullptr;
+
 	}
 
 	void Debug::DebugMessage(const int aLine, const char *aFileName, const std::string& aString)

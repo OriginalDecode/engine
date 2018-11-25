@@ -4,6 +4,15 @@
 #include "ControllerInput.h"
 #include "InputWrapper.h"
 
+InputHandle::~InputHandle()
+{
+	for (ControllerInput* c : m_Controller)
+	{
+		SAFE_DELETE(c);
+	}
+	SAFE_DELETE(m_Input);
+}
+
 bool InputHandle::Initiate(HWND window_handle, HINSTANCE window_instance)
 {
 
@@ -16,8 +25,10 @@ bool InputHandle::Initiate(HWND window_handle, HINSTANCE window_instance)
 		return false;
 
 	if (!m_Input->Initiate(window_handle, window_instance))
+	{
+		SAFE_DELETE(m_Input);
 		return false;
-	
+	}
 	return true;
 }
 
@@ -31,15 +42,6 @@ void InputHandle::AddController(u16 controller_id)
 #endif
 	m_Controller[m_ControllerID++] = new ControllerInput(controller_id);
 	ASSERT(m_Controller[controller_id], "Failed to create a controller!");
-}
-
-void InputHandle::CleanUp()
-{
-	for (ControllerInput* c : m_Controller)
-	{
-		delete c;
-	}
-	delete m_Input;
 }
 
 void InputHandle::Update(float dt)

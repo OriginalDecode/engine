@@ -4,9 +4,6 @@
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsAPI.h>
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-#include <CommonLib/reflector.h>
-#endif
 namespace graphics
 {
 

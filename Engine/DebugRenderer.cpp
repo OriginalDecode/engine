@@ -75,10 +75,13 @@ void DebugRenderer::DrawCone(CU::Matrix44f orientation, const CU::Vector4f color
 	_180deg.position = _180deg.position * orientation;
 	_270deg.position = _270deg.position * orientation;
 
+
+
+	//render commands are no longer used!
 	sync->AddRenderCommand(LineCommand(origo, _0deg, true));
 	sync->AddRenderCommand(LineCommand(origo, _90deg, true));
 	sync->AddRenderCommand(LineCommand(origo, _180deg, true));
-	sync->AddRenderCommand(LineCommand(origo, _270deg, true));
+	sync->AddRenderCommand(LineCommand(origo, _270deg, true)); 
 
 
 	//Draw circle at the base of cone

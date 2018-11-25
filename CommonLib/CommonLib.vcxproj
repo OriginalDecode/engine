@@ -54,7 +54,6 @@
     <ClInclude Include="Math\Vector\Vector4decl.h" />
     <ClInclude Include="Randomizer.h" />
     <ClInclude Include="ReferenceCounter.h" />
-    <ClInclude Include="reflector.h" />
     <ClInclude Include="RefPointer.h" />
     <ClInclude Include="Threadpool.h" />
     <ClInclude Include="Utilities.h" />
@@ -68,9 +67,7 @@
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
-    <ClCompile Include="Randomizer.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
-    <ClCompile Include="reflector.cpp" />
     <ClCompile Include="Threadpool.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Work.cpp" />

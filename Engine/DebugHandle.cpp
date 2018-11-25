@@ -30,6 +30,7 @@
 #include <hash/DebugEvents.h>
 #include <network/NetworkManager.h>
 #include <CommonLib/Utilities.h>
+#include <Engine/Terrain.h>
 namespace debug
 {
 	const char* TEXTURE_SLOT_NAMES[] = {
@@ -856,7 +857,8 @@ namespace debug
 				}
 				ImGui::TreePop();
 			}
-
+			static bool draw_wireframe = false;
+			ImGui::Checkbox("Draw Wireframe", &Terrain::draw_wireframe);
 
 			/*static Window* win = nullptr;
 			if (ImGui::Button("click me") && !win)

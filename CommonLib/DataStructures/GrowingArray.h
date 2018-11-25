@@ -368,7 +368,7 @@ namespace CommonUtilities
 			{
 				memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
 			}
-			delete[]myData;
+			delete[] myData;
 
 			myData = newMemory;
 	};
@@ -396,8 +396,8 @@ namespace CommonUtilities
 		{
 			memcpy(&newMemory[0], &myData[0], sizeof(ObjectType)*mySize);
 		}
-		delete[]myData;
-		myData = nullptr;
+		delete[] myData;
+
 		myData = newMemory;
 		myCapacity = myCapacity;
 	};
@@ -419,7 +419,7 @@ namespace CommonUtilities
 		{
 			memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
 		}
-		delete[]myData;
+		delete[] myData;
 
 		myData = newMemory;
 		mySize = myCapacity;

@@ -4,6 +4,8 @@
 #include <Engine/Effect.h>
 #define DIVIDE 255.f
 
+bool Terrain::draw_wireframe = false;
+
 void Terrain::SetupTextures()
 {
 	Engine::GetInstance()->LoadTexture(HEIGHTMAP);
@@ -131,7 +133,6 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 {
-
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	//UpdateConstantBuffer(rc);
 	//ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());

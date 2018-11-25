@@ -18,9 +18,9 @@ class InputHandle
 {
 public:
 	InputHandle() = default;
+	~InputHandle();
 	bool Initiate(HWND window_handle, HINSTANCE window_instance);
 	void AddController(u16 controller_id);
-	void CleanUp();
 	void HandleInput();
 
 

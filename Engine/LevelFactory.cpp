@@ -162,9 +162,15 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 #endif
 
 	pDweller->Initiate(e, (is_static ? TreeDweller::STATIC : TreeDweller::DYNAMIC));
+
 	delete[] physics_data;
+	physics_data = nullptr;
+
 	delete[] entity_data;
+	entity_data = nullptr;
+
 	delete[] data;
+	data = nullptr;
 }
 
 void LevelFactory::CreateEntity(Entity e, EntityManager& em)
@@ -603,7 +609,8 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 			assert(data != nullptr && "Serialized data was null");
 			fwrite(&data_length, sizeof(int), 1, pFile);
 			fwrite(data, data_length, 1, pFile);
-			delete data;
+			delete[] data;
+			data = nullptr;
 		}
 
 		fclose(pFile);

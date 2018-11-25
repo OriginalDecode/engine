@@ -124,8 +124,13 @@ btRigidBody* RigidBody::InitWithMeshCollision(s8* const vertices, s8* const indi
 	myBody->activate();
 
 	delete triangle_list;
-	delete locIndices;
-	delete vtx;
+	triangle_list = nullptr;
+
+	delete[] locIndices;
+	locIndices = nullptr;
+
+	delete[] vtx;
+	vtx = nullptr;
 
 
 	return myBody;

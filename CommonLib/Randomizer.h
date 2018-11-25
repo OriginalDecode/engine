@@ -2,6 +2,7 @@
 
 #include <random>
 #include "Utilities.h"
+
 namespace cl
 {
 	template<typename T>

@@ -3,7 +3,7 @@
 #include "ConstantBuffer.h"
 
 class Surface;
-constexpr float TERRAIN_HALFWIDTH = 512.f;
+constexpr float TERRAIN_HALFWIDTH = 256.f;
 
 namespace
 {
@@ -12,9 +12,10 @@ namespace
 	const char* BritanniaNormal = "Data/Textures/terrain/brit_n.dds";
 	const char* Flat = "Data/Textures/flat_height.dds";
 	const char* Grass = "Data/Material/grass/grass1-albedo3.dds";
+	const char* Test = "Data/Textures/terrain/test.dds";
 };
 #define ALBEDO GrayTile
-#define HEIGHTMAP Britannia
+#define HEIGHTMAP Test
 
 
 struct SHeightMap
@@ -62,7 +63,7 @@ public:
 	void SetPosition(const CU::Vector4f& v) override { m_Orientation.SetPosition(v); }
 
 	Effect* GetEffect() { return m_Effect; }
-	bool draw_wireframe = false;
+	static bool draw_wireframe;
 private:
 
 	float m_HalfWidth = 0.f;

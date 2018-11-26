@@ -102,6 +102,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
+	m_WaterPlane = new WaterPlane;
+	
 
 	//m_DeferredRenderer->GetAmbientEffect()->AddShaderResource(m_Background->GetTexture(), TextureSlot::REGISTER_2);
 
@@ -151,7 +153,7 @@ Renderer::~Renderer()
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 
-	//SAFE_DELETE(m_WaterPlane);
+	SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
 	SAFE_DELETE(m_Line);
 	SAFE_DELETE(m_DeferredRenderer);
@@ -192,6 +194,7 @@ void Renderer::Render()
 	{
 		node->Draw(m_RenderContext);
 	}
+	m_WaterPlane->Render(m_RenderContext);
 	m_TerrainSystem->Draw();
 
 
@@ -199,6 +202,7 @@ void Renderer::Render()
 
 	m_RenderContext.GetContext().SetDepthState(graphics::Z_EQUAL, 1);
 	m_TerrainSystem->Draw();
+	m_WaterPlane->Render(m_RenderContext);
 	
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{

@@ -3,11 +3,12 @@
 #include <Engine/Texture.h>
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
+#include <Engine/Engine.h>
 
 
 WaterPlane::WaterPlane()
 {
-	m_Effect = Engine::GetInstance()->GetEffect("Shaders/water.json");
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/water_no_tess.json");
 
 
 	m_RefractionG.Initiate(false);
@@ -31,10 +32,17 @@ WaterPlane::WaterPlane()
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), TextureSlot::CUBEMAP);
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), TextureSlot::NORMAL);
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), TextureSlot::DUDV);
-	CreatePlane(2048);
+	CreatePlane(2048.f);
 	m_ConstantBuffer = engine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbMatrices), "waterplane vertex cb");
 	m_cbPixel = engine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbPixel), "waterplane pixel cb");
 
+	const u64 vtx = engine->LoadShader("water_no_tess.vs", "main");
+	const u64 frag = engine->LoadShader("water_no_tess.ps", "depth");
+
+
+	m_Shaders[0] = engine->GetShader(vtx);
+	m_Shaders[1] = engine->GetShader(frag);
+	SetPosition({ 0.f,50.f, 0.f, 1.f });
 }
 
 WaterPlane::~WaterPlane()
@@ -50,6 +58,26 @@ void WaterPlane::SetPosition(const CU::Vector3f& position)
 	m_Orientation.SetPosition(position);
 }
 
+void WaterPlane::SetPosition(const CU::Vector4f& aPosition)
+{
+	m_Orientation.SetPosition(aPosition);
+}
+
+void WaterPlane::SetForward(const CU::Vector4f& d)
+{
+	m_Orientation.SetForward(d);
+}
+
+const CU::Matrix44f& WaterPlane::GetOrientation() const
+{
+	return m_Orientation;
+}
+
+void WaterPlane::SetOrientation(const CU::Matrix44f orientation)
+{
+	m_Orientation = orientation;
+}
+
 void WaterPlane::UpdateConstantBuffer(const graphics::RenderContext& rc)
 {
 	m_VertexMatrices.m_World = m_Orientation;
@@ -57,11 +85,13 @@ void WaterPlane::UpdateConstantBuffer(const graphics::RenderContext& rc)
 	rc.GetContext().UpdateConstantBuffer(m_ConstantBuffer, &m_VertexMatrices, sizeof(cbMatrices));
 }
 
+static bool render_depth = true;
+
 void WaterPlane::Render(const graphics::RenderContext& rc)
 {
+
 	auto& ctx = rc.GetContext();
 
-	ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetBlendState(graphics::BLEND_FALSE);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.SetRasterState(m_RenderWireframe ? graphics::WIREFRAME : graphics::CULL_NONE);
@@ -69,7 +99,23 @@ void WaterPlane::Render(const graphics::RenderContext& rc)
 	UpdateConstantBuffer(rc);
 	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
 	ctx.DSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+	if(!render_depth)
+		m_Effect->Use();
+	else
+	{
+		ctx.SetVertexShader(m_Shaders[0]);
+		ctx.SetPixelShader(m_Shaders[1]);
+	}
 	ctx.DrawIndexed(this, m_Effect);
+
+	if (!render_depth)
+	{
+		m_Effect->Clear();
+	}
+
+
+	render_depth = !render_depth;
+
 }
 
 void WaterPlane::ShadowRender(const graphics::RenderContext& /*rc*/)

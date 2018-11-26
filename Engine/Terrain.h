@@ -3,7 +3,7 @@
 #include "ConstantBuffer.h"
 
 class Surface;
-constexpr float TERRAIN_HALFWIDTH = 256.f;
+constexpr float TERRAIN_HALFWIDTH = 512.f;
 
 namespace
 {
@@ -13,9 +13,10 @@ namespace
 	const char* Flat = "Data/Textures/flat_height.dds";
 	const char* Grass = "Data/Material/grass/grass1-albedo3.dds";
 	const char* Test = "Data/Textures/terrain/test.dds";
+	const char* Canyon = "Data/Textures/terrain/Heightmap.png";
 };
 #define ALBEDO GrayTile
-#define HEIGHTMAP Test
+#define HEIGHTMAP Canyon
 
 
 struct SHeightMap

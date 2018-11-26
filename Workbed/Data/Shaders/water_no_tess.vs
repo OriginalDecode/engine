@@ -1,21 +1,16 @@
-//---------------------------------
-//	Water Vertex Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
-cbuffer Matrices : register(b0)
+
+cbuffer per_frame : register( b0 )
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
+	row_major float4x4 camera_view_x_proj;
+};
+
+cbuffer Matrices : register(b1)
+{
+	row_major float4x4 orientation;
 	float3 CameraPos;
 	float Time;
 };
 
-//---------------------------------
-//	Terrain Base Vertex Structs
-//---------------------------------
 struct VS_INPUT
 {
 	float4 pos : POSITION;
@@ -37,23 +32,19 @@ struct VS_OUTPUT
 	float4 camerapos : POSITION1;
 };
 
-//---------------------------------
-//	Terrain Base Vertex Shader
-//---------------------------------
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
-	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = mul(input.pos, orientation);
+	output.pos = mul(output.pos, camera_view_x_proj);
 	output.clip = output.pos;
 
-	output.normal = mul(input.normal, World);
+	output.normal = mul(input.normal, orientation);
 	output.binorm = input.binorm;
-	output.tang  = mul(input.tang , World);
+	output.tang  = mul(input.tang , orientation);
 	output.camerapos = float4(CameraPos.xyz, 1);
-	output.worldpos = mul(input.pos, World);
+	output.worldpos = mul(input.pos, orientation);
 	output.uv = (input.uv) * cos(((Time / 512)* 2 - (output.worldpos.x - output.worldpos.z)))  * 32;
 	return output;
 };

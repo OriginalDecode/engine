@@ -121,7 +121,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float NdotL = dot(normal_col, float4(0, 1, 0, 1));
 
 	blend_value = pow(blend_value, 0.4);
-	float4 out_color = float4(0,0,1,1) + normal_col;
+	float4 out_color = normal_col; //float4(0,0,1,1);// + normal_col;
 	//out_color = lerp(reflection, refraction, blend_value);
 	output.Albedo =  out_color * NdotL;
 	float metalness = 1.0f;
@@ -133,4 +133,9 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	output.Emissive = float4(1,1,1,1);
 	return output;
 
+}
+
+float4 depth(DS_OUTPUT input) : SV_Target
+{
+	return 1 - input.pos.z;
 }

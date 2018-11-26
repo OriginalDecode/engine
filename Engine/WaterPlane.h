@@ -19,6 +19,13 @@ public:
 	void SetupReflectionRender(const graphics::RenderContext& rc);
 	void SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& rc);
 	Effect* GetEffect() { return m_Effect; }
+
+	void SetPosition(const CU::Vector4f& aPosition) override;
+	void SetForward(const CU::Vector4f& d) override;
+	const CU::Matrix44f& GetOrientation() const override;
+	void SetOrientation(const CU::Matrix44f orientation) override;
+	void AddSurface(Surface* surface) override { }
+
 private:
 	void UpdateConstantBuffer(const graphics::RenderContext& rc);
 
@@ -43,6 +50,7 @@ private:
 		CU::Vector4f m_CompareValue;
 	} m_PixelStruct;
 
-	bool m_RenderWireframe = false;
+	bool m_RenderWireframe = true;
+	CompiledShader* m_Shaders[2];
 };
 

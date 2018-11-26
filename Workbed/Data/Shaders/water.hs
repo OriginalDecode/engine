@@ -29,7 +29,7 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> inputPatc
 {    
 	/* This will be rewritten to account the distance to camera too */
     ConstantOutputType output;
-    int  tessellationAmount = 72; 
+    int  tessellationAmount = 32; 
     // Set the tessellation factors for the three edges of the triangle.
     output.edges[0] = tessellationAmount;
     output.edges[1] = tessellationAmount;

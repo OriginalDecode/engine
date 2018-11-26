@@ -134,3 +134,8 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	return output;
 
 }
+
+float4 depth(DS_OUTPUT input) : SV_Target
+{
+	return 1 - input.pos.z;
+}

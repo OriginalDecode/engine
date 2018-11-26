@@ -274,7 +274,7 @@ void Game::OldUpdate(float dt)
 
 	if(input_wrapper->IsDown(KButton::LSHIFT) && input_wrapper->OnDown(KButton::D))
 	{
-		m_StateStack->PushState(&m_DebugState, StateStack::SUB);
+		//m_StateStack->PushState(&m_DebugState, StateStack::SUB);
 	}
 
 

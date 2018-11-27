@@ -89,7 +89,7 @@ void BaseModel::CreatePlane(float half_width)
 	m_VertexWrapper.SetSize(vtx_size);
 	m_VertexWrapper.SetBuffer(vtx_buffer);
 	m_VertexWrapper.SetInputLayout(pInputLayout);
-	m_VertexWrapper.SetTopology(graphics::_4_CONTROL_POINT_PATCHLIST);
+	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
 
 	CU::GrowingArray<u32> indices;
 	indices.Add(0);

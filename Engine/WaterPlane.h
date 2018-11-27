@@ -50,7 +50,7 @@ private:
 		CU::Vector4f m_CompareValue;
 	} m_PixelStruct;
 
-	bool m_RenderWireframe = true;
+	bool m_RenderWireframe = false;
 	CompiledShader* m_Shaders[2];
 };
 

@@ -225,6 +225,7 @@
   <ItemGroup>
     <ClInclude Include="..\hashlist.h" />
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="hashlist.h" />
     <ClInclude Include="InputCommand.h" />
     <ClInclude Include="InputHandle.h" />
     <ClInclude Include="InputWrapper.h" />

@@ -16,8 +16,8 @@
 #include <Camera.h>
 #include "../Input/InputHandle.h"
 
-#include <EventManager.h>
-#include <OnLeftClick.h>
+#include <EventManager/EventManager.h>
+#include <EventManager/Messages/OnLeftClick.h>
 #include <StateStack.h>
 #include <Math/Vector/Vector.h>
 #include "../Physics/PhysicsManager.h"

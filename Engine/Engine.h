@@ -4,7 +4,7 @@
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
 
-#include <Timer/TimeManager/TimeManager.h>
+#include <CommonLib/Timer/TimeManager.h>
 
 #include <EntitySystem/EntityManager.h>
 

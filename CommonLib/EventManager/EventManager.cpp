@@ -1,6 +1,6 @@
 #include "EventManager.h"
-#include <DL_Debug.h>
-#include "../CommonLib/Utilities.h"
+#include "../../DL_Debug/DL_Debug.h"
+#include "../Utilities.h"
 
 EventManager* EventManager::myInstance = nullptr;
 EventManager::EventManager()

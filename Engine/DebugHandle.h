@@ -3,7 +3,7 @@
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <CommonLib/DataStructures/GrowingArray.h>
 #include <CommonLib/Math/Matrix/Matrix.h>
-#include <PostMaster/Subscriber.h>
+#include <CommonLib/EventManager/Subscriber.h>
 
 #include <Engine/Inspector.h>
 

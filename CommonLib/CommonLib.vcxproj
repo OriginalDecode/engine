@@ -33,6 +33,11 @@
     <ClInclude Include="DataStructures\Stack.h" />
     <ClInclude Include="DataStructures\StaticArray.h" />
     <ClInclude Include="DataStructures\VectorOnStack.h" />
+    <ClInclude Include="EventManager\EventManager.h" />
+    <ClInclude Include="EventManager\MessageEnum.h" />
+    <ClInclude Include="EventManager\Messages\Message.h" />
+    <ClInclude Include="EventManager\Messages\OnLeftClick.h" />
+    <ClInclude Include="EventManager\Subscriber.h" />
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="JSON\JSONReader.h" />
     <ClInclude Include="Math\Line\Line.h" />
@@ -56,6 +61,9 @@
     <ClInclude Include="ReferenceCounter.h" />
     <ClInclude Include="RefPointer.h" />
     <ClInclude Include="Threadpool.h" />
+    <ClInclude Include="Timer\Time.h" />
+    <ClInclude Include="Timer\TimeManager.h" />
+    <ClInclude Include="Timer\Timer.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Work.h" />
     <ClInclude Include="Worker.h" />
@@ -64,11 +72,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
+    <ClCompile Include="EventManager\EventManager.cpp" />
+    <ClCompile Include="EventManager\Subscriber.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
     <ClCompile Include="Threadpool.cpp" />
+    <ClCompile Include="Timer\Time.cpp" />
+    <ClCompile Include="Timer\TimeManager.cpp" />
+    <ClCompile Include="Timer\Timer.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Work.cpp" />
     <ClCompile Include="Worker.cpp" />
@@ -261,7 +274,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>_WINSOCKAPI_;_PROFILE;BUILD_WITH_EASY_PROFILER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

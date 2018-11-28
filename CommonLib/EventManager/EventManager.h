@@ -1,15 +1,15 @@
 #pragma once
-#include "../standard_datatype.hpp"
+#include <standard_datatype.hpp>
 
-#include <DataStructures/GrowingArray.h>
-#include <DataStructures/StaticArray.h>
-#include <Math/Vector/Vector.h>
-#include <DataStructures/VectorOnStack.h>
+#include "../DataStructures/GrowingArray.h"
+#include "../DataStructures/StaticArray.h"
+#include "../Math/Vector/Vector.h"
+#include "../DataStructures/VectorOnStack.h"
 
-#include "Message.h"
-#include "MessageEnum.h"
+#include "Messages/Message.h"
+#include "Messages/MessageEnum.h"
 #include "Subscriber.h"
-#include <unordered_map>
+
 #include <map>
 #undef SendMessage
 

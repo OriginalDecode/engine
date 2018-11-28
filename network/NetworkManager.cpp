@@ -16,7 +16,7 @@
 #include <EntitySystem/BaseComponent.h>
 #include <engine/Synchronizer.h>
 #include <engine/Engine.h>
-#include <Postmaster/EventManager.h>
+#include <EventManager/EventManager.h>
 
 #include "ConnectMessage.h"
 #include "NetEntityData.h"

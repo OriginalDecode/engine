@@ -1,7 +1,7 @@
 #pragma once
 
 struct OnLeftClick;
-#include "../standard_datatype.hpp"
+#include <standard_datatype.hpp>
 class Subscriber
 {
 public:

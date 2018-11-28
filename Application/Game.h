@@ -5,7 +5,7 @@
 #include <World.h>
 #include "../EntitySystem/TranslationComponent.h"
 #include "PauseState.h"
-#include <PostMaster/Subscriber.h>
+#include <CommonLib/EventManager/Subscriber.h>
 #include "DebugState.h"
 class Synchronizer;
 class Engine;

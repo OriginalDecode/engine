@@ -164,7 +164,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;PostMaster_$(Configuration).lib;Timer_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
@@ -221,7 +221,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;PostMaster_$(Configuration).lib;Timer_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
@@ -246,7 +246,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;PostMaster_$(Configuration).lib;Timer_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>

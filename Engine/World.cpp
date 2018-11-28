@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "World.h"
-#include <Vector.h>
+#include <Math/Vector/Vector.h>
 #include "Synchronizer.h"
 #include "Engine.h"
 #include "EntityManager.h"

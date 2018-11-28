@@ -1,4 +1,4 @@
 #include "Subscriber.h"
-#include "Message.h"
+#include "Messages/Message.h"
 
 //void Subscriber::ReceiveMessage(const OnLeftClick&){}

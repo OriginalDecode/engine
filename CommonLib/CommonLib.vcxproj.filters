@@ -43,6 +43,15 @@
     <Filter Include="Math\Line">
       <UniqueIdentifier>{c21c317a-4e0c-4481-8417-e9180089bff9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Time">
+      <UniqueIdentifier>{1b15af60-ab25-46b2-9517-5517aa349b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{afffb3ae-f0e9-458f-a28e-4fbcc1e8716d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Event\Messages">
+      <UniqueIdentifier>{2582acfb-e8df-464f-8681-da301a42abc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\GrowingArray.h">
@@ -139,6 +148,30 @@
     <ClInclude Include="RefPointer.h" />
     <ClInclude Include="ReferenceCounter.h" />
     <ClInclude Include="XML\tinyxml2.h" />
+    <ClInclude Include="Timer\Time.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer\TimeManager.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer\Timer.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager\EventManager.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager\MessageEnum.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager\Subscriber.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager\Messages\Message.h">
+      <Filter>Event\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager\Messages\OnLeftClick.h">
+      <Filter>Event\Messages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
@@ -168,6 +201,21 @@
     <ClCompile Include="XML\XMLReader.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
     <ClCompile Include="XML\tinyxml2.cpp" />
+    <ClCompile Include="Timer\Time.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer\TimeManager.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer\Timer.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager\EventManager.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager\Subscriber.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

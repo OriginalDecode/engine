@@ -3,7 +3,7 @@
 #include "TranslationComponent.h"
 #include <RenderCommand.h>
 #include <Synchronizer.h>
-#include <OnLeftClick.h>
+#include <EventManager/Messages/OnLeftClick.h>
 #include <EventManager.h>
 #include "TypeID.h"
 #include "GraphicsComponent.h"

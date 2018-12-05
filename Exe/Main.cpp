@@ -13,7 +13,6 @@
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #else
-#include <imgui/ImGuizmo.h>
 #if defined (_WIN32) || (_WIN64)
 #include <imgui/imgui_impl_dx11.h>
 #else

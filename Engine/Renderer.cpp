@@ -194,7 +194,7 @@ void Renderer::Render()
 	{
 		node->Draw(m_RenderContext);
 	}
-	m_WaterPlane->Render(m_RenderContext);
+	//m_WaterPlane->Render(m_RenderContext);
 	m_TerrainSystem->Draw();
 
 
@@ -202,7 +202,7 @@ void Renderer::Render()
 
 	m_RenderContext.GetContext().SetDepthState(graphics::Z_EQUAL, 1);
 	m_TerrainSystem->Draw();
-	m_WaterPlane->Render(m_RenderContext);
+	//m_WaterPlane->Render(m_RenderContext);
 	
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
@@ -229,6 +229,7 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize();
 	}
 
+	m_Line->Render(m_RenderContext);
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 

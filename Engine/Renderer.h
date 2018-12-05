@@ -45,6 +45,7 @@ class Renderer
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
 	friend debug::DebugHandle;
+	friend class DebugRenderer;
 #endif
 public:
 	Renderer(Synchronizer* synchronizer);

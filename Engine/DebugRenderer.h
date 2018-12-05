@@ -4,7 +4,6 @@
 
 class DebugRenderer
 {
-
 public:
 
 
@@ -16,6 +15,10 @@ public:
 	void DrawSphere();
 	void DrawLine();
 	void DrawCube();
+
+	//draws a * in world space of the given position
+	void DrawPosition(CU::Vector3f position);
+
 
 private:
 	static DebugRenderer* m_Instance;

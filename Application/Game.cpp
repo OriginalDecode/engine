@@ -78,12 +78,11 @@ void Game::Initiate(const std::string& level)
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 
 	HashType hash = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	int tree_count = RANDOM(128, 255);
+	int tree_count = cl::Rand(32, 32, 0);
 	for (int i = 0; i < tree_count; ++i)
 	{
-		break;
-		float x = RANDOM(0.f, 1024.f);
-		float z = RANDOM(0.f, 1024.f);
+		float x = cl::Rand(0.f, 1024.f, 0);
+		float z = cl::Rand(0.f, 1024.f, 0);
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(int(x), int(z));
 
 		CU::Matrix44f orientation;

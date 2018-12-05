@@ -3,6 +3,9 @@
 #include <engine/Model.h>
 #include <engine/Engine.h>
 #include <engine/AssetsContainer.h>
+
+#include "DebugRenderer.h"
+
 namespace graphics
 {
 	u64 RenderNodeGeneral::Type = cl::Hash(STRINGIFY(RenderNodeGeneral));
@@ -66,6 +69,9 @@ namespace graphics
 
 				model = static_cast<Model*>(instance.GetModel());
 				model->AddOrientation(instance.GetOrientation());
+				const CU::Vector3f& pos = instance.GetOrientation().GetPosition();
+
+				DebugRenderer::GetInstance()->DrawPosition(pos);
 			}
 
 			model->Render(rc);

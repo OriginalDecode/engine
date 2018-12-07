@@ -15,7 +15,7 @@ namespace
 	const char* Test = "Data/Textures/terrain/test.dds";
 	const char* Canyon = "Data/Textures/terrain/Heightmap.png";
 };
-#define ALBEDO GrayTile
+#define ALBEDO Britannia
 #define HEIGHTMAP Britannia
 
 

@@ -45,16 +45,14 @@ TerrainSystem::TerrainSystem()
 
 
 	TGA32::Image* image = TGA32::Load("Data/Textures/terrain/britannia.tga");
-	m_Heightmap.myData = new u8[image->myWidth * image->myHeight * 4];
+	m_Heightmap.myData = new u8[image->myWidth * image->myHeight];
 
-
-	for (int y = 0; y < image->myHeight; ++y)
+	for (u32 i = 0; i < image->myWidth *  image->myHeight; ++i)
 	{
-		for (int x = 0; x < image->myWidth; ++x)
-		{
-			m_Heightmap.myData[y*x] = image->myImage[y*x];
-		}
+		m_Heightmap.myData[i] = image->myImage[i * 4];
 	}
+
+	
 
 	m_Heightmap.myDepth = image->myHeight;
 	m_Heightmap.myWidth = image->myWidth;

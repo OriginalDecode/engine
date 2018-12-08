@@ -173,8 +173,6 @@ namespace graphics
 		scDesc.SampleDesc.Count = 1;
 		scDesc.SampleDesc.Quality = 0;
 		scDesc.Windowed = true;
-		//if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
-		//scDesc.Windowed = false;
 
 		scDesc.Flags = 0;
 		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -197,8 +195,8 @@ namespace graphics
 		};
 		UINT createDeviceFlags = 0;
 
-		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #ifdef _DEBUG
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 

@@ -90,7 +90,7 @@ namespace graphics
 		ID3D11Device* m_IntDevice = nullptr;
 		D3D11_QUERY_DATA_TIMESTAMP_DISJOINT  m_Frequency;
 
-
+		
 #ifdef _DEBUG
 		void ReportLiveObjects();
 #endif

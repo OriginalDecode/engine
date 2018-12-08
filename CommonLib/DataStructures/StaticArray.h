@@ -1,12 +1,10 @@
 #pragma once
 #include <cassert>
-#define SA_TEMPLATE template<typename Type, int T2 = 32>
-#define SA_TYPE StaticArray<Type, T2>
 
 namespace CommonUtilities
 {
-	SA_TEMPLATE
-		class StaticArray
+	template<typename Type, int T2 = 32>
+	class StaticArray
 	{
 	public:
 		StaticArray();
@@ -48,33 +46,33 @@ namespace CommonUtilities
 
 		for (int i = 0; i < T2; i++)
 		{
-			if ( myData[i] != other[i] )
+			if (myData[i] != other[i])
 				return false;
 		}
 
 		return true;
 	}
 
-	SA_TEMPLATE
-		SA_TYPE::StaticArray()
+	template<typename Type, int T2>
+	StaticArray<Type, T2>::StaticArray()
 	{
 		m_Capacity = sizeof(myData) / sizeof(int);
 	}
 
-	SA_TEMPLATE
-		SA_TYPE::~StaticArray()
+	template<typename Type, int T2>
+	StaticArray<Type, T2>::~StaticArray()
 	{
 
 	}
 
-	SA_TEMPLATE
-		SA_TYPE::StaticArray(const StaticArray& aStaticArray)
+	template<typename Type, int T2>
+	StaticArray<Type, T2>::StaticArray(const StaticArray& aStaticArray)
 	{
 		operator=(aStaticArray);
 	}
 
-	SA_TEMPLATE
-		SA_TYPE& SA_TYPE::operator=(const StaticArray& aStaticArray)
+	template<typename Type, int T2>
+	StaticArray<Type, T2>& StaticArray<Type, T2>::operator=(const StaticArray& aStaticArray)
 	{
 		for (int i = 0; i < T2; ++i)
 		{
@@ -83,24 +81,24 @@ namespace CommonUtilities
 		return *this;
 	}
 
-	SA_TEMPLATE
-		inline const Type& SA_TYPE::operator[](const int& aIndex) const
+	template<typename Type, int T2>
+	inline const Type& StaticArray<Type, T2>::operator[](const int& aIndex) const
 	{
 		assert(aIndex >= 0 && "Index has to be 0 or more.");
 		assert(aIndex < T2 && "a index out of bounds!");
 		return myData[aIndex];
 	}
 
-	SA_TEMPLATE
-		inline Type& SA_TYPE::operator[](const int& aIndex)
+	template<typename Type, int T2>
+	inline Type& StaticArray<Type, T2>::operator[](const int& aIndex)
 	{
 		assert(aIndex >= 0 && "Index has to be 0 or more.");
 		assert(aIndex < T2 && "a index out of bounds!");
 		return myData[aIndex];
 	}
 
-	SA_TEMPLATE
-		inline void SA_TYPE::Insert(int aIndex, Type& aObject)
+	template<typename Type, int T2>
+	inline void StaticArray<Type, T2>::Insert(int aIndex, Type& aObject)
 	{
 		assert(aIndex >= 0 && "Index has to be 0 or more.");
 		assert(aIndex < T2 && "a index out of bounds!");
@@ -111,16 +109,16 @@ namespace CommonUtilities
 		myData[aIndex] = aObject;
 	}
 
-	SA_TEMPLATE
-		inline void SA_TYPE::InsertLast(Type& object)
+	template<typename Type, int T2>
+	inline void StaticArray<Type, T2>::InsertLast(Type& object)
 	{
 		assert(m_LastIndex < m_Capacity && "Can't add to last if container is full.");
 		myData[m_LastIndex] = object;
 		m_LastIndex++;
 	}
 
-	SA_TEMPLATE
-		inline void SA_TYPE::DeleteAll()
+	template<typename Type, int T2>
+	inline void StaticArray<Type, T2>::DeleteAll()
 	{
 		for (int i = 0; i < T2; ++i)
 		{

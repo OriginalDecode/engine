@@ -5,7 +5,8 @@
 #include <Engine/Synchronizer.h>
 #include <Engine/engine_shared.h>
 #include <CommonLib/Utilities.h>
-
+#include "Renderer.h"
+#include "Line3D.h"
 DebugRenderer* DebugRenderer::m_Instance = nullptr;
 
 constexpr int _360Degrees = 360;
@@ -115,6 +116,35 @@ void DebugRenderer::DrawLine()
 
 void DebugRenderer::DrawCube()
 {
+
+}
+
+void DebugRenderer::DrawPosition(CU::Vector3f position)
+{
+	Renderer* renderer = Engine::GetInstance()->GetRenderer();
+
+	LinePoint points[2];
+
+	points[0].color = { 1.f, 0.f, 0.f, 1.f };
+	points[1].color = { 1.f, 0.f, 0.f, 1.f };
+
+	points[0].position = position;
+	points[0].position.y += 1.f;
+	points[1].position = position;
+	points[1].position.y -= 1.f;
+	renderer->m_Line->AddLine(points);
+
+	points[0].position = position;
+	points[0].position.x += 1.f;
+	points[1].position = position;
+	points[1].position.x -= 1.f;
+	renderer->m_Line->AddLine(points);
+
+	points[0].position = position;
+	points[0].position.z += 1.f;
+	points[1].position = position;
+	points[1].position.z -= 1.f;
+	renderer->m_Line->AddLine(points);
 
 }
 

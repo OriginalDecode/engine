@@ -46,10 +46,13 @@ TerrainSystem::TerrainSystem()
 
 	TGA32::Image* image = TGA32::Load("Data/Textures/terrain/britannia.tga");
 	m_Heightmap.myData = new u8[image->myWidth * image->myHeight];
-	for (int i = 0; i < image->myWidth * image->myHeight; ++i)
+
+	for (u32 i = 0; i < image->myWidth *  image->myHeight; ++i)
 	{
-		m_Heightmap.myData[i] = image->myImage[i];
+		m_Heightmap.myData[i] = image->myImage[i * 4];
 	}
+
+	
 
 	m_Heightmap.myDepth = image->myHeight;
 	m_Heightmap.myWidth = image->myWidth;
@@ -78,7 +81,7 @@ void TerrainSystem::Draw()
 
 float TerrainSystem::GetHeight(int x, int y)
 {
-	return m_Heightmap.myData[y * x];
+	return m_Heightmap.myData[ (m_Heightmap.myDepth - (1 + y)) * m_Heightmap.myWidth + x];
 }
 
 void test::Leaf::Render()

@@ -189,7 +189,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float metalness = albedo.a;
 	normal.rgb = normal.rgb * 2 - 1;
 	
-	float roughnessOffsetted = pow(roughness, 8192);
+	float roughnessOffsetted = pow(1, 8192);
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 	float3 light_dir = light_direction.xyz;
     float NdL = max(0,dot(normal.xyz, light_dir));
@@ -209,6 +209,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 substance = (0.04 - 0.04 * metalness) + albedo * metalness;
 	
 	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, -light_dir, half_vec, 1 - roughnessOffsetted), 1);
+
 
 	float4 radiance = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float3 irradiance = CubeMap.SampleLevel(sampler1, normal, nMips).rgb * metalness_albedo.rgb * ( 1 - reflection_fresnel.rgb);

@@ -11,11 +11,9 @@ namespace graphics
 		RenderNodeGeneral();
 		~RenderNodeGeneral();
 
-
 		void Draw(const RenderContext& rc) override;
 		void Reload(CompiledShader* shader) override;
 		void AddInstance(const ModelInstance instance) override;
-
 
 		static u64 Type;
 		u64 GetType() const { return Type; }

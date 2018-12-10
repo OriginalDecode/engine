@@ -3,6 +3,7 @@
 #include <engine/Engine.h>
 #include <engine/AssetsContainer.h>
 #include <engine/Model.h>
+#include "DebugRenderer.h"
 
 namespace graphics
 {
@@ -10,14 +11,20 @@ namespace graphics
 	RenderNodeVegetation::RenderNodeVegetation()
 	{
 
-		auto engine = Engine::GetInstance();
+		Engine* engine = Engine::GetInstance();
+		AssetsContainer* ac = engine->GetAssetsContainer();
+		const u64 vtx = ac->LoadShader("deferred_base_instanced.vs", "main");
+		const u64 fragment = ac->LoadShader("pbl_debug.ps", "main");
+		const u64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");
 
-		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
-		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
+		m_Shaders[VERTEX] = ac->GetShader(vtx);
+		m_Shaders[PIXEL] = ac->GetShader(fragment);
+		m_DepthShader = ac->GetShader(depth_frag);
 
 #ifdef _DEBUG
 		m_Shaders[VERTEX]->RegisterReload(this);
 		m_Shaders[PIXEL]->RegisterReload(this);
+		m_DepthShader->RegisterReload(this);
 #endif
 	}
 
@@ -28,13 +35,51 @@ namespace graphics
 
 	void RenderNodeVegetation::Draw(const RenderContext& rc)
 	{
-		rc.GetContext().SetVertexShader(m_Shaders[VERTEX]);
-		rc.GetContext().SetPixelShader(m_Shaders[PIXEL]);
+		PROFILE_FUNCTION(profiler::colors::Red);
+		auto& ctx = rc.GetContext();
+		ctx.SetVertexShader(m_Shaders[VERTEX]);
 
-		for (const ModelInstance& model_instance : m_Models)
+		if (!m_DrawDepth)
 		{
-			model_instance.Draw(rc);
+			ctx.SetPixelShader(m_Shaders[PIXEL]);
+			ctx.SetDepthState(graphics::Z_EQUAL, 1);
 		}
+		else
+		{
+			ctx.SetPixelShader(m_DepthShader);
+			ctx.SetDepthState(graphics::Z_ENABLED, 1);
+		}
+
+		ctx.SetRasterState(graphics::CULL_NONE);
+		ctx.SetBlendState(graphics::BLEND_FALSE);
+		ctx.PSSetSamplerState(0, 1, graphics::MSAA_x1);
+		ctx.VSSetSamplerState(0, 1, graphics::MSAA_x1);
+
+		Model * model = nullptr;
+		for (auto& object : m_Models)
+		{
+			std::vector<ModelInstance>& list = object.second;
+
+			for (int i = 0; i < list.size(); i++)
+			{
+				ModelInstance& instance = list[i];
+				if (i == 0)
+				{
+					instance.UpdateMaterial();
+				}
+
+				model = static_cast<Model*>(instance.GetModel());
+				model->AddOrientation(instance.GetOrientation());
+				const CU::Vector3f& pos = instance.GetOrientation().GetPosition();
+
+				DebugRenderer::GetInstance()->DrawPosition(pos);
+			}
+
+			model->Render(rc);
+			model = nullptr;
+		}
+
+		m_DrawDepth = !m_DrawDepth;
 	}
 
 	
@@ -45,7 +90,19 @@ namespace graphics
 
 	void RenderNodeVegetation::AddInstance(const ModelInstance instance)
 	{
-		m_Models.push_back(instance);
+		const u64 key = instance.GetMaterialKey();
+		auto it = m_Models.find(key);
+		if (it == m_Models.end())
+		{
+			m_Models.emplace(key, std::vector<ModelInstance>());
+		}
+
+		it = m_Models.find(key);
+		if (it != m_Models.end())
+		{
+			it->second.push_back(instance);
+		}
+
 	}
 
 };

@@ -84,8 +84,9 @@ DeferredRenderer::DeferredRenderer()
 	Texture* cubemap = engine->GetTexture("Data/Textures/cube/cubeMapLayered.dds");
 	cubemap = engine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 	//m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
-	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/sponza/sponza.dds"), TextureSlot::CUBEMAP);
+	//m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/sponza/sponza.dds"), TextureSlot::CUBEMAP);
 	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/late/forest.dds"), TextureSlot::REGISTER_11);
+	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/late/forest.dds"), TextureSlot::CUBEMAP);
 
 
 	//Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");

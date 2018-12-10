@@ -37,6 +37,7 @@
 #endif
 #include <CommonLib/Randomizer.h>
 #include <Engine/RenderNodeGeneral.h>
+#include <Engine/RenderNodeVegetation.h>
 #include <Engine/Renderer.h>
 #include <Engine/TerrainSystem.h>
 
@@ -76,14 +77,20 @@ void Game::Initiate(const std::string& level)
 
 
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
+	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::Type);
 
 	HashType hash = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	int tree_count = cl::Rand(32, 32, 0);
+	int tree_count = cl::Rand(128, 128, 0);
 	for (int i = 0; i < tree_count; ++i)
 	{
-		float x = cl::Rand(0.f, 1024.f, 0);
-		float z = cl::Rand(0.f, 1024.f, 0);
-		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(int(x), int(z));
+		float x = cl::Rand(0.f, 2048.f, 0);
+		float z = cl::Rand(0.f, 2048.f, 0);
+
+
+		int normalized_x = (x / 2048.f) * 1024.f;
+		int normalized_z = (z / 2048.f) * 1024.f;
+
+		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(normalized_x, normalized_z) / 255.f * 128.f;
 
 		CU::Matrix44f orientation;
 		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
@@ -94,7 +101,7 @@ void Game::Initiate(const std::string& level)
 		instance.SetOrientation(orientation);
 		instance.SetMaterialKey(cl::Hash("tree"));
 		instance.SetModel(Engine::GetInstance()->GetModelDirect(hash.m_Lower));
-		pNode->AddInstance(instance);
+		vegetation_node->AddInstance(instance);
 
 	}
 

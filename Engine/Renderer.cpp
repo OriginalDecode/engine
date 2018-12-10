@@ -107,7 +107,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	//m_DeferredRenderer->GetAmbientEffect()->AddShaderResource(m_Background->GetTexture(), TextureSlot::REGISTER_2);
 
-	//m_RenderNodes.Add(new graphics::RenderNodeVegetation);
+	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
 
 	// m_Text->SetText("The quick brown fox jumps over the lazy dog");

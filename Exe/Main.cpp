@@ -93,25 +93,13 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 			DispatchMessage(&msg);
 		}
 
-
-		if (msg.message == WM_QUIT || msg.message == WM_CLOSE)
-		{
-			s_AppRunning = false;
-			break;
-		}
-
-
-		if (application->HasQuit())
+		if (msg.message == WM_QUIT || msg.message == WM_CLOSE || application->HasQuit())
 		{
 			s_AppRunning = false;
 			break;
 		}
 
 		engine->Update();
-		/*if (g_windowactive)
-		{
-			SetCursorPos(w / 2.f, h / 2.f);
-		}*/
 
 	} while (s_AppRunning);
 

@@ -151,7 +151,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 			bool _found = false;
 
 
-			const CU::GrowingArray<TextureInfo> texInfo = data.myTextures;
+			const CU::GrowingArray<TextureInfo>& texInfo = data.myTextures;
 			for (const TextureInfo& info : texInfo)
 			{
 				if (info.m_File == newInfo.m_File)

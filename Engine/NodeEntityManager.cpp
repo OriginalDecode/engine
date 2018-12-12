@@ -16,17 +16,17 @@
 #include <Engine/Synchronizer.h>
 #include <TranslationComponent.h>
 
-void NodeEntityManager::SetMemoryBlockIndex(s32 index)
+void NodeEntityManager::SetMemoryBlockIndex(int32 index)
 {
 	m_MemoryBlockIndex = index;
 }
 
-s32 NodeEntityManager::m_Identifier = 0;
+int32 NodeEntityManager::m_Identifier = 0;
 
 void NodeEntityManager::Initiate()
 {
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
-	const s32 flag = em.GetSystemFlag();
+	const int32 flag = em.GetSystemFlag();
 
 	if (flag& EntityManager::NETWORK)
 		AddSystem<NetworkSystem>();

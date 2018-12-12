@@ -24,14 +24,14 @@ enum eXboxButton
 
 struct ControllerState
 {
-	u16 m_Buttons = 0;
-	s16 m_ThumbRX = 0;
-	s16 m_ThumbRY = 0;
-	s16 m_ThumbLY = 0;
-	s16 m_ThumbLX = 0;
-	s16 m_PacketNum = 0;
-	u8 m_RTrigger = 0;
-	u8 m_LTrigger = 0;
+	uint16 m_Buttons = 0;
+	int16 m_ThumbRX = 0;
+	int16 m_ThumbRY = 0;
+	int16 m_ThumbLY = 0;
+	int16 m_ThumbLX = 0;
+	int16 m_PacketNum = 0;
+	uint8 m_RTrigger = 0;
+	uint8 m_LTrigger = 0;
 	XINPUT_STATE myControllerState;
 	XINPUT_STATE myPrevControllerState;
 };

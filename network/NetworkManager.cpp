@@ -88,7 +88,7 @@ namespace network
 		}
 	}
 
-	s32 NetworkManager::InitiateWSAData()
+	int32 NetworkManager::InitiateWSAData()
 	{
 #ifdef _WIN32
 		WSADATA wsa_data;
@@ -98,12 +98,12 @@ namespace network
 		return 0;
 	}
 
-	s32 NetworkManager::Connect(const char* ip, s16 port)
+	int32 NetworkManager::Connect(const char* ip, int16 port)
 	{
 		if (!m_IsHost && m_Connections.size() > 0)
 			assert(false && "Unexpected behaviour. Tried to establish two connections as client!");
 
-		s32 result = InitiateWSAData();
+		int32 result = InitiateWSAData();
 		if (result != 0)
 			return -2;
 
@@ -137,13 +137,13 @@ namespace network
 		return 0;
 	}
 
-	s32 NetworkManager::Host(s16 port)
+	int32 NetworkManager::Host(int16 port)
 	{
 		m_IsHost = true;
 		std::stringstream using_port;
 		using_port << port;
 
-		s32 result = InitiateWSAData();
+		int32 result = InitiateWSAData();
 		if (result == ~0)
 			return -2;
 
@@ -168,7 +168,7 @@ namespace network
 		if (m_Socket == INVALID_SOCKET)
 			return -1;
 
-		result = bind(m_Socket, addr_res->ai_addr, (s32)addr_res->ai_addrlen);
+		result = bind(m_Socket, addr_res->ai_addr, (int32)addr_res->ai_addrlen);
 		if (result == INVALID_SOCKET)
 			return -1;
 
@@ -177,9 +177,9 @@ namespace network
 
 	void NetworkManager::Receive(Buffer& buffer_out) /* This takes a nasty amount of memory */
 	{
-		const s32 max_len = 512;
+		const int32 max_len = 512;
 		socklen_t size = sizeof(sockaddr_in);
-		memset(&buffer_out.m_Buffer, 0, sizeof(s8) * max_len);
+		memset(&buffer_out.m_Buffer, 0, sizeof(int8) * max_len);
 
 		int length_of_packet = recvfrom(m_Socket, buffer_out.m_Buffer, max_len, 0, (sockaddr*)&buffer_out.m_Sender, &size);
 		buffer_out.m_Length = length_of_packet;
@@ -189,21 +189,21 @@ namespace network
 
 	}
 
-	s32 NetworkManager::ReadType(s8 type_char)
+	int32 NetworkManager::ReadType(int8 type_char)
 	{
-		return (s32)type_char;
+		return (int32)type_char;
 	}
 
-	s32 NetworkManager::ReadType(const Buffer& buffer)
+	int32 NetworkManager::ReadType(const Buffer& buffer)
 	{
-		return (s32)buffer.m_Buffer[0];
+		return (int32)buffer.m_Buffer[0];
 	}
 
 	void NetworkManager::Update()
 	{
 		for (Buffer message : m_Messages[m_CurrentBuffer])
 		{
-			const s32 type = ReadType(message);
+			const int32 type = ReadType(message);
 			switch (type)
 			{
 				case eNetMessageType::REQUEST_CONNECTION:

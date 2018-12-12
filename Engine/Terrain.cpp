@@ -75,8 +75,8 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color )
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 {
-	myWidth = (u32)aSize.x;
-	myDepth = (u32)aSize.y;
+	myWidth = (uint32)aSize.x;
+	myDepth = (uint32)aSize.y;
 	//	m_Filename = "Terrain";
 	m_IsRoot = false;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
@@ -226,7 +226,7 @@ std::vector<float> Terrain::GetVerticeArrayCopy()
 	return myVertices;
 }
 
-std::vector<s32> Terrain::GetIndexArrayCopy()
+std::vector<int32> Terrain::GetIndexArrayCopy()
 {
 	return myIndexes;
 }
@@ -236,15 +236,15 @@ void Terrain::SetPosition(CU::Vector2f position)
 	m_Orientation.SetPosition(CU::Vector4f(position.x - myWidth, 0, position.y - myDepth, 1));
 }
 
-void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
+void Terrain::CreateVertices(uint32 width, uint32 height, const CU::Vector3f& position)
 {
 
 
 	CU::GrowingArray<SVertexPosNormUVBiTang> vertices((myHeightmap.myDepth)*(myHeightmap.myWidth));
 
-	for (u32 z = 0; z < myHeightmap.myDepth; z++)
+	for (uint32 z = 0; z < myHeightmap.myDepth; z++)
 	{
-		for (u32 x = 0; x < myHeightmap.myWidth; x++)
+		for (uint32 x = 0; x < myHeightmap.myWidth; x++)
 		{
 			SVertexPosNormUVBiTang vertex;
 			vertex.position.x = position.x + float(x) * width / float(myHeightmap.myWidth);
@@ -262,10 +262,10 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	}
 	CalculateNormals(vertices);
 
-	CU::GrowingArray<u32> indexes((myHeightmap.myDepth *  myHeightmap.myWidth) * 6);
-	for (u32 z = 0; z < myHeightmap.myDepth - 1; ++z)
+	CU::GrowingArray<uint32> indexes((myHeightmap.myDepth *  myHeightmap.myWidth) * 6);
+	for (uint32 z = 0; z < myHeightmap.myDepth - 1; ++z)
 	{
-		for (u32 x = 0; x < myHeightmap.myWidth - 1; ++x)
+		for (uint32 x = 0; x < myHeightmap.myWidth - 1; ++x)
 		{
 			indexes.Add(z * myHeightmap.myWidth + x);
 			indexes.Add((z + 1) * myHeightmap.myWidth + x);
@@ -278,7 +278,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 		}
 	}
 
-	for (u32 index : indexes)
+	for (uint32 index : indexes)
 	{
 		myIndexes.push_back(index);
 	}
@@ -295,13 +295,13 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	};
 	IInputLayout* pInputLayout = device.CreateInputLayout(m_Effect->GetVertexShader(), inputdesc, ARRSIZE(inputdesc));
 
-	constexpr s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
-	const s32 vtx_count = vertices.Size();
-	const s32 vtx_size = vtx_count * vtx_stride;
-	const s32 vtx_buff_count = 1;
-	const s32 vtx_start = 0;
-	const s32 vtx_byte_offset = 0;
-	s8* vtx_data = new s8[vtx_size];
+	constexpr int32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const int32 vtx_count = vertices.Size();
+	const int32 vtx_size = vtx_count * vtx_stride;
+	const int32 vtx_buff_count = 1;
+	const int32 vtx_start = 0;
+	const int32 vtx_byte_offset = 0;
+	int8* vtx_data = new int8[vtx_size];
 	memcpy(vtx_data, &vertices[0], vtx_size);
 
 	graphics::BufferDesc vtx_desc;
@@ -327,13 +327,13 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 #ifdef _DEBUG
 	m_VertexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", Terrain);
 #endif
-	const s32 idx_count = indexes.Size();
-	const s32 idx_stride = sizeof(u32);
-	const s32 idx_size = idx_count * idx_stride;
-	const s32 idx_start = 0;
-	const s32 idx_byte_offset = 0;
+	const int32 idx_count = indexes.Size();
+	const int32 idx_stride = sizeof(uint32);
+	const int32 idx_size = idx_count * idx_stride;
+	const int32 idx_start = 0;
+	const int32 idx_byte_offset = 0;
 
-	s8* idx_data = new s8[idx_size];
+	int8* idx_data = new int8[idx_size];
 	memcpy(idx_data, &indexes[0], idx_size);
 
 	graphics::BufferDesc idx_desc;
@@ -441,13 +441,13 @@ void Terrain::CreatePlane(float halfwidth)
 	vert.uv = { m_UV[3].x, m_UV[3].y };
 	m_Vertices.Add(vert);
 
-	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
-	const s32 vtx_count = m_Vertices.Size();
-	const s32 vtx_size = vtx_count * vtx_stride;
-	const s32 vtx_buff_count = 1;
-	const s32 vtx_start = 0;
-	const s32 vtx_byte_offset = 0;
-	s8* vtx_data = new s8[vtx_size];
+	const int32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const int32 vtx_count = m_Vertices.Size();
+	const int32 vtx_size = vtx_count * vtx_stride;
+	const int32 vtx_buff_count = 1;
+	const int32 vtx_start = 0;
+	const int32 vtx_byte_offset = 0;
+	int8* vtx_data = new int8[vtx_size];
 	memcpy(vtx_data, &m_Vertices[0], vtx_size);
 
 
@@ -475,7 +475,7 @@ void Terrain::CreatePlane(float halfwidth)
 	m_VertexWrapper.SetInputLayout(device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc)));
 	m_VertexWrapper.SetTopology(graphics::_4_CONTROL_POINT_PATCHLIST);
 
-	CU::GrowingArray<u32> indices;
+	CU::GrowingArray<uint32> indices;
 	indices.Add(0);
 	indices.Add(1);
 	indices.Add(2);
@@ -484,13 +484,13 @@ void Terrain::CreatePlane(float halfwidth)
 	indices.Add(2);
 	indices.Add(1);
 
-	const s32 idx_count = indices.Size();
-	const s32 idx_stride = sizeof(u32);
-	const s32 idx_size = idx_count * idx_stride;
-	const s32 idx_start = 0;
-	const s32 idx_byte_offset = 0;
+	const int32 idx_count = indices.Size();
+	const int32 idx_stride = sizeof(uint32);
+	const int32 idx_size = idx_count * idx_stride;
+	const int32 idx_start = 0;
+	const int32 idx_byte_offset = 0;
 
-	s8* idx_data = new s8[idx_size];
+	int8* idx_data = new int8[idx_size];
 	memcpy(idx_data, &indices[0], idx_size);
 
 	graphics::BufferDesc idx_desc;
@@ -519,12 +519,12 @@ SHeightMap Create(const char* filepath)
 {
 	TGA32::Image* image = TGA32::Load(filepath);
 
-	u32 width = image->myWidth;
-	u32 depth = image->myHeight;
+	uint32 width = image->myWidth;
+	uint32 depth = image->myHeight;
 
-	u8* data = new u8[width * depth];
+	uint8* data = new uint8[width * depth];
 
-	for (u32 i = 0; i < width * depth; ++i)
+	for (uint32 i = 0; i < width * depth; ++i)
 	{
 		data[i] = image->myImage[i * 4];
 	}

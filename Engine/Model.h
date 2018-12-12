@@ -11,8 +11,8 @@ struct GPUModelData
 {
 	CU::Matrix44f m_Orientation;
 	CU::Vector4f dummy;
-	u32 m_ID;
-	u32 m_Hovering = false;
+	uint32 m_ID;
+	uint32 m_Hovering = false;
 };
 
 
@@ -53,7 +53,7 @@ public:
 
 	void AddTexture(const std::string& path, TextureSlot slot);
 
-	s32 GetInstanceCount() const { return m_GPUData.Size(); }
+	int32 GetInstanceCount() const { return m_GPUData.Size(); }
 	Effect* GetEffect() { return m_Effect; }
 	void AddOrientation(CU::Matrix44f orientation);
 	void AddInstanceData(GPUModelData data);
@@ -62,8 +62,8 @@ public:
 	Material* GetMaterial();
 	void CreateCube();
 
-	void SetKey(u64 key) { m_Key = key; }
-	const u64 GetKey() const { return m_Key; }
+	void SetKey(uint64 key) { m_Key = key; }
+	const uint64 GetKey() const { return m_Key; }
 
 	void SetEntityID(HashType id);
 
@@ -94,7 +94,7 @@ private:
 	int m_IsSelected;
 
 protected:
-	u64 m_Key = 0;
+	uint64 m_Key = 0;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
 	CU::GrowingArray<GPUModelData> m_GPUData;
 };

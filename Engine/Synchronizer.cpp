@@ -57,7 +57,7 @@ void Synchronizer::LogicIsDone()
 }
 
 
-void* Synchronizer::GetMemoryBlock(eBufferType buffer_type, s32 index, s32& size_of_block_out)
+void* Synchronizer::GetMemoryBlock(eBufferType buffer_type, int32 index, int32& size_of_block_out)
 {
 	memory::CommandAllocator& allocator = m_CommandBuffers[buffer_type][index];
 	size_of_block_out = allocator.GetAllocationSize();

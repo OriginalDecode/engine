@@ -112,13 +112,13 @@ void RenderSystem::AddRenderCommand(const ModelCommand& command)
 
 	//this is the slowdown, this is what is causing the start up to go so immensly slow.
 #ifdef _PER_NODE_SYSTEM
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	const uint16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
 #else
 	Engine& engine = Engine::GetRef();
-	const u16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
+	const uint16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = engine.GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));

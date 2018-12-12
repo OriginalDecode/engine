@@ -270,7 +270,7 @@ void Renderer::DrawIBL()
 void Renderer::WriteDebugTextures()
 {
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
-	const s32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
+	const int32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
 	Texture* pTex = debug::DebugHandle::GetInstance()->GetTexture(index);
 	debug_textures->AddShaderResource(pTex, TextureSlot::DIFFUSE);
 	auto& ctx = m_RenderContext.GetContext();
@@ -289,7 +289,7 @@ int Renderer::RegisterLight()
 	return (m_Spotlights.Size() - 1);
 }
 
-graphics::IRenderNode* Renderer::GetNode(u64 type)
+graphics::IRenderNode* Renderer::GetNode(uint64 type)
 {
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
@@ -306,7 +306,7 @@ graphics::IRenderNode* Renderer::GetNode(u64 type)
 #include "DX11Context.h"
 #include <DXTex/DirectXTex.h>
 
-void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution /* = 16 */)
+void Renderer::MakeCubemap(CU::Vector3f positon, int32 max_resolution, int32 min_resolution /* = 16 */)
 {
 	delete m_Cubemap;
 	m_Cubemap = nullptr;
@@ -338,7 +338,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	depth = new Texture;
 	depth->Initiate(depth_desc, "");
 
-	s32 downsample_amount = s32(log(__min(max_resolution, max_resolution)) / log(2.f)) + 1;
+	int32 downsample_amount = int32(log(__min(max_resolution, max_resolution)) / log(2.f)) + 1;
 
 
 	graphics::Viewport* viewport = api->CreateViewport(max_resolution, max_resolution, 0, 1, 0, 0);
@@ -373,7 +373,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	pixel_buffer.RegisterVariable(&camera->GetPixelOrientation());
 	pixel_buffer.Initiate();
 
-	enum : s32
+	enum : int32
 	{
 		RIGHT,
 		LEFT,
@@ -386,12 +386,12 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 
 	Texture* cubemap[NOF_SIDES];
-	s32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
+	int32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
 
 
 
 
-	auto create_texture = [&](s32 index) {
+	auto create_texture = [&](int32 index) {
 		Texture* rendertarget = new Texture;
 		rendertarget->Initiate(texDesc, false, "");
 		
@@ -431,7 +431,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	create_texture(DOWN);
 
 
-	for (s32 i = 0; i < NOF_SIDES; ++i)
+	for (int32 i = 0; i < NOF_SIDES; ++i)
 	{
 		_ctx->GenerateMips((ID3D11ShaderResourceView*)cubemap[i]->GetShaderView());
 	}

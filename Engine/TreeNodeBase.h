@@ -20,29 +20,29 @@ public:
 
 	virtual void Update(float dt, bool paused);
 
-	virtual void SetDepth(s32 depth);
-	virtual s32 GetDepth() const;
+	virtual void SetDepth(int32 depth);
+	virtual int32 GetDepth() const;
 
-	virtual void AddChild(TreeNodeBase* child_node, s32 index);
+	virtual void AddChild(TreeNodeBase* child_node, int32 index);
 	virtual void AddParent(TreeNodeBase* parent);
 	virtual TreeNodeBase* GetParent();
 
 	virtual void AddEntity(TreeDweller* dweller);
-	virtual void AddEntity(TreeDweller* dweller, s32 node);
+	virtual void AddEntity(TreeDweller* dweller, int32 node);
 	virtual void RemoveEntity(TreeDweller* dweller);
 
 	virtual void SetPosition(CU::Vector3f position);
 	virtual const CU::Vector3f& GetPosition() const;
 
-	virtual TreeNodeBase* GetChildByIndex(s32 index);
+	virtual TreeNodeBase* GetChildByIndex(int32 index);
 	virtual bool HasEntities();
 	virtual float GetHalfWidth() const;
 
 
 	virtual bool InsideNode(TreeDweller* dweller);
 
-	virtual void SetMemoryBlockIndex(s32 index);
-	virtual s32 GetMemoryBlockIndex();
+	virtual void SetMemoryBlockIndex(int32 index);
+	virtual int32 GetMemoryBlockIndex();
 
 	void ToggleRenderBox(bool v);
 
@@ -66,10 +66,10 @@ protected:
 
 	float m_HalfWidth = 0.f;
 	CU::Vector3f m_CenterPosition;
-	s32 m_Depth = 0;
-	s32 m_MemoryBlockIndex = 0;
+	int32 m_Depth = 0;
+	int32 m_MemoryBlockIndex = 0;
 
-	s32 m_DwellerCount = 0;
+	int32 m_DwellerCount = 0;
 
 
 

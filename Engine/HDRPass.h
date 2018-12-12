@@ -24,7 +24,7 @@ public:
 	void SetLUT(Texture* tex) { m_ColorGradingTex = tex; }
 private:
 	//void Downsample(IRenderTargetView* render_target, IShaderResourceView* source);
-	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], s32 resource_count);
+	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], int32 resource_count);
 
 
 	graphics::Viewport* m_DefaultViewport = nullptr;

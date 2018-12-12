@@ -56,7 +56,7 @@ bool Vulkan::CreateVKInstance()
 	instance_info.pNext = NULL;
 	instance_info.flags = 0;
 	instance_info.pApplicationInfo = &app_info;
-	instance_info.enabledExtensionCount = u32(extension.size());
+	instance_info.enabledExtensionCount = uint32(extension.size());
 	instance_info.ppEnabledExtensionNames = extension.data();
 	instance_info.enabledLayerCount = 0;
 	instance_info.ppEnabledLayerNames = NULL;
@@ -76,7 +76,7 @@ bool Vulkan::CreateVKInstance()
 bool Vulkan::EnumerateDevices()
 {
 
-	u32 device_count = 0;
+	uint32 device_count = 0;
 	VkResult result = vkEnumeratePhysicalDevices(*m_Instance, &device_count, NULL);
 	if (result != VK_SUCCESS)
 	{
@@ -98,14 +98,14 @@ bool Vulkan::EnumerateDevices()
 
 bool Vulkan::CreateDevice()
 {
-	u32 queue_family_count = 0;
+	uint32 queue_family_count = 0;
 	VkQueueFamilyProperties queue_properties;
 	memset(&queue_properties, 0, sizeof(VkQueueFamilyProperties));
 	vkGetPhysicalDeviceQueueFamilyProperties(*m_PhysDevice, &queue_family_count, &queue_properties);
 
 	VkDeviceQueueCreateInfo queue_info;
 	memset(&queue_info, 0, sizeof(VkDeviceQueueCreateInfo));
-	for (u32 i = 0; i < queue_family_count; i++)
+	for (uint32 i = 0; i < queue_family_count; i++)
 	{
 		if (queue_properties.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 		{
@@ -158,7 +158,7 @@ bool Vulkan::CreateDevice()
 	return true;
 }
 
-bool Vulkan::CreateCommandPool(u32 queue_family_index)
+bool Vulkan::CreateCommandPool(uint32 queue_family_index)
 {
 
 	m_CommandPool = new VkCommandPool;
@@ -229,7 +229,7 @@ bool Vulkan::CreateSwapchain(SwapchainCreateInfo& swapchain_create_info)
 	return true;
 }
 
-bool Vulkan::CreateSurface(u32 queue_family_index, u32 queue_family_count_in, SwapchainCreateInfo& swapchain_create_info)
+bool Vulkan::CreateSurface(uint32 queue_family_index, uint32 queue_family_count_in, SwapchainCreateInfo& swapchain_create_info)
 {
 	VkWin32SurfaceCreateInfoKHR create_info;
 	create_info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
@@ -258,7 +258,7 @@ bool Vulkan::GetPresentMode(SwapchainCreateInfo& swapchain_create_info)
 		return false;
 	}
 
-	u32 present_mode_count = 0;
+	uint32 present_mode_count = 0;
 	result = vkGetPhysicalDeviceSurfacePresentModesKHR(*m_PhysDevice, *m_Surface, &present_mode_count, NULL);
 	if (result != VK_SUCCESS)
 	{
@@ -308,7 +308,7 @@ bool Vulkan::GetPresentMode(SwapchainCreateInfo& swapchain_create_info)
 		swapchain_create_info.swapchain_extent = capabilities.currentExtent;
 	}
 
-	for (u32 i = 0; i < present_mode_count; i++)
+	for (uint32 i = 0; i < present_mode_count; i++)
 	{
 		if (present_modes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
 		{
@@ -361,7 +361,7 @@ bool Vulkan::CleanUp()
 	return true;
 }
 
-void Vulkan::Present(u8 anInterval, u8 flags)
+void Vulkan::Present(uint8 anInterval, uint8 flags)
 {
 
 }

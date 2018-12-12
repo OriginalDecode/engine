@@ -76,7 +76,7 @@ void TreeNodeBase::Update(float, bool)
 	if (!m_Dwellers.Empty() || HasEntities() || !m_Parent)
 		return;
 
-	for (s32 i = 0; i < 8; i++)
+	for (int32 i = 0; i < 8; i++)
 	{
 		if (m_Parent->GetChildByIndex(i) == this)
 		{
@@ -87,17 +87,17 @@ void TreeNodeBase::Update(float, bool)
 	}
 }
 
-void TreeNodeBase::SetDepth(s32 depth)
+void TreeNodeBase::SetDepth(int32 depth)
 {
 	m_Depth = depth;
 }
 
-s32 TreeNodeBase::GetDepth() const
+int32 TreeNodeBase::GetDepth() const
 {
 	return m_Depth;
 }
 
-void TreeNodeBase::AddChild(TreeNodeBase* child_node, s32 index)
+void TreeNodeBase::AddChild(TreeNodeBase* child_node, int32 index)
 {
 	if (child_node)
 	{
@@ -126,7 +126,7 @@ void TreeNodeBase::AddEntity(TreeDweller* dweller)
 
 }
 
-void TreeNodeBase::AddEntity(TreeDweller* dweller, s32 node)
+void TreeNodeBase::AddEntity(TreeDweller* dweller, int32 node)
 {
 	m_Children[node]->AddEntity(dweller);
 }
@@ -150,14 +150,14 @@ const CU::Vector3f& TreeNodeBase::GetPosition() const
 	return m_CenterPosition;
 }
 
-TreeNodeBase* TreeNodeBase::GetChildByIndex(s32 index)
+TreeNodeBase* TreeNodeBase::GetChildByIndex(int32 index)
 {
 	return m_Children[index];
 }
 
 bool TreeNodeBase::HasEntities()
 {
-	for (s32 i = 0; i < 8; i++)
+	for (int32 i = 0; i < 8; i++)
 	{
 		if (m_Children[i])
 		{
@@ -213,7 +213,7 @@ bool TreeNodeBase::InsideNode(TreeDweller* dweller)
 	return (left && right && bottom && top && front && back);
 }
 
-void TreeNodeBase::SetMemoryBlockIndex(s32 index)
+void TreeNodeBase::SetMemoryBlockIndex(int32 index)
 {
 	m_MemoryBlockIndex = index;
 #ifdef _PER_NODE_SYSTEM
@@ -292,7 +292,7 @@ void TreeNodeBase::RenderBox()
 	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
 }
 
-s32 TreeNodeBase::GetMemoryBlockIndex()
+int32 TreeNodeBase::GetMemoryBlockIndex()
 {
 	return m_MemoryBlockIndex;
 }

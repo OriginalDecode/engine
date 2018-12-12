@@ -92,7 +92,7 @@ namespace graphics
 		CreateDepthBuffer();
 		CreateBlendStates();
 
-		m_Viewport = CreateViewport((u16)m_CreateInfo.m_WindowWidth, (u16)m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+		m_Viewport = CreateViewport((uint16)m_CreateInfo.m_WindowWidth, (uint16)m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 		SetDefaultTargets();
 		m_Context->SetViewport(m_Viewport);
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -129,7 +129,7 @@ namespace graphics
 	}
 
 
-	void DirectX11::Present(u8 anInterval, u8 flags)
+	void DirectX11::Present(uint8 anInterval, uint8 flags)
 	{
 		HRESULT hr = m_Swapchain->Present(anInterval, flags);
 		ID3D11Device* device = static_cast<DX11Device*>(m_Device)->GetDevice();
@@ -180,8 +180,8 @@ namespace graphics
 		scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 		bool useVsync = false;
 
-		u32 numerator = 0;
-		u32 denominator = 1;
+		uint32 numerator = 0;
+		uint32 denominator = 1;
 
 		if (useVsync)
 			GetRefreshRate(numerator, denominator);
@@ -274,8 +274,8 @@ namespace graphics
 		SetDebugName(m_Context, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";
 		const std::string swapchainName = "DirectX11 Swapchain Object";
-		m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, u32(swapchainName.size()), swapchainName.c_str());
-		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
+		m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, uint32(swapchainName.size()), swapchainName.c_str());
+		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, uint32(deviceName.size()), deviceName.c_str());
 
 		m_Device = new DX11Device(pDevice);
 		m_Context = new DX11Context(pContext);
@@ -357,7 +357,7 @@ namespace graphics
 #endif
 	}
 
-	Viewport* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
+	Viewport* DirectX11::CreateViewport(uint16 width, uint16 height, float min_depth, float max_depth, uint16 top_left_x, uint16 top_left_y)
 	{
 		D3D11_VIEWPORT* new_viewport = new D3D11_VIEWPORT;
 
@@ -386,13 +386,13 @@ namespace graphics
 		}
 		SAFE_RELEASE(factory);
 
-		for (u32 i = 0; i < enumAdapter.size(); ++i)
+		for (uint32 i = 0; i < enumAdapter.size(); ++i)
 		{
 			DXGI_ADAPTER_DESC adapterDesc;
 			enumAdapter[i]->GetDesc(&adapterDesc);
 			WCHAR* temp = adapterDesc.Description;
 			//adapterDesc.DedicatedVideoMemory;
-			s8 dst[128];
+			int8 dst[128];
 			std::wcstombs(dst, temp, 128);
 			std::string actualString(dst);
 			myAdaptersName.push_back(actualString);
@@ -475,8 +475,8 @@ namespace graphics
 		scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 		bool useVsync = false;
 
-		u32 numerator = 0;
-		u32 denominator = 1;
+		uint32 numerator = 0;
+		uint32 denominator = 1;
 
 		if (useVsync)
 		{
@@ -509,7 +509,7 @@ namespace graphics
 		ID3D11Texture2D* _IDTex = static_cast<ID3D11Texture2D*>(pTexture->GetTexture());
 
 		const CU::Vector2f fPos = Engine::GetInstance()->GetInputHandle()->GetCursorPos();
-		const CU::Vector2i iPos = { (s32)fPos.x, (s32)fPos.y };
+		const CU::Vector2i iPos = { (int32)fPos.x, (int32)fPos.y };
 
 		RECT rect;
 		if (GetWindowRect(Engine::GetInstance()->GetHWND(), &rect))
@@ -534,12 +534,12 @@ namespace graphics
 		
 
 
-		region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
-		region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
+		region_box.bottom = cl::ClampI(iPos.y, 0, (int32)window_size.m_Height) + 1;
+		region_box.right = cl::ClampI(iPos.x, 0, (int32)window_size.m_Width) + 1;
 		region_box.back = 1;
 
-		region_box.top = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height);
-		region_box.left = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width);
+		region_box.top = cl::ClampI(iPos.y, 0, (int32)window_size.m_Height);
+		region_box.left = cl::ClampI(iPos.x, 0, (int32)window_size.m_Width);
 		region_box.front = 0;
 
 		ID3D11Texture2D * staging = nullptr;
@@ -550,7 +550,7 @@ namespace graphics
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
 		ASSERT(hr == S_OK, "Not ok pixel pick!");
-		u8 r, g, b, a;
+		uint8 r, g, b, a;
 		if (msr.pData)
 		{
 			float* data = (float*)msr.pData;
@@ -637,7 +637,7 @@ namespace graphics
 #endif
 	}
 
-	void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
+	void DirectX11::GetRefreshRate(uint32& aNumerator, uint32& aDenominator)
 	{
 		IDXGIFactory* factory;
 		IDXGIAdapter* adapter;
@@ -654,7 +654,7 @@ namespace graphics
 
 		for (unsigned int i = 0; i < numModes; ++i)
 		{
-			if (displayModeList[i].Width == (u32)m_CreateInfo.m_WindowWidth && displayModeList[i].Height == (u32)m_CreateInfo.m_WindowHeight)
+			if (displayModeList[i].Width == (uint32)m_CreateInfo.m_WindowWidth && displayModeList[i].Height == (uint32)m_CreateInfo.m_WindowHeight)
 			{
 				aNumerator = displayModeList[i].RefreshRate.Numerator;
 				aDenominator = displayModeList[i].RefreshRate.Denominator;
@@ -727,7 +727,7 @@ namespace graphics
 		}
 	}
 
-	DXGI_FORMAT DirectX11::GetFormat(s32 format)
+	DXGI_FORMAT DirectX11::GetFormat(int32 format)
 	{
 
 		//___________________________________________________
@@ -822,7 +822,7 @@ namespace graphics
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	D3D11_USAGE DirectX11::GetUsage(s32 usage)
+	D3D11_USAGE DirectX11::GetUsage(int32 usage)
 	{
 		if (usage == DEFAULT_USAGE)
 			return D3D11_USAGE_DEFAULT;
@@ -834,9 +834,9 @@ namespace graphics
 			return D3D11_USAGE_STAGING;
 	}
 
-	u32 DirectX11::GetBindFlag(s32 binding)
+	uint32 DirectX11::GetBindFlag(int32 binding)
 	{
-		u32 output = 0;
+		uint32 output = 0;
 
 		if (binding & graphics::BIND_VERTEX_BUFFER)
 			output |= D3D11_BIND_VERTEX_BUFFER;
@@ -863,9 +863,9 @@ namespace graphics
 		return output;
 	}
 
-	u32 DirectX11::GetCPUAccessFlag(s32 flags)
+	uint32 DirectX11::GetCPUAccessFlag(int32 flags)
 	{
-		u32 output = 0;
+		uint32 output = 0;
 
 		if (flags & eCPUAccessFlag::READ)
 			output |= D3D11_CPU_ACCESS_READ;
@@ -891,7 +891,7 @@ namespace graphics
 
 	D3D11_MAP DirectX11::GetMapping(eMapping mapping)
 	{
-		s32 _map = mapping + 1;
+		int32 _map = mapping + 1;
 		return static_cast<D3D11_MAP>(_map);
 	}
 

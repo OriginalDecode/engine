@@ -14,7 +14,7 @@ CModelImporter::CModelImporter()
 
 
 
-void CModelImporter::AddVertexNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+void CModelImporter::AddVertexNormalData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
 	newLayout.myType = ModelData::VERTEX_NORMAL;
@@ -26,7 +26,7 @@ void CModelImporter::AddVertexNormalData(u32 &stride, ModelData &data, u32 &size
 	size += polygonVertexCount * NORMAL_STRIDE;
 }
 
-void CModelImporter::AddUVData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+void CModelImporter::AddUVData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
 	newLayout.myType = ModelData::VERTEX_UV;
@@ -38,7 +38,7 @@ void CModelImporter::AddUVData(u32 &stride, ModelData &data, u32 &size, u32 poly
 	size += polygonVertexCount * UV_STRIDE;
 }
 
-void CModelImporter::AddTangentData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+void CModelImporter::AddTangentData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
 	newLayout.myType = ModelData::VERTEX_TANGENT;
@@ -50,7 +50,7 @@ void CModelImporter::AddTangentData(u32 &stride, ModelData &data, u32 &size, u32
 	size += polygonVertexCount * TANGENT_STRIDE;
 }
 
-void CModelImporter::AddBiNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+void CModelImporter::AddBiNormalData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
 	newLayout.myType = ModelData::VERTEX_BINORMAL;
@@ -65,10 +65,10 @@ void CModelImporter::AddBiNormalData(u32 &stride, ModelData &data, u32 &size, u3
 void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData& data, std::string file)
 {
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-	for (u32 i = 0; i < material->mNumProperties; i++)
+	for (uint32 i = 0; i < material->mNumProperties; i++)
 	{
 		aiMaterialProperty* prop = material->mProperties[i];
-		u32 type = prop->mSemantic;
+		uint32 type = prop->mSemantic;
 		aiString texture_file;
 		material->GetTexture(static_cast<aiTextureType>(type), 0, &texture_file);
 
@@ -170,7 +170,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 	}
 }
 
-void CModelImporter::AddVertexPositionData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+void CModelImporter::AddVertexPositionData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
 	newLayout.myType = ModelData::VERTEX_POS;
@@ -181,7 +181,7 @@ void CModelImporter::AddVertexPositionData(u32 &stride, ModelData &data, u32 &si
 	stride += VERTEX_STRIDE;
 }
 
-void CModelImporter::AddBoneData(u32& stride, ModelData& data, u32& size, u32 polygonVertexCount)
+void CModelImporter::AddBoneData(uint32& stride, ModelData& data, uint32& size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
 	newLayout.myType = ModelData::VERTEX_SKINWEIGHTS;

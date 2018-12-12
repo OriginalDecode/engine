@@ -54,7 +54,7 @@ void DebugSystem::Update(float /*dt*/, bool)
 	//}
 }
 
-void DebugSystem::HandleEvent(u64 event, void*)
+void DebugSystem::HandleEvent(uint64 event, void*)
 {
 	if (event == cl::Hash("pick_entity"))
 	{

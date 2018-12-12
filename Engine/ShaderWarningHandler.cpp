@@ -8,11 +8,11 @@
 std::string ShaderWarningHandler::CheckWarning(const std::string& aWarningMessage, const std::string& filepath)
 {
 	myFilepath = filepath;
-	s8 toFind[7] = { 'w', 'a', 'r', 'n','i','n','g' };
-	s8 toFind2[5] = { 'e','r','r','o','r' };
+	int8 toFind[7] = { 'w', 'a', 'r', 'n','i','n','g' };
+	int8 toFind2[5] = { 'e','r','r','o','r' };
 
-	s8 toFindLen = 7;
-	s8 toFindLen2 = 5;
+	int8 toFindLen = 7;
+	int8 toFindLen2 = 5;
 	auto warn = CreateMessage(toFind, toFindLen, aWarningMessage);
 	std::string toReturn = std::get<1>(warn);
 	if (!std::get<0>(warn))
@@ -51,12 +51,12 @@ CU::GrowingArray<std::string> ShaderWarningHandler::ParseFile(const std::string&
 	return file;
 }
 
-u32 ShaderWarningHandler::CountWord(char* aWord, s32 aWordLength, const std::string& aMessage)
+uint32 ShaderWarningHandler::CountWord(char* aWord, int32 aWordLength, const std::string& aMessage)
 {
-	s32 strLen = s32(aMessage.length());
-	s32 i = 0;
-	s32 j = 0;
-	s32 wordCount = 0;
+	int32 strLen = int32(aMessage.length());
+	int32 i = 0;
+	int32 j = 0;
+	int32 wordCount = 0;
 	while (i < strLen)
 	{
 		if (aMessage[i] == aWord[0])
@@ -84,17 +84,17 @@ u32 ShaderWarningHandler::CountWord(char* aWord, s32 aWordLength, const std::str
 	return wordCount;
 }
 
-std::tuple<bool, std::string> ShaderWarningHandler::CreateMessage(char* aWordToFind, s8 aWordLength, const std::string& aMessage)
+std::tuple<bool, std::string> ShaderWarningHandler::CreateMessage(char* aWordToFind, int8 aWordLength, const std::string& aMessage)
 {
 
 	std::tuple<std::pair<bool, std::string>> toReturn;
 
-	u32 wordCount = CountWord(aWordToFind, aWordLength, aMessage);
+	uint32 wordCount = CountWord(aWordToFind, aWordLength, aMessage);
 	if (wordCount > 0)
 	{
-		CU::GrowingArray<u32> warningLines;
+		CU::GrowingArray<uint32> warningLines;
 		std::string toCut = aMessage;
-		for (u32 m = 0; m < wordCount; m++)
+		for (uint32 m = 0; m < wordCount; m++)
 		{
 			toCut = substr(toCut, aWordToFind, true, 0);
 			std::string split2 = substr(toCut, "(", false, 0);
@@ -111,7 +111,7 @@ std::tuple<bool, std::string> ShaderWarningHandler::CreateMessage(char* aWordToF
 		outPath.erase(0, 1);
 		std::string errorMessage(outPath);
 		errorMessage += " has generated warnings.\n";
-		for (s32 l = 0; l < warningLines.Size(); l++)
+		for (int32 l = 0; l < warningLines.Size(); l++)
 		{
 			if (l - 1 > 0)
 			{

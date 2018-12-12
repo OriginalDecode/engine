@@ -7,9 +7,9 @@ namespace memory
 	{
 	public:
 		LinearAllocator() = default;
-		LinearAllocator(s32 size_in_bytes, void* start);
+		LinearAllocator(int32 size_in_bytes, void* start);
 
-		void* Alloc(s32 size_in_bytes, u8 alignment = sizeof(void*)) override;
+		void* Alloc(int32 size_in_bytes, uint8 alignment = sizeof(void*)) override;
 		void CleanUp() override;
 		void clear();
 	private:

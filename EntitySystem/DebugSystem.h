@@ -18,7 +18,7 @@ public:
 	~DebugSystem();
 	void Update(float dt, bool paused) override;
 private:
-	void HandleEvent(u64 event, void* data = nullptr) override;
+	void HandleEvent(uint64 event, void* data = nullptr) override;
 	void ReceiveMessage(const OnLeftClick& message) override;
 
 	void UpdateOBBs();
@@ -32,8 +32,8 @@ private:
 		CU::Vector3f m_Position;
 	};
 	float m_MouseDeltaModifier = 1.f;
-	s32 m_PrevID;
-	s32 m_CurrentEntity;
+	int32 m_PrevID;
+	int32 m_CurrentEntity;
 	bool m_Holding = false;
 	GizmoHandle* m_Direction = nullptr;
 	std::string current_model;

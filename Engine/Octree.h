@@ -20,11 +20,11 @@ public:
 private:
 	CU::TimeManager m_Timer;
 	bool m_Paused = false;
-	void MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth);
-	void InsertDweller(TreeNodeBase* node, TreeDweller* dweller, s32 depth);
+	void MoveDown(TreeNodeBase* node, TreeDweller* dweller, int32 depth);
+	void InsertDweller(TreeNodeBase* node, TreeDweller* dweller, int32 depth);
 
-	TreeNodeBase* CreateNode(const CU::Vector3f& center, float halfwidth, s32 index, s32 depth);
-	void MoveUp(TreeNodeBase* node, TreeDweller* dweller, s32 depth);
+	TreeNodeBase* CreateNode(const CU::Vector3f& center, float halfwidth, int32 index, int32 depth);
+	void MoveUp(TreeNodeBase* node, TreeDweller* dweller, int32 depth);
 
 	void ToDelete(TreeNodeBase* node);
 	CU::GrowingArray<TreeNodeBase*> m_GarbageNodes;

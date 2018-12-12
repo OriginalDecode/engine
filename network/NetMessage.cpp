@@ -16,11 +16,11 @@ void NetMessage::PackMessage()
 	Serialize(m_Stream);
 }
 
-void NetMessage::UnpackMessage(s8* message, s32 length)
+void NetMessage::UnpackMessage(int8* message, int32 length)
 {
 	if(length > 0)
 	{
-		for(s32 i = 0; i < length; i++)
+		for(int32 i = 0; i < length; i++)
 		{
 			 m_Stream.push_back(message[i]);
 		}
@@ -30,7 +30,7 @@ void NetMessage::UnpackMessage(s8* message, s32 length)
 
 bool NetMessage::IsType(eNetMessageType message_type)
 {
-	return (m_MessageType == (u64)message_type);
+	return (m_MessageType == (uint64)message_type);
 }
 
 void NetMessage::Serialize(StreamType& stream)

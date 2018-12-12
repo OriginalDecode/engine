@@ -38,7 +38,7 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 
-	ModelCommand(u64 key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(uint64 key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
@@ -46,7 +46,7 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 
-	ModelCommand(u64 model_key, u64 material_key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(uint64 model_key, uint64 material_key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Key(model_key)
 		, m_MaterialKey(material_key)
@@ -56,7 +56,7 @@ struct ModelCommand : public RenderCommand
 	}
 
 #ifdef _DEBUG
-	ModelCommand(u64 model_key, u64 material_key, const CU::Matrix44f& orientation, bool wireframe, u32 entity_id)
+	ModelCommand(uint64 model_key, uint64 material_key, const CU::Matrix44f& orientation, bool wireframe, uint32 entity_id)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Key(model_key)
 		, m_MaterialKey(material_key)
@@ -69,7 +69,7 @@ struct ModelCommand : public RenderCommand
 
 
 
-	ModelCommand(u64 key, const CU::Vector3f& position, bool wireframe)
+	ModelCommand(uint64 key, const CU::Vector3f& position, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -77,7 +77,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	ModelCommand(u64 key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
+	ModelCommand(uint64 key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -87,7 +87,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	ModelCommand(u64 key, u64 material_key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness)
+	ModelCommand(uint64 key, uint64 material_key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -98,7 +98,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	ModelCommand(u64 key, u64 material_key, const CU::Vector3f& position, bool wireframe)
+	ModelCommand(uint64 key, uint64 material_key, const CU::Vector3f& position, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -107,21 +107,21 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	u64 m_Key = 0;
-	u64 m_MaterialKey = 0;
+	uint64 m_Key = 0;
+	uint64 m_MaterialKey = 0;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
 	float m_Roughness = 0.f;
 	float m_Metalness = 0.f;
 #ifdef _DEBUG
-	u32 m_EntityID = 0;
+	uint32 m_EntityID = 0;
 #endif
 
 };
 
 struct ModelCommandNonDeferred : public ModelCommand
 {
-	ModelCommandNonDeferred(const u64& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommandNonDeferred(const uint64& key, const CU::Matrix44f& orientation, bool wireframe)
 		: ModelCommand(key, orientation, wireframe)
 	{
 	}
@@ -129,20 +129,20 @@ struct ModelCommandNonDeferred : public ModelCommand
 
 struct ShadowCommand : public RenderCommand
 {
-	ShadowCommand(u64 key, const CU::Matrix44f& orientation)
+	ShadowCommand(uint64 key, const CU::Matrix44f& orientation)
 		: RenderCommand(eCommandType::SHADOW)
 		, m_Orientation(orientation)
 		, m_Key(key)
 	{
 	}
 
-	u64 m_Key;
+	uint64 m_Key;
 	CU::Matrix44f m_Orientation;
 };
 
 struct SpotlightCommand : public RenderCommand
 {
-	SpotlightCommand(s32 light_id, float angle, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation, bool shadow_casting)
+	SpotlightCommand(int32 light_id, float angle, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation, bool shadow_casting)
 		: RenderCommand(eCommandType::SPOTLIGHT)
 		, m_LightID(light_id)
 		, m_Angle(angle)
@@ -159,13 +159,13 @@ struct SpotlightCommand : public RenderCommand
 	float m_Intensity = 0.f;
 	CU::Vector4f m_Color;
 	CU::Matrix44f m_Orientation;
-	s32 m_LightID = 0;
+	int32 m_LightID = 0;
 	bool m_ShadowCasting = false;
 };
 
 struct PointlightCommand : public RenderCommand
 {
-	PointlightCommand(s32 light_id, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation)
+	PointlightCommand(int32 light_id, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation)
 		: RenderCommand(eCommandType::POINTLIGHT)
 		, m_LightID(light_id)
 		, m_Range(range)
@@ -179,19 +179,19 @@ struct PointlightCommand : public RenderCommand
 	float m_Intensity = 0.f;
 	CU::Vector4f m_Color;
 	CU::Matrix44f m_Orientation;
-	s32 m_LightID = 0;
+	int32 m_LightID = 0;
 };
 
 struct SpriteCommand : public RenderCommand
 {
-	SpriteCommand(u64& key, const CU::Vector2f& position)
+	SpriteCommand(uint64& key, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
 		, m_Key ( key )
 		, m_Position ( position ) 
 	{
 	}
 
-	u64 m_Key;
+	uint64 m_Key;
 	CU::Vector2f m_Position;
 };
 

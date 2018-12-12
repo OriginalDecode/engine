@@ -260,7 +260,7 @@ namespace graphics
 		return static_cast<ITexture2D*>(texture);
 	}
 
-	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const std::string& debug_name)
+	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, int8* data, int32 pitch, const std::string& debug_name)
 	{
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = desc.m_Width;
@@ -351,10 +351,10 @@ namespace graphics
 		return static_cast<IDepthStencilView*>(dsv);
 	}
 
-	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, const InputElementDesc* const pLayout, const s32 element_count)
+	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, const InputElementDesc* const pLayout, const int32 element_count)
 	{
 		D3D11_INPUT_ELEMENT_DESC *desc = new D3D11_INPUT_ELEMENT_DESC[element_count];
-		for (s32 i = 0; i < element_count; i++)
+		for (int32 i = 0; i < element_count; i++)
 		{
 			const InputElementDesc& el = pLayout[i];
 			D3D11_INPUT_ELEMENT_DESC& desc_el = desc[i];
@@ -427,7 +427,7 @@ namespace graphics
 		return buffer;
 	}
 
-	IBuffer* DX11Device::CreateConstantBuffer(const s32 size, const std::string& debug_name)
+	IBuffer* DX11Device::CreateConstantBuffer(const int32 size, const std::string& debug_name)
 	{
 		ASSERT(size >= 16, "Size of buffer must be 16 or more");
 		BufferDesc desc;
@@ -501,7 +501,7 @@ namespace graphics
 
 	}
 
-	IShaderBlob* DX11Device::CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type)
+	IShaderBlob* DX11Device::CompileShaderFromMemory(const int8* pData, int32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type)
 	{
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
@@ -548,14 +548,14 @@ namespace graphics
 		D3D11_SHADER_DESC shader_desc;
 
 		pReflector->GetDesc(&shader_desc);
-		s32 input_count = shader_desc.InputParameters;
+		int32 input_count = shader_desc.InputParameters;
 
-		const u64 compare0 = cl::Hash("INSTANCE");
-		for (s32 i = 0; i < shader_desc.InputParameters; i++)
+		const uint64 compare0 = cl::Hash("INSTANCE");
+		for (int32 i = 0; i < shader_desc.InputParameters; i++)
 		{
 			D3D11_SIGNATURE_PARAMETER_DESC param_desc;
 			pReflector->GetInputParameterDesc(i, &param_desc);
-			const u64 semantic_hash = cl::Hash(param_desc.SemanticName);
+			const uint64 semantic_hash = cl::Hash(param_desc.SemanticName);
 			if (semantic_hash == compare0)
 				return true;
 		}

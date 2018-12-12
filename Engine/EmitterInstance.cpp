@@ -94,12 +94,12 @@ void CEmitterInstance::CreateBuffer()
 
 	IInputLayout* pLayout = device.CreateInputLayout(myData.shader->GetVertexShader(), layout, ARRSIZE(layout));
 
-	const s32 vtx_stride = sizeof(SParticleObject);
-	const s32 vtx_start_slot = 0;
-	const s32 vtx_byte_offset = 0;
-	const s32 vtx_buffer_count = 1;
-	const s32 vtx_byte_width = vtx_stride * myParticles.Capacity();
-	const s32 vtx_count = myParticles.Capacity();
+	const int32 vtx_stride = sizeof(SParticleObject);
+	const int32 vtx_start_slot = 0;
+	const int32 vtx_byte_offset = 0;
+	const int32 vtx_buffer_count = 1;
+	const int32 vtx_byte_width = vtx_stride * myParticles.Capacity();
+	const int32 vtx_count = myParticles.Capacity();
 
 	graphics::BufferDesc vtx_buff_desc;
 	vtx_buff_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;

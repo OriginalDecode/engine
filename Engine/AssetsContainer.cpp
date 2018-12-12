@@ -37,7 +37,7 @@ void AssetsContainer::Initiate()
 
 	HashType mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/deferred_base.json", false);
 	mod_key = LoadModel<Model>("data/exported/cube_100x100.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	u64 mat_key = LoadMaterial("Data/Material/mat_default.json");
+	uint64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
 
 	RefPointer<Model> model = GetModel<Model>(mod_key.m_Hash);
@@ -51,7 +51,7 @@ void AssetsContainer::Initiate()
 #endif
 }
 
-Texture* AssetsContainer::GetTexture(u64 key)
+Texture* AssetsContainer::GetTexture(uint64 key)
 {
 	auto it = m_Textures.find(key);
 
@@ -61,7 +61,7 @@ Texture* AssetsContainer::GetTexture(u64 key)
 	return nullptr;
 }
 
-Effect* AssetsContainer::GetEffect(u64 key)
+Effect* AssetsContainer::GetEffect(uint64 key)
 {
 	auto it = m_Effects.find(key);
 
@@ -73,7 +73,7 @@ Effect* AssetsContainer::GetEffect(u64 key)
 
 
 
-Material* AssetsContainer::GetMaterial(u64 key)
+Material* AssetsContainer::GetMaterial(uint64 key)
 {
 	auto it = m_Materials.find(key);
 	if (it != m_Materials.end())
@@ -82,12 +82,12 @@ Material* AssetsContainer::GetMaterial(u64 key)
 	return nullptr;
 }
 
-Model* AssetsContainer::GetModelDirect(u64 key)
+Model* AssetsContainer::GetModelDirect(uint64 key)
 {
 	return GetModel<Model>(key).GetData();
 }
 
-Sprite* AssetsContainer::GetSprite(u64 key)
+Sprite* AssetsContainer::GetSprite(uint64 key)
 {
 	auto it = m_Sprites.find(key);
 
@@ -109,7 +109,7 @@ void AssetsContainer::ReloadTexture(Texture* texture)
 {
 }
 
-void AssetsContainer::AddTexture(Texture* pTexture, u64 key)
+void AssetsContainer::AddTexture(Texture* pTexture, uint64 key)
 {
 	if (m_Textures.find(key) == m_Textures.end())
 	{
@@ -118,12 +118,12 @@ void AssetsContainer::AddTexture(Texture* pTexture, u64 key)
 	}
 }
 
-u64 AssetsContainer::LoadTexture(std::string filepath, bool make_mips)
+uint64 AssetsContainer::LoadTexture(std::string filepath, bool make_mips)
 {
 	static Ticket_Mutex texture_mutex;
 	BeginTicketMutex(&texture_mutex);
 
-	u64 hash = cl::Hash(filepath.c_str());
+	uint64 hash = cl::Hash(filepath.c_str());
 
 	if (m_Textures.find(hash) == m_Textures.end())
 	{
@@ -154,12 +154,12 @@ u64 AssetsContainer::LoadTexture(std::string filepath, bool make_mips)
 	return hash;
 }
 
-u64 AssetsContainer::LoadEffect(std::string filepath)
+uint64 AssetsContainer::LoadEffect(std::string filepath)
 {
 	static Ticket_Mutex effect_mutex;
 	BeginTicketMutex(&effect_mutex);
 
-	u64 hash = cl::Hash(filepath.c_str());
+	uint64 hash = cl::Hash(filepath.c_str());
 	if (m_Effects.find(hash) == m_Effects.end())
 	{
 		Effect* effect = new Effect(filepath);
@@ -173,12 +173,12 @@ u64 AssetsContainer::LoadEffect(std::string filepath)
 	return hash;
 }
 
-u64 AssetsContainer::LoadSprite(std::string path)
+uint64 AssetsContainer::LoadSprite(std::string path)
 {
 	static Ticket_Mutex sprite_mutex;
 	BeginTicketMutex(&sprite_mutex);
 
-	u64 hash = cl::Hash(path.c_str());
+	uint64 hash = cl::Hash(path.c_str());
 	if (m_Sprites.find(hash) == m_Sprites.end())
 	{
 		Sprite* sprite = new Sprite;
@@ -192,12 +192,12 @@ u64 AssetsContainer::LoadSprite(std::string path)
 	return hash;
 }
 
-u64 AssetsContainer::LoadMaterial(std::string path)
+uint64 AssetsContainer::LoadMaterial(std::string path)
 {
 	static Ticket_Mutex material_mutex;
 	BeginTicketMutex(&material_mutex);
 
-	u64 hash = cl::Hash(path.c_str());
+	uint64 hash = cl::Hash(path.c_str());
 	if (m_Materials.find(hash) == m_Materials.end())
 	{
 		Material* material = new Material(hash);
@@ -213,7 +213,7 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 	return hash;
 }
 
-u64 AssetsContainer::LoadShader(std::string path, std::string entrypoint)
+uint64 AssetsContainer::LoadShader(std::string path, std::string entrypoint)
 {
 	return m_ShaderFactory->LoadShader(path, entrypoint);
 }
@@ -223,7 +223,7 @@ CompiledShader* AssetsContainer::GetShader(const char* key) const
 	return GetShader(cl::Hash(key));
 }
 
-CompiledShader* AssetsContainer::GetShader(const u64 key) const
+CompiledShader* AssetsContainer::GetShader(const uint64 key) const
 {
 	return m_ShaderFactory->GetShader(key);
 }

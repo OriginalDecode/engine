@@ -27,7 +27,7 @@ public:
 	void Render(bool render_through) override;
 	void Update(float aDeltaTime) override;
 
-	void HandleEvent(u64 event, void* data) override;
+	void HandleEvent(uint64 event, void* data) override;
 
 	void Initiate(const std::string& level);
 

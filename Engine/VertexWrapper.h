@@ -8,13 +8,13 @@ class VertexWrapper
 	friend class CModelImporter;
 public:
 	VertexWrapper() = default;
-	VertexWrapper(s8* data,
-				  s32 vertex_start, 
-				  s32 buffer_count, 
-				  s32 stride, 
-				  s32 byte_offset, 
-				  s32 vertex_count, 
-				  s32 size, 
+	VertexWrapper(int8* data,
+				  int32 vertex_start, 
+				  int32 buffer_count, 
+				  int32 stride, 
+				  int32 byte_offset, 
+				  int32 vertex_count, 
+				  int32 size, 
 				  IBuffer* vertex_buffer, 
 				  IInputLayout* input_layout, 
 				  graphics::eTopology topology)
@@ -45,25 +45,25 @@ public:
 		SAFE_DELETE(m_Data);
 	}
 
-	void SetData(s8* data) { m_Data = data; }
-	s8* GetData() const { return m_Data; }
+	void SetData(int8* data) { m_Data = data; }
+	int8* GetData() const { return m_Data; }
 
-	void SetStart(s32 start) { m_Start = start; }
-	s32 GetStart() const { return m_Start; }
+	void SetStart(int32 start) { m_Start = start; }
+	int32 GetStart() const { return m_Start; }
 
-	void SetStride(s32 stride) { m_Stride = stride; }
-	const u32& GetStride() const { return m_Stride; }
+	void SetStride(int32 stride) { m_Stride = stride; }
+	const uint32& GetStride() const { return m_Stride; }
 
-	void SetByteOffset(s32 byte_offset) { m_ByteOffset = byte_offset; }
-	const u32& GetByteOffset() const { return m_ByteOffset; }
+	void SetByteOffset(int32 byte_offset) { m_ByteOffset = byte_offset; }
+	const uint32& GetByteOffset() const { return m_ByteOffset; }
 
-	void SetVertexCount(s32 vertex_count) { m_VertexCount = vertex_count; }
-	s32 GetVertexCount() const { return m_VertexCount; }
+	void SetVertexCount(int32 vertex_count) { m_VertexCount = vertex_count; }
+	int32 GetVertexCount() const { return m_VertexCount; }
 
-	s32 GetBufferCount() const { return m_BufferCount; }
+	int32 GetBufferCount() const { return m_BufferCount; }
 
-	void SetSize(s32 size) { m_Size = size; }
-	s32 GetSize() const { return m_Size; }
+	void SetSize(int32 size) { m_Size = size; }
+	int32 GetSize() const { return m_Size; }
 
 	void SetBuffer(IBuffer* buffer);
 	IBuffer* GetVertexBuffer() { return m_VertexBuffer; }
@@ -81,13 +81,13 @@ public:
 
 private:
 
-	s8* m_Data = nullptr;
-	s32 m_Start = 0;
-	s32 m_BufferCount = 0;
-	s32 m_Stride = 0;
-	s32 m_ByteOffset = 0;
-	s32 m_VertexCount = 0;
-	s32 m_Size = 0;
+	int8* m_Data = nullptr;
+	int32 m_Start = 0;
+	int32 m_BufferCount = 0;
+	int32 m_Stride = 0;
+	int32 m_ByteOffset = 0;
+	int32 m_VertexCount = 0;
+	int32 m_Size = 0;
 	IBuffer* m_VertexBuffer = nullptr;
 	IInputLayout* m_VertexInputLayout = nullptr;
 	graphics::eTopology m_Topology = graphics::TRIANGLE_LIST;

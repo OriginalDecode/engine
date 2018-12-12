@@ -129,7 +129,7 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 	}
 }
 
-void Texture::InitiateAsDepthStencil(s32 width, s32 height, const std::string& debug_name)
+void Texture::InitiateAsDepthStencil(int32 width, int32 height, const std::string& debug_name)
 {
 	TextureDesc desc;
 	desc.m_Width = width;
@@ -144,7 +144,7 @@ void Texture::InitiateAsDepthStencil(s32 width, s32 height, const std::string& d
 	Initiate(desc, debug_name);
 }
 
-void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name)
+void Texture::InitiateAsRenderTarget(int32 width, int32 height, const std::string& debug_name)
 {
 	TextureDesc desc;
 	desc.m_Width = width;
@@ -159,16 +159,16 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 
 }
 
-void Texture::CreateTextureArray(const char* paths[], const s32 num_tex, const char* filename)
+void Texture::CreateTextureArray(const char* paths[], const int32 num_tex, const char* filename)
 {
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
 
-	const u32 tex_count = num_tex;
+	const uint32 tex_count = num_tex;
 	CU::GrowingArray<ID3D11ShaderResourceView*> src(tex_count);
 
-	for (u32 i = 0; i < tex_count; i++)
+	for (uint32 i = 0; i < tex_count; i++)
 	{
 		IShaderResourceView* srv = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
 		src.Add(static_cast<ID3D11ShaderResourceView*>(srv));
@@ -197,7 +197,7 @@ void Texture::CreateTextureArray(const char* paths[], const s32 num_tex, const c
 	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
 	ASSERT(hr == S_OK, "Failed to Create texture");
 
-	for (u32 i = 0; i < tex_count; i++)
+	for (uint32 i = 0; i < tex_count; i++)
 	{
 		ID3D11Resource* texture_resource = nullptr;
 		src[i]->GetResource(&texture_resource);
@@ -223,16 +223,16 @@ void Texture::CreateTextureArray(const char* paths[], const s32 num_tex, const c
 	ctx->Release();
 }
 
-void Texture::CreateTextureArray(Texture* textures[], const s32 num_tex, const char* filename)
+void Texture::CreateTextureArray(Texture* textures[], const int32 num_tex, const char* filename)
 {
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
 
-	const u32 tex_count = num_tex;
+	const uint32 tex_count = num_tex;
 	CU::GrowingArray<ID3D11ShaderResourceView*> src(tex_count);
 
-	for (u32 i = 0; i < tex_count; i++)
+	for (uint32 i = 0; i < tex_count; i++)
 	{
 		IShaderResourceView* srv = textures[i]->GetShaderView();//Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
 		src.Add(static_cast<ID3D11ShaderResourceView*>(srv));
@@ -262,12 +262,12 @@ void Texture::CreateTextureArray(Texture* textures[], const s32 num_tex, const c
 	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
 	ASSERT(hr == S_OK, "Failed to Create texture");
 
-	for (u32 i = 0; i < tex_count; i++)
+	for (uint32 i = 0; i < tex_count; i++)
 	{
 		ID3D11Resource* texture_resource = nullptr;
 		src[i]->GetResource(&texture_resource);
 		//target, index, x,y,z, resource, index, optional box
-		for (u32 j = 0; j < desc.MipLevels; j++)
+		for (uint32 j = 0; j < desc.MipLevels; j++)
 		{
 
 			ctx->CopySubresourceRegion(texArray, (i * desc.MipLevels) + j, 0, 0, 0, texture_resource, j, nullptr);
@@ -292,7 +292,7 @@ void Texture::CreateTextureArray(Texture* textures[], const s32 num_tex, const c
 	ctx->Release();
 }
 
-void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32, const char*)
+void Texture::Create3DTexture(const char* path, int32 slice_width, int32 slice_height, int32, const char*)
 {
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
@@ -306,7 +306,7 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	ID3D11Resource* resource = nullptr;
 	_tex->GetResource(&resource);
 	((ID3D11Texture2D*)resource)->GetDesc(&desc);
-	s32 width_count, height_count;
+	int32 width_count, height_count;
 
 	width_count = desc.Width / slice_width;
 	height_count = (desc.Height / slice_height);
@@ -326,10 +326,10 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	HRESULT hr = device->CreateTexture3D(&_3Ddesc, nullptr, &tex);
 	ASSERT(hr == S_OK, "Failed to Create tex");
 
-	s32 z = 0;
-	for (s32 y = 0; y < height_count; y++)
+	int32 z = 0;
+	for (int32 y = 0; y < height_count; y++)
 	{
-		for (s32 x = 0; x < width_count; x++)
+		for (int32 x = 0; x < width_count; x++)
 		{
 			D3D11_BOX region_box;
 			region_box.front = 0;

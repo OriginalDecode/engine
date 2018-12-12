@@ -19,7 +19,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
+	void DX11Context::VSSetShaderResource(int32 start_slot, int32 count, void* resources)
 	{
 		if (resources)
 		{
@@ -33,7 +33,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::PSSetShaderResource(s32 start_slot, s32 count, void* resources)
+	void DX11Context::PSSetShaderResource(int32 start_slot, int32 count, void* resources)
 	{
 		if (resources)
 		{
@@ -47,7 +47,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::GSSetShaderResource(s32 start_slot, s32 count, void* resources)
+	void DX11Context::GSSetShaderResource(int32 start_slot, int32 count, void* resources)
 	{
 		if (resources)
 		{
@@ -61,7 +61,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::DSSetShaderResource(s32 start_slot, s32 count, void* resources)
+	void DX11Context::DSSetShaderResource(int32 start_slot, int32 count, void* resources)
 	{
 		if (resources)
 		{
@@ -76,7 +76,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::HSSetShaderResource(s32 start_slot, s32 count, void* resources)
+	void DX11Context::HSSetShaderResource(int32 start_slot, int32 count, void* resources)
 	{
 		if (resources)
 		{
@@ -91,7 +91,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::CSSetShaderResource(s32 start_slot, s32 count, void* resources)
+	void DX11Context::CSSetShaderResource(int32 start_slot, int32 count, void* resources)
 	{
 		if (resources)
 		{
@@ -178,109 +178,109 @@ namespace graphics
 
 	//_______________________________________________________________________
 
-	void DX11Context::VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
+	void DX11Context::VSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer)
 	{
 		m_Context->VSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
+	void DX11Context::PSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer)
 	{
 		m_Context->PSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
+	void DX11Context::GSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer)
 	{
 		m_Context->GSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::HSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
+	void DX11Context::HSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer)
 	{
 		m_Context->HSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::DSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
+	void DX11Context::DSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer)
 	{
 		m_Context->DSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::CSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
+	void DX11Context::CSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer)
 	{
 		m_Context->CSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
+	void DX11Context::VSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->VSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::VSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	void DX11Context::VSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate)
 	{
 		VSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
+	void DX11Context::PSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->PSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	void DX11Context::PSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate)
 	{
 		PSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
+	void DX11Context::GSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->GSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	void DX11Context::GSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate)
 	{
 		GSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
+	void DX11Context::HSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->HSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::HSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	void DX11Context::HSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate)
 	{
 		HSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
+	void DX11Context::DSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->DSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::DSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	void DX11Context::DSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate)
 	{
 		DSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
+	void DX11Context::CSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->CSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::CSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	void DX11Context::CSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate)
 	{
 		CSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
@@ -298,7 +298,7 @@ namespace graphics
 		m_Context->IASetPrimitiveTopology(d3d_topology);
 	}
 
-	void DX11Context::OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv)
+	void DX11Context::OMSetRenderTargets(int32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv)
 	{
 		m_Context->OMSetRenderTargets(num_views,
 									  static_cast<ID3D11RenderTargetView*const*>(render_targets),
@@ -306,13 +306,13 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv)
+	void DX11Context::OMSetRenderTargets(int32 num_views, Texture* render_targets, Texture* dsv)
 	{
 		OMSetRenderTargets(num_views, render_targets->GetRenderTargetView(), dsv->GetDepthStencilView());
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer)
+	void DX11Context::UpdateConstantBuffer(IBuffer*& dest, void* src, int32 size, int32 byte_place_in_buffer)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -321,14 +321,14 @@ namespace graphics
 
 		if (msr.pData)
 		{
-			s8* data = static_cast<s8*>(msr.pData);
-			memcpy(&data[byte_place_in_buffer], static_cast<s8*>(src), size);
+			int8* data = static_cast<int8*>(msr.pData);
+			memcpy(&data[byte_place_in_buffer], static_cast<int8*>(src), size);
 		}
 		m_Context->Unmap(buffer, 0);
 	}
 	//_______________________________________________________________________
 
-	s8* DX11Context::Map(IBuffer* in_buffer)
+	int8* DX11Context::Map(IBuffer* in_buffer)
 	{
 		PROFILE_FUNCTION(profiler::colors::Orange);
 		D3D11_MAPPED_SUBRESOURCE msr; //can I do this?
@@ -337,7 +337,7 @@ namespace graphics
 		HRESULT hr = m_Context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		DirectX11::HandleErrors(hr, "Failed to map buffer");
 
-		return static_cast<s8*>(msr.pData);
+		return static_cast<int8*>(msr.pData);
 	}
 	//_______________________________________________________________________
 
@@ -359,7 +359,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth)
+	void DX11Context::ClearDepthStencilView(IDepthStencilView* dsv, int32 clear_flag, int32 max_depth)
 	{
 		m_Context->ClearDepthStencilView(static_cast<ID3D11DepthStencilView*>(dsv), clear_flag, max_depth, 0);
 	}
@@ -372,8 +372,8 @@ namespace graphics
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
-		const u32 stride = vtx.GetStride();
-		const u32 offset = vtx.GetByteOffset();
+		const uint32 stride = vtx.GetStride();
+		const uint32 offset = vtx.GetByteOffset();
 
 		m_Context->IASetVertexBuffers(0,
 									  1,
@@ -394,8 +394,8 @@ namespace graphics
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 
-		u32 stride = vtx.GetStride();
-		u32 offset = vtx.GetByteOffset();
+		uint32 stride = vtx.GetStride();
+		uint32 offset = vtx.GetByteOffset();
 		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
@@ -418,8 +418,8 @@ namespace graphics
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 
-		u32 stride = vtx.GetStride();
-		u32 offset = vtx.GetByteOffset();
+		uint32 stride = vtx.GetStride();
+		uint32 offset = vtx.GetByteOffset();
 		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
@@ -443,8 +443,8 @@ namespace graphics
 		IASetTopology(vtx.GetTopology());
 
 		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
-		const u32 stride = vtx.GetStride();
-		const u32 offset = vtx.GetByteOffset();
+		const uint32 stride = vtx.GetStride();
+		const uint32 offset = vtx.GetByteOffset();
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),
@@ -473,8 +473,8 @@ namespace graphics
 
 
 		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
-		const u32 stride = vtx.GetStride();
-		const u32 offset = vtx.GetByteOffset();
+		const uint32 stride = vtx.GetStride();
+		const uint32 offset = vtx.GetByteOffset();
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),
@@ -504,8 +504,8 @@ namespace graphics
 		IASetTopology(vtx.GetTopology());
 
 		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
-		const u32 stride = vtx.GetStride();
-		const u32 offset = vtx.GetByteOffset();
+		const uint32 stride = vtx.GetStride();
+		const uint32 offset = vtx.GetByteOffset();
 		
 		m_Context->IASetVertexBuffers(0,
 									  1,
@@ -515,7 +515,7 @@ namespace graphics
 
 		ID3D11Buffer* pBuffer = static_cast<ID3D11Buffer*>(idx.GetIndexBuffer());
 		const DXGI_FORMAT format = DirectX11::GetFormat(idx.GetFormat());
-		const u32 idx_offset = idx.GetByteOffset();
+		const uint32 idx_offset = idx.GetByteOffset();
 
 		m_Context->IASetIndexBuffer(pBuffer,
 									format,
@@ -525,13 +525,13 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth)
+	void DX11Context::SetDepthState(IDepthStencilState* pDepthStencilState, int32 max_depth)
 	{
 		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(pDepthStencilState), max_depth);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::SetDepthState(eDepthStencilState depth_state, s32 max_depth)
+	void DX11Context::SetDepthState(eDepthStencilState depth_state, int32 max_depth)
 	{
 		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(m_DepthStencilStates[depth_state]), max_depth);
 	}
@@ -549,7 +549,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask)
+	void DX11Context::SetBlendState(eBlendStates blend_state, const float blend_color[4], uint32 mask)
 	{
 		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(m_BlendStates[blend_state]), blend_color, mask);
 	}
@@ -609,12 +609,12 @@ namespace graphics
 			static_cast<ID3D11Buffer*>(instance_buffer)
 		};
 
-		u32 strides[] = {
+		uint32 strides[] = {
 			vtx.GetStride(),
 			stride
 		};
 
-		u32 byte_offsets[] = {
+		uint32 byte_offsets[] = {
 			vtx.GetByteOffset(),
 			0
 		};
@@ -634,7 +634,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::_InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size)
+	void DX11Context::_InternalUpdateConstantBuffer(IBuffer*& dest, int8* src, int32 size)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -643,14 +643,14 @@ namespace graphics
 
 		if (msr.pData)
 		{
-			s8* data = (s8*)msr.pData;
+			int8* data = (int8*)msr.pData;
 			memcpy(data, &src[0], size);
 		}
 		m_Context->Unmap(buffer, 0);
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::_InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping)
+	void DX11Context::_InternalUpdateBuffer(IBuffer*& dest, int8* src, int32 size, eMapping mapping)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
@@ -658,7 +658,7 @@ namespace graphics
 
 		if (msr.pData)
 		{
-			s8* data = (s8*)msr.pData;
+			int8* data = (int8*)msr.pData;
 			memcpy(data, &src[0], size);
 		}
 		m_Context->Unmap(buffer, 0);

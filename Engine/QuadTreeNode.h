@@ -7,15 +7,15 @@ class QuadTreeNode
 {
 public:
 	QuadTreeNode(float halfwidth, CU::Vector4f pos);
-	QuadTreeNode(float halfwidth, CU::Vector4f pos, s32 index);
+	QuadTreeNode(float halfwidth, CU::Vector4f pos, int32 index);
 	~QuadTreeNode();
 	void Update(const CU::Matrix44f& camera_pos);
 
 	void Insert(CU::Vector4f pos);
 private:
-	void CreateNode(CU::Vector4f pos, s32 index);
+	void CreateNode(CU::Vector4f pos, int32 index);
 	void MoveUp(CU::Vector4f pos);
-	s32 m_Index = 0;
+	int32 m_Index = 0;
 	
 	cl::AABB m_AABB;
 

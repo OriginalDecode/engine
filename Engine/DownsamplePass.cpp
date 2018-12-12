@@ -18,7 +18,7 @@ DownsamplePass::~DownsamplePass()
 
 }
 
-void DownsamplePass::Initiate(s32 sample_count, s32 width, s32 height, TextureDesc& desc, bool register_textures /* = false */)
+void DownsamplePass::Initiate(int32 sample_count, int32 width, int32 height, TextureDesc& desc, bool register_textures /* = false */)
 {
 
 	m_Downsampler = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
@@ -27,12 +27,12 @@ void DownsamplePass::Initiate(s32 sample_count, s32 width, s32 height, TextureDe
 
 	m_Viewport = Engine::GetAPI()->CreateViewport(width, height, 0, 1, 0, 0);
 
-	s32 tex_height = m_Height;
-	s32 tex_width = m_Width;
+	int32 tex_height = m_Height;
+	int32 tex_width = m_Width;
 
-	s32 sample_size = 1;
+	int32 sample_size = 1;
 
-	for (s32 i = 0; i < sample_count; ++i)
+	for (int32 i = 0; i < sample_count; ++i)
 	{
 		desc.m_Width = sample_size;
 		desc.m_Height = sample_size;
@@ -60,7 +60,7 @@ void DownsamplePass::Process(Texture* scene, const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Blue);
 
-	const s32 downsamples = m_Downsamples.Size() - 1;
+	const int32 downsamples = m_Downsamples.Size() - 1;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	ctx.SetBlendState(graphics::NO_BLEND);
@@ -71,7 +71,7 @@ void DownsamplePass::Process(Texture* scene, const graphics::RenderContext& rc)
 
 	Downsample(m_Downsamples[downsamples]->GetRenderTargetView(), scene->GetShaderView());
 
-	for (s32 i = downsamples - 1; i >= 0; --i)
+	for (int32 i = downsamples - 1; i >= 0; --i)
 	{
 		m_Viewport->SetHeight(m_Downsamples[i]->GetHeight());
 		m_Viewport->SetWidth(m_Downsamples[i]->GetWidth());
@@ -98,7 +98,7 @@ void DownsamplePass::OnResize()
 	assert(false && "not implemented");
 }
 
-Texture* DownsamplePass::GetSample(s32 index) const
+Texture* DownsamplePass::GetSample(int32 index) const
 {
 	return m_Downsamples[index];
 }

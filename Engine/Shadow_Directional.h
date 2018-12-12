@@ -38,7 +38,7 @@ public:
 	Texture* GetDepthStencilTexture() { return m_ShadowDepthStencil; }
 
 	graphics::ConstantBuffer& GetConstBuffer() { return m_ConstBuffer; }
-	void HandleEvent(u64 event, void* pData) override;
+	void HandleEvent(uint64 event, void* pData) override;
 private:
 	graphics::ConstantBuffer m_ConstBuffer;
 	graphics::Viewport*	m_Viewport		= nullptr;

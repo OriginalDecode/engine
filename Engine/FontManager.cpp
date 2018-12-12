@@ -27,12 +27,12 @@
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsDevice.h>
 
-constexpr s32 x_offset = 1;
-constexpr s32 y_offset = 1;
-constexpr s32 x_start = 0;
+constexpr int32 x_offset = 1;
+constexpr int32 y_offset = 1;
+constexpr int32 x_start = 0;
 
-constexpr s32 multiple_baseline = 64;
-constexpr s32 dpi = 72;
+constexpr int32 multiple_baseline = 64;
+constexpr int32 dpi = 72;
 
 CFontManager::CFontManager()
 {
@@ -53,7 +53,7 @@ void CFontManager::Initiate()
 	ASSERT(error == 0, "Failed to initiate FreeType.");
 }
 
-CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
+CFont* CFontManager::LoadFont(const int8* aFontPath, uint16 aSize, uint16 aBorderWidth)
 {
 
 	//Check for windows default fonts
@@ -72,7 +72,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		fontFolder += aFontPath;
 	}
 
-	u16 font_width = aSize;
+	uint16 font_width = aSize;
 	int atlasSize = (font_width * font_width) * 2; // *dpi;
 	atlasSize = int(cl::nearest_Pow(atlasSize));
 	FONT_LOG("Font Size %dx%d", atlasSize, atlasSize);
@@ -149,9 +149,9 @@ void CFontManager::LoadGlyph(int index, int& pen_x, int& pen_y, int& maxY, FT_Fa
 
 	SCharData glyphData;
 	glyphData.myChar = char(index);
-	glyphData.myHeight = u16(bitmap.rows);
-	glyphData.myWidth = u16(bitmap.width);
-	glyphData.m_Pitch = u16(bitmap.pitch);
+	glyphData.myHeight = uint16(bitmap.rows);
+	glyphData.myWidth = uint16(bitmap.width);
+	glyphData.m_Pitch = uint16(bitmap.pitch);
 
 
 	if (pen_x + glyphData.myWidth  > m_FontToLoad->myAtlasWidth)
@@ -178,9 +178,9 @@ void CFontManager::LoadGlyph(int index, int& pen_x, int& pen_y, int& maxY, FT_Fa
 		DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 	}
 
-	for (u16 row = 0; row < glyphData.myHeight; ++row)
+	for (uint16 row = 0; row < glyphData.myHeight; ++row)
 	{
-		for (u16 col = 0; col < glyphData.myWidth; ++col)
+		for (uint16 col = 0; col < glyphData.myWidth; ++col)
 		{
 			const int x = pen_x + col;
 			const int y = pen_y + row;
@@ -215,8 +215,8 @@ void CFontManager::CalculateUV(SCharData& glyphData, int x_pos, int y_pos)
 void CFontManager::CreateAtlas(const int size)
 {
 	graphics::Texture2DDesc _desc;
-	_desc.m_Width = (u32)m_FontToLoad->myAtlasWidth;
-	_desc.m_Height = (u32)m_FontToLoad->myAtlasHeight;
+	_desc.m_Width = (uint32)m_FontToLoad->myAtlasWidth;
+	_desc.m_Height = (uint32)m_FontToLoad->myAtlasHeight;
 	_desc.m_Format = graphics::RGBA8_UNORM;
 	_desc.m_CPUAccessFlag = graphics::WRITE;
 	_desc.m_Binding = graphics::BIND_SHADER_RESOURCE;
@@ -227,9 +227,9 @@ void CFontManager::CreateAtlas(const int size)
 
 	auto* api = Engine::GetAPI();
 
-	const s32 channel_count = 4; //RGBA 
-	const s32 pitch = m_FontToLoad->myAtlasWidth * channel_count;
-	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, (s8*)m_FontToLoad->myAtlas, pitch, "AtlasTexture");
+	const int32 channel_count = 4; //RGBA 
+	const int32 pitch = m_FontToLoad->myAtlasWidth * channel_count;
+	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, (int8*)m_FontToLoad->myAtlas, pitch, "AtlasTexture");
 	ASSERT(texture != nullptr, "Texture is nullptr!");
 
 	m_FontToLoad->m_AtlasView = api->GetDevice().CreateShaderResource(_desc, texture, "Font Atlas");
@@ -247,8 +247,8 @@ void CFontManager::SaveTexture(const SCharData& _char)
 		return;
 
 	graphics::Texture2DDesc tex_desc;
-	tex_desc.m_Width = (u32)_char.myWidth;
-	tex_desc.m_Height = (u32)_char.myHeight;
+	tex_desc.m_Width = (uint32)_char.myWidth;
+	tex_desc.m_Height = (uint32)_char.myHeight;
 	tex_desc.m_Format = graphics::RGBA8_UNORM;
 	tex_desc.m_CPUAccessFlag = graphics::WRITE;
 	tex_desc.m_Binding = graphics::BIND_SHADER_RESOURCE;
@@ -259,8 +259,8 @@ void CFontManager::SaveTexture(const SCharData& _char)
 
 	auto* api = Engine::GetAPI();
 
-	const s32 channel_count = 4; //RGBA 
-	const s32 pitch = 4;
+	const int32 channel_count = 4; //RGBA 
+	const int32 pitch = 4;
 	ITexture2D* texture = api->GetDevice().CreateTexture2D(tex_desc, _char.m_Data, pitch, "glyph");
 	ASSERT(texture != nullptr, "Texture is nullptr!");
 

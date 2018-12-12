@@ -125,7 +125,7 @@ void Inspector::SetEntity(Entity e)
 {
 	return;
 	m_CurrentEntity = e;
-	const s32 flags = m_Manager.GetComponent<DebugComponent>(e).m_ComponentFlags;
+	const int32 flags = m_Manager.GetComponent<DebugComponent>(e).m_ComponentFlags;
 	for (InspectorView* view : m_Views)
 		view->SetEntity(m_CurrentEntity, flags);
 }

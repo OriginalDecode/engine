@@ -92,7 +92,7 @@ float EntityManager::GetDeltaTime()
 	return myDeltaTime;
 }
 
-void EntityManager::AddSystem(s32 type)
+void EntityManager::AddSystem(int32 type)
 {
 	m_SystemsAdded |= type;
 
@@ -126,7 +126,7 @@ bool EntityManager::HasComponents(Entity e, ComponentFilter& filter)
 
 NodeEntityManager* EntityManager::RequestManager(TreeNodeBase* node)
 {
-	for (s32 i = 0; i < m_UsedManagers.Size(); i++)
+	for (int32 i = 0; i < m_UsedManagers.Size(); i++)
 	{
 		if (m_UsedManagers[i] == 0)
 		{
@@ -152,7 +152,7 @@ NodeEntityManager* EntityManager::RequestManager(TreeNodeBase* node)
 
 void EntityManager::ReleaseManager(NodeEntityManager* manager)
 {
-	const s32 index = m_NodeManagers.Find(manager);
+	const int32 index = m_NodeManagers.Find(manager);
 	m_UsedManagers[index] = 0;
 
 

@@ -27,9 +27,9 @@ namespace graphics
 		void BeginFrame() override;
 		void EndFrame() override;
 
-		void Present(u8 anInterval, u8 flags);
+		void Present(uint8 anInterval, uint8 flags);
 
-		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) override;
+		Viewport* CreateViewport(uint16 width, uint16 height, float min_depth, float max_depth, uint16 top_left_x, uint16 top_left_y) override;
 		void SetDefaultTargets() override;
 		void ResetViewport() override;
 
@@ -48,18 +48,18 @@ namespace graphics
 		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
 		static void SetDebugName(void * pResource, std::string debug_name);
 		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
-		static DXGI_FORMAT GetFormat(s32 format);
+		static DXGI_FORMAT GetFormat(int32 format);
 		static DXGI_FORMAT GetFormat(eVertexFormat format);
-		static D3D11_USAGE GetUsage(s32 usage);
-		static u32 GetBindFlag(s32 binding);
-		static u32 GetCPUAccessFlag(s32 flags);
+		static D3D11_USAGE GetUsage(int32 usage);
+		static uint32 GetBindFlag(int32 binding);
+		static uint32 GetCPUAccessFlag(int32 flags);
 		static D3D11_PRIMITIVE_TOPOLOGY GetTopology(eTopology topology);
 		static D3D11_MAP GetMapping(eMapping mapping);
 		static D3D11_INPUT_CLASSIFICATION GetInputClass(eElementSpecification el);
 		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
 
 		void CreateDeviceAndSwapchain();
-		void CreateDepthStencil(s32 slot, const D3D11_DEPTH_STENCIL_DESC& desc, const std::string& debug_name);
+		void CreateDepthStencil(int32 slot, const D3D11_DEPTH_STENCIL_DESC& desc, const std::string& debug_name);
 		void CreateDepthStencilStates();
 
 		void CreateDepthBuffer();
@@ -68,7 +68,7 @@ namespace graphics
 		void CreateBlendStates();
 		void CreateSamplerStates();
 		
-		void GetRefreshRate(u32& aNumerator, u32& aDenominator);
+		void GetRefreshRate(uint32& aNumerator, uint32& aDenominator);
 		
 		void CreateRazterizers();
 		void CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname);

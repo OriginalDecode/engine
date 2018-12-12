@@ -22,7 +22,7 @@ Effect::Effect(const std::string& filepath)
 		m_Resources[i] = nullptr;
 }
 
-void Effect::AddShaderResource(IShaderResourceView* pResource, s32 slot)
+void Effect::AddShaderResource(IShaderResourceView* pResource, int32 slot)
 {
 	/*if (m_UsedReg[slot] != 0)
 	{
@@ -34,7 +34,7 @@ void Effect::AddShaderResource(IShaderResourceView* pResource, s32 slot)
 	//m_UsedReg[slot] = 1;
 }
 
-void Effect::AddShaderResource(Texture* pResource, s32 slot)
+void Effect::AddShaderResource(Texture* pResource, int32 slot)
 {
 	AddShaderResource(pResource->GetShaderView(), slot);
 }

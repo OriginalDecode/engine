@@ -74,8 +74,8 @@ public:
 	CompiledShader* GetDomainShader() { return m_Shaders[DOMAINS]; }
 	CompiledShader* GetComputeShader() { return m_Shaders[COMPUTE]; }
 
-	void AddShaderResource(IShaderResourceView* pResource, s32 slot);
-	void AddShaderResource(Texture* pResource, s32 slot);
+	void AddShaderResource(IShaderResourceView* pResource, int32 slot);
+	void AddShaderResource(Texture* pResource, int32 slot);
 
 	bool set_shaders = true;
 

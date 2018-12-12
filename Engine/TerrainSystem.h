@@ -95,9 +95,9 @@ private:
 	test::QuadTree m_Tree;
 	struct 
 	{
-		u32 myWidth;
-		u32 myDepth;
-		u8* myData;
+		uint32 myWidth;
+		uint32 myDepth;
+		uint8* myData;
 	} m_Heightmap;
 	
 

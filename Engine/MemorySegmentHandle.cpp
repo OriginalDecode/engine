@@ -40,28 +40,28 @@ namespace memory
 
 	}
 
-	CommandAllocator& MemorySegmentHandle::GetCommandAllocator(s32 buffer, s32 index)
+	CommandAllocator& MemorySegmentHandle::GetCommandAllocator(int32 buffer, int32 index)
 	{
 		return m_Segments[buffer][index];
 	}
 
-	const memory::CommandAllocator& MemorySegmentHandle::GetCommandAllocator(s32 buffer, s32 index) const
+	const memory::CommandAllocator& MemorySegmentHandle::GetCommandAllocator(int32 buffer, int32 index) const
 	{
 		return m_Segments[buffer][index];
 	}
 
-	void MemorySegmentHandle::Clear(s32 index)
+	void MemorySegmentHandle::Clear(int32 index)
 	{
-		for (s32 i = 0; i < 8; i++)
+		for (int32 i = 0; i < 8; i++)
 		{
 			m_Segments[index][i].Clear();
 		}
 	}
 
-	s32 MemorySegmentHandle::CommandSize(s32 index)
+	int32 MemorySegmentHandle::CommandSize(int32 index)
 	{
-		s32 total = 0;
-		for (s32 i = 0; i < 8; i++)
+		int32 total = 0;
+		for (int32 i = 0; i < 8; i++)
 		{
 			total += m_Segments[index][i].Size();
 		}

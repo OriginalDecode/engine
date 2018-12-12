@@ -88,8 +88,8 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	pos += 3;
 	
 	int json_size = 0;
-	memcpy(&json_size, &data[pos], sizeof(s32));
-	pos += sizeof(s32);
+	memcpy(&json_size, &data[pos], sizeof(int32));
+	pos += sizeof(int32);
 
 	char* entity_data = new char[json_size];
 	memcpy(&entity_data[0], &data[pos], json_size);
@@ -108,7 +108,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	JSONReader reader;
 	reader.OpenDocument(entity_data);
 	auto& doc = reader.GetDocument();
-	s32 debug_flags = 0;
+	int32 debug_flags = 0;
 	bool is_static = false;
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
@@ -180,7 +180,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 	//m_DwellerList.Add(new TreeDweller);
 	TreeDweller* pDweller = new TreeDweller; // m_DwellerList.GetLast();
-	s32 debug_flags = 0;
+	int32 debug_flags = 0;
 
 	{
 		TranslationComponent& c = em.AddComponent<TranslationComponent>(e);
@@ -290,8 +290,8 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 	pos += 3;
 
 	int json_size = 0;
-	memcpy(&json_size, &data[pos], sizeof(s32));
-	pos += sizeof(s32);
+	memcpy(&json_size, &data[pos], sizeof(int32));
+	pos += sizeof(int32);
 
 	char* entity_data = new char[json_size];
 	memcpy(&entity_data[0], &data[pos], json_size);
@@ -304,7 +304,7 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 
 	auto& doc = reader.GetDocument();
 
-	s32 debug_flags = 0;
+	int32 debug_flags = 0;
 
 	bool is_static = false;
 	bool is_light = false;
@@ -355,7 +355,7 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 		{
 
 			int physics_length = 0;
-			memcpy(&physics_length, &data[pos], sizeof(s32));
+			memcpy(&physics_length, &data[pos], sizeof(int32));
 			pos += sizeof(int);
 
 			char* physics_data = new char[physics_length];
@@ -412,7 +412,7 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 	delete[] data;
 }
 
-void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
+void LevelFactory::CreateDebugComponent(Entity e, bool isLight, int32 flags)
 {
 	m_EntityManager->AddComponent<DebugComponent>(e);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
@@ -442,12 +442,12 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 }
 
-CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
+CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(int32 steps)
 {
 	return CreatePBLLevel(steps, 1, steps, CU::Vector3f(512.f, 0.f, 512.f), 15.f, 0.f, 15.f);
 }
 
-CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_steps, s32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing)
+CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(int32 x_steps, int32 y_steps, int32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing)
 {
 	CU::GrowingArray<TreeDweller*> dwellers(x_steps * y_steps * z_steps);
 	float x_start = pos.x;
@@ -479,16 +479,16 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/debug_pbl_instanced.json");
-	u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false).m_Hash;
+	uint64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false).m_Hash;
 	Model* model = Engine::GetInstance()->GetModel<Model>(key).GetData();
 	model->AddSurface(new Surface(e));
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
 	graphics::IRenderNode* general = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 	
-	for (s32 i = 0; i < x_steps; i++)
+	for (int32 i = 0; i < x_steps; i++)
 	{
-		for (s32 j = z_steps - 1, s = 0; j >= 0; j--, s++)
+		for (int32 j = z_steps - 1, s = 0; j >= 0; j--, s++)
 		{
 			CU::Vector4f translation;
 			translation.x = x_start + i * x_spacing;
@@ -654,7 +654,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	JSONReader entity_reader(data_path + entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
-	s32 debug_flags = 0;
+	int32 debug_flags = 0;
 
 	m_DwellerList.Add(new TreeDweller);
 

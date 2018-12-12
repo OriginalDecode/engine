@@ -9,15 +9,15 @@ class CollisionObject
 {
 public:
 	virtual ~CollisionObject() { };
-	void SetEntity(s32 entity_id);
-	s32 GetEntity() const;
+	void SetEntity(int32 entity_id);
+	int32 GetEntity() const;
 	
 protected:
 
 
 
 
-	s32 m_EntityID;
+	int32 m_EntityID;
 	btCollisionShape* m_Shape			= nullptr;
 	btDefaultMotionState* m_MotionState = nullptr;
 	CU::Matrix44f m_Orientation;

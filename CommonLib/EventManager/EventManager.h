@@ -37,22 +37,22 @@ public:
 
 	void Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority = ePriorityLayer::NO_PRIO, bool aLetThrough = true);
 	void Subscribe(const std::string& event, Subscriber* subscriber);
-	void Subscribe(const u64& event, Subscriber* subscriber);
+	void Subscribe(const uint64& event, Subscriber* subscriber);
 
 	void UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber);
 	void UnSubscribe(Subscriber* aSubscriber);
 	bool IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber);
 
-	static void Send(const u64& event, void* data);
+	static void Send(const uint64& event, void* data);
 	static void Send(const char* event, void* data);
 
 	template<typename T>
 	void SendMessage(const T& aMessage);
 
-	void SendMessage(const u64& event, void* data);
+	void SendMessage(const uint64& event, void* data);
 	void SendMessage(const char* event, void* data);
 
-	void SendMessage(const u64& event);
+	void SendMessage(const uint64& event);
 	void SendMessage(const char* event);
 private:
 	EventManager();
@@ -63,7 +63,7 @@ private:
 	void QuickSort(CU::GrowingArray<SubscriberInfo>& aBuffer, const int aStart, const int aEnd);
 
 	CU::StaticArray<CU::GrowingArray<SubscriberInfo>, static_cast<int>(eMessageType::COUNT)> mySubscribers;
-	std::map<u64, CU::GrowingArray<SubscriberInfo>> m_EventSubscribers;
+	std::map<uint64, CU::GrowingArray<SubscriberInfo>> m_EventSubscribers;
 };
 
 template<typename T>

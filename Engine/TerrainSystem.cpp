@@ -16,8 +16,8 @@
 constexpr int MAX_DEPTH = 4;
 
 
-static u64 s_RootTerrainHash = 0;
-static std::vector<u64> s_HashTerrain;
+static uint64 s_RootTerrainHash = 0;
+static std::vector<uint64> s_HashTerrain;
 
 TerrainSystem::TerrainSystem()
 {
@@ -45,9 +45,9 @@ TerrainSystem::TerrainSystem()
 
 
 	TGA32::Image* image = TGA32::Load("Data/Textures/terrain/britannia.tga");
-	m_Heightmap.myData = new u8[image->myWidth * image->myHeight];
+	m_Heightmap.myData = new uint8[image->myWidth * image->myHeight];
 
-	for (u32 i = 0; i < image->myWidth *  image->myHeight; ++i)
+	for (uint32 i = 0; i < image->myWidth *  image->myHeight; ++i)
 	{
 		m_Heightmap.myData[i] = image->myImage[i * 4];
 	}
@@ -283,10 +283,10 @@ test::QuadTree::QuadTree()
 
 	Engine* engine = Engine::GetInstance();
 
-	const u64 vtx	=	engine->LoadShader("gpu_terrain.vs", "main");
-	const u64 ds	=	engine->LoadShader("gpu_terrain.ds", "main");
-	const u64 hs	=	engine->LoadShader("gpu_terrain.hs", "main");
-	const u64 frag	=	engine->LoadShader("gpu_terrain.ps", "depth");
+	const uint64 vtx	=	engine->LoadShader("gpu_terrain.vs", "main");
+	const uint64 ds	=	engine->LoadShader("gpu_terrain.ds", "main");
+	const uint64 hs	=	engine->LoadShader("gpu_terrain.hs", "main");
+	const uint64 frag	=	engine->LoadShader("gpu_terrain.ps", "depth");
 
 	
 	m_Shaders[0] = engine->GetShader(vtx);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Material.h"
 
-Material::Material(u64 key)
+Material::Material(uint64 key)
 	: m_Key(key)
 {
 }

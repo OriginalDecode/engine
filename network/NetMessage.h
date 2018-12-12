@@ -14,12 +14,12 @@ public:
 	NetMessage(eNetMessageType type);
 	virtual ~NetMessage(); //set to default in .cpp
 	void PackMessage();
-	void UnpackMessage(s8* message, s32 length);
+	void UnpackMessage(int8* message, int32 length);
 	bool IsType(eNetMessageType message_type);
 
 
 	StreamType m_Stream;
-	u64 m_MessageType; //8 byte
+	uint64 m_MessageType; //8 byte
     GUID m_GUID; //16 byte
 	
 protected:

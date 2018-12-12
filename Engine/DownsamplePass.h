@@ -13,22 +13,22 @@ public:
 	DownsamplePass() = default;
 	~DownsamplePass() override;
 
-	void Initiate(s32 sample_count, s32 width, s32 height, TextureDesc& desc, bool register_textures = false);
+	void Initiate(int32 sample_count, int32 width, int32 height, TextureDesc& desc, bool register_textures = false);
 
 
 	void Process(Texture* scene, const graphics::RenderContext& rc) override;
 	void OnResize() override;
 
-	Texture* GetSample(s32 index) const;
+	Texture* GetSample(int32 index) const;
 
-	s32 SampleCount() const { return m_Downsamples.Size(); }
+	int32 SampleCount() const { return m_Downsamples.Size(); }
 
 private:
 
 	void Downsample(IRenderTargetView* render_target, IShaderResourceView* source);
 
-	s32 m_Width = 0;
-	s32 m_Height = 0;
+	int32 m_Width = 0;
+	int32 m_Height = 0;
 	Effect*	m_Downsampler = nullptr;
 	graphics::Viewport* m_Viewport;
 

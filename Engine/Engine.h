@@ -33,9 +33,9 @@ typedef HWND__* HWND;
 
 struct SLocalTime
 {
-	u16 hour;
-	u16 minute;
-	u16 second;
+	uint16 hour;
+	uint16 minute;
+	uint16 second;
 };
 
 class TerrainManager;
@@ -94,7 +94,7 @@ public:
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 
-	CFont* LoadFont(const s8* filepath, u16 aFontWidth, u16 aBorderWidth);
+	CFont* LoadFont(const int8* filepath, uint16 aFontWidth, uint16 aBorderWidth);
 	float GetDeltaTime();
 	float& GetDeltaTimeRef();
 	float GetTotalTime();
@@ -105,16 +105,16 @@ public:
 
 	//_________________________________________
 	// Get Resources
-	Texture* GetTexture(u64 key);
-	Effect* GetEffect(u64 key);
+	Texture* GetTexture(uint64 key);
+	Effect* GetEffect(uint64 key);
 
-	CompiledShader* GetShader(u64 key);
+	CompiledShader* GetShader(uint64 key);
 	CompiledShader* GetShader(const char* key);
 
 	template<typename T>
-	RefPointer<T> GetModel(u64 key);
-	Sprite* GetSprite(u64 key);
-	Material* GetMaterial(u64 key);
+	RefPointer<T> GetModel(uint64 key);
+	Sprite* GetSprite(uint64 key);
+	Material* GetMaterial(uint64 key);
 
 
 	Texture* GetTexture(const char* key);
@@ -130,13 +130,13 @@ public:
 	template<typename T>
 	HashType LoadModel(const std::string& filepath, std::string effect, bool thread, int option = 0);
 
-	u64 LoadTexture(const std::string& path, bool make_mips = false);
-	u64 LoadEffect(const std::string& path);
-	u64 LoadSprite(const std::string& path);
-	u64 LoadShader(const std::string& path, const std::string& entrypoint);
+	uint64 LoadTexture(const std::string& path, bool make_mips = false);
+	uint64 LoadEffect(const std::string& path);
+	uint64 LoadSprite(const std::string& path);
+	uint64 LoadShader(const std::string& path, const std::string& entrypoint);
 
 
-	void AddTexture(Texture* pTexture, u64 key);
+	void AddTexture(Texture* pTexture, uint64 key);
 
 	void ResetRenderTargetAndDepth();
 
@@ -199,9 +199,9 @@ public:
 	void AddRenderCommand(const ModelCommand& command);
 
 	AssetsContainer* GetAssetsContainer();
-	Model* GetModelDirect(u64 key);
+	Model* GetModelDirect(uint64 key);
 private:
-	u32 PickEntity(Texture* pTexture);
+	uint32 PickEntity(Texture* pTexture);
 	Engine();
 	~Engine();
 	static Engine* myInstance;
@@ -257,7 +257,7 @@ HashType Engine::LoadModel(const std::string& filepath, std::string effect, bool
 }
 
 template<typename T>
-RefPointer<T> Engine::GetModel(u64 key)
+RefPointer<T> Engine::GetModel(uint64 key)
 {
 	return myAssetsContainer->GetModel<T>(key);
 }

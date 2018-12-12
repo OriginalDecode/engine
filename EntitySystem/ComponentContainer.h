@@ -29,7 +29,7 @@ public:
 
 	const CU::GrowingArray<Entity>& GetEntities(ComponentFilter aFilter);
 
-	void RemoveComponent(Entity entity, BaseComponent* component, u32 component_id);
+	void RemoveComponent(Entity entity, BaseComponent* component, uint32 component_id);
 
 private:
 	CU::GrowingArray<ComponentArray> myComponents;

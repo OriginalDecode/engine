@@ -44,9 +44,9 @@ CFont::CFont(SFontData* aFontData)
 
 	IInputLayout* input_layout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect[0]->GetVertexShader(), layout, ARRSIZE(layout));
 
-	const s32 vtx_stride = 40;//sizeof(SVertexTypePosColUv);
-	const s32 vtx_byte_offset = 0;
-	const s32 vtx_start_slot = 0;
+	const int32 vtx_stride = 40;//sizeof(SVertexTypePosColUv);
+	const int32 vtx_byte_offset = 0;
+	const int32 vtx_start_slot = 0;
 
 	//m_VertexWrapper = VertexWrapper(nullptr, vtx_start_slot, vtx_buffer_count, vtx_stride, vtx_byte_offset, 0, 0, nullptr, input_layout, graphics::TRIANGLE_LIST);
 
@@ -61,19 +61,19 @@ CFont::CFont(SFontData* aFontData)
 	m_VertexDesc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	m_VertexDesc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	m_VertexDesc.m_CPUAccessFlag = graphics::WRITE;
-	m_VertexDesc.m_Data = new s8[1024 * vtx_stride];
+	m_VertexDesc.m_Data = new int8[1024 * vtx_stride];
 	m_VertexDesc.m_MiscFlags = 0;
 	m_VertexDesc.m_StructuredByteStride = 0;
 	
 
 
 	const graphics::eTextureFormat format = graphics::R32_UINT;
-	const s32 idx_byte_offset = 0;
+	const int32 idx_byte_offset = 0;
 
 	m_IndexDesc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	m_IndexDesc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	m_IndexDesc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
-	m_IndexDesc.m_Data = new s8[1024 * sizeof(s32)];
+	m_IndexDesc.m_Data = new int8[1024 * sizeof(int32)];
 
 
 	m_IndexWrapper.SetStart(0);
@@ -161,7 +161,7 @@ void CFont::UpdateBuffer()
 	m_VertexWrapper.ReleaseBuffer();
 	m_IndexWrapper.ReleaseBuffer();
 
-	u32 count = u32(m_Text.length());
+	uint32 count = uint32(m_Text.length());
 	float z = 0.f;
 	float drawX = 0.f;
 	float drawY = -5.f;
@@ -170,8 +170,8 @@ void CFont::UpdateBuffer()
 	m_Indices.RemoveAll();
 
 	SVertexTypePosColUv v;
-	u32 skips = 0;
-	for (u32 i = 0, row = 0; i < count; i++)
+	uint32 skips = 0;
+	for (uint32 i = 0, row = 0; i < count; i++)
 	{
 		SCharData& charData = m_Data->myCharData[m_Text[i]];
 
@@ -245,7 +245,7 @@ void CFont::UpdateBuffer()
 		v.myUV = charData.myBottomRightUV;
 		m_Vertices.Add(v);
 
-		u32 startIndex = (i - skips - row) * 4.f;
+		uint32 startIndex = (i - skips - row) * 4.f;
 
 		m_Indices.Add(startIndex + 1);
 		m_Indices.Add(startIndex + 0);
@@ -273,7 +273,7 @@ void CFont::UpdateBuffer()
 
 
 
-	m_IndexDesc.m_ByteWidth = sizeof(u32) * m_Indices.Size();
+	m_IndexDesc.m_ByteWidth = sizeof(uint32) * m_Indices.Size();
 	memcpy(m_IndexDesc.m_Data, &m_Indices[0], m_IndexDesc.m_ByteWidth);
 	m_IndexWrapper.SetBuffer(device.CreateBuffer(m_IndexDesc, "Font IndexBuffer"));
 	m_IndexWrapper.SetIndexCount(m_Indices.Size());

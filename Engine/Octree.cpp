@@ -7,7 +7,7 @@
 #include <Engine/TreeNode.h>
 
 static bool s_RenderTree = false;
-constexpr s32 MAX_DEPTH = 1;
+constexpr int32 MAX_DEPTH = 1;
 void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 {
 	m_Position = world_position;
@@ -55,11 +55,11 @@ void Octree::Update(float dt, bool)
 	m_Root.Update(dt, m_Paused);
 }
 
-void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
+void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, int32 depth)
 {
 	assert(depth >= 0 && "Depth was lower than 0?");
 
-	s32 index = 0;
+	int32 index = 0;
 	bool straddle = false; 
 
 	const CU::Vector3f node_position = node->GetPosition();
@@ -83,7 +83,7 @@ void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 	}
 
 
-	for (s32 i = 0; i < 3; i++)
+	for (int32 i = 0; i < 3; i++)
 	{
 		float delta = 0.f;
 		float bound_value = 0.f;
@@ -139,7 +139,7 @@ void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 	
 }
 
-void Octree::InsertDweller(TreeNodeBase* node, TreeDweller* dweller, s32 /*depth*/)
+void Octree::InsertDweller(TreeNodeBase* node, TreeDweller* dweller, int32 /*depth*/)
 {
 	assert(!dweller->GetFirstNode() && "You fucked up!");
 	node->AddEntity(dweller);
@@ -147,7 +147,7 @@ void Octree::InsertDweller(TreeNodeBase* node, TreeDweller* dweller, s32 /*depth
 	dweller->SetDepth(node->GetDepth());
 }
 
-TreeNodeBase* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index, s32 depth)
+TreeNodeBase* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, int32 index, int32 depth)
 {
 	node_count++;
 	CU::Vector3i dir;
@@ -197,7 +197,7 @@ TreeNodeBase* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s3
 	return node;
 }
 
-void Octree::MoveUp(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
+void Octree::MoveUp(TreeNodeBase* node, TreeDweller* dweller, int32 depth)
 {
 	assert(depth >= 0 && "MoveUp : Depth was lower than 0?");
 	TreeNodeBase* parent = node->GetParent();

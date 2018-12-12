@@ -55,7 +55,7 @@ struct Line
 };
 
 
-typedef u32 Entity;
+typedef uint32 Entity;
 
 typedef void ITexture2D;
 typedef void ITexture3D;
@@ -78,9 +78,9 @@ typedef void IRasterizerState;
 typedef void IBlendState;
 
 #if (UINTPTR_MAX == 0xffffffffffffffff)
-typedef u64 uptr;
+typedef uint64 uptr;
 #else
-typedef u32 uptr;
+typedef uint32 uptr;
 #endif
 
 enum eShaderType
@@ -113,10 +113,10 @@ struct HashType
 {
 	union
 	{
-		u64 m_Hash = 0;
+		uint64 m_Hash = 0;
 		struct {
-			u32 m_Lower;
-			u32 m_Upper;
+			uint32 m_Lower;
+			uint32 m_Upper;
 		};
 	};
 
@@ -127,7 +127,7 @@ struct HashType
 		m_Hash = other.m_Hash;
 	}
 
-	HashType(const u64& other)
+	HashType(const uint64& other)
 	{
 		m_Hash = other;
 	}
@@ -137,7 +137,7 @@ struct HashType
 		return (m_Lower < other.m_Lower);
 	}
 
-	HashType& operator=(const u64& lhv)
+	HashType& operator=(const uint64& lhv)
 	{
 		m_Hash = lhv;
 	}

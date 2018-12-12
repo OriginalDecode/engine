@@ -41,18 +41,18 @@ btRigidBody* RigidBody::InitAsPlane(const btVector3& aNormal)
 	return myBody;
 }
 
-btRigidBody* RigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices)
+btRigidBody* RigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<int32> indices)
 {
-	s32 faceCount = (s32)indices.size() / 3;
-	s32 vStride = sizeof(CU::Vector3f);
-	s32 iStride = sizeof(u32) * 3;
+	int32 faceCount = (int32)indices.size() / 3;
+	int32 vStride = sizeof(CU::Vector3f);
+	int32 iStride = sizeof(uint32) * 3;
 
 	btScalar* locVertices = new btScalar[vertices.size()];
 	memcpy(&locVertices[0], &vertices[0], sizeof(float) * vertices.size());
-	s32* locIndices = new s32[indices.size()];
-	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
+	int32* locIndices = new int32[indices.size()];
+	memcpy(&locIndices[0], &indices[0], sizeof(int32) * indices.size());
 
-	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, (s32)vertices.size(), locVertices, vStride);
+	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, (int32)vertices.size(), locVertices, vStride);
 	m_Shape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
 	m_MotionState = new btDefaultMotionState();
 	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
@@ -88,19 +88,19 @@ btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityF
 	return myBody;
 }
 
-btRigidBody* RigidBody::InitWithMeshCollision(s8* const vertices, s8* const indices, const s32 idx_count, const s32 vtx_count)
+btRigidBody* RigidBody::InitWithMeshCollision(int8* const vertices, int8* const indices, const int32 idx_count, const int32 vtx_count)
 {
-	const s32 vtx_size = ARRSIZE(vertices);
-	s32 faceCount = idx_count / 3;
-	s32 vStride = sizeof(CU::Vector3f);
-	s32 iStride = sizeof(u32) * 3;
+	const int32 vtx_size = ARRSIZE(vertices);
+	int32 faceCount = idx_count / 3;
+	int32 vStride = sizeof(CU::Vector3f);
+	int32 iStride = sizeof(uint32) * 3;
 
 
 	btScalar* vtx = new btScalar[vtx_size];
 	memcpy(&vtx[0], &vertices[0], sizeof(float) * vtx_size);
 
-	s32* locIndices = new s32[idx_count];
-	memcpy(&locIndices[0], &indices[0], sizeof(s32) * idx_count);
+	int32* locIndices = new int32[idx_count];
+	memcpy(&locIndices[0], &indices[0], sizeof(int32) * idx_count);
 
 
 	btTriangleIndexVertexArray* triangle_list = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vtx_count, vtx, vStride);
@@ -179,7 +179,7 @@ btRigidBody* RigidBody::Capsule(CU::Vector3f pos)
 	return myBody;
 }
 
-btRigidBody* RigidBody::ConvexMesh(s8* const vertices, s8* const indices, const s32 const idx_count, const s32 const vtx_count)
+btRigidBody* RigidBody::ConvexMesh(int8* const vertices, int8* const indices, const int32 const idx_count, const int32 const vtx_count)
 {
 	m_Shape = new btConvexTriangleMeshShape(nullptr);
 	m_Shape->setMargin(0.025f);

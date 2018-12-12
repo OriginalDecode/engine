@@ -13,7 +13,7 @@ namespace graphics
 class CText
 {
 public:
-	CText(const s8* filepath, u16 aSize, u16 aBorderWidth);
+	CText(const int8* filepath, uint16 aSize, uint16 aBorderWidth);
 	~CText();
 
 	void Render(const graphics::RenderContext& rc);

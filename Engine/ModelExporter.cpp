@@ -74,7 +74,7 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 	g_ByteSize += sizeof(int);
 	if (vtx_count > 0)
 	{
-		s8* data = pModel->GetVertexWrapper().GetData();
+		int8* data = pModel->GetVertexWrapper().GetData();
 		for (size_t i = 0; i < vtx_count * sizeof(VertexData); i += sizeof(VertexData))
 		{
 			fwrite(&data[i], sizeof(VertexData), 1, pOut);
@@ -95,7 +95,7 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 
 	if (idx_count > 0)
 	{
-		s8* data = pModel->GetIndexWrapper().GetData();
+		int8* data = pModel->GetIndexWrapper().GetData();
 		_fwrite(data, sizeof(int), idx_count, pOut, &output, "index_data:");
 		g_ByteSize += sizeof(int);
 	}

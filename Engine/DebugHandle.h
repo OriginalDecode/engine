@@ -61,17 +61,17 @@ namespace debug
 
 		void RegisterMaterial(Material* pMaterial, std::string lable);
 		void ConfirmEntity();
-		s32 GetDebugTextureIndex() const;
+		int32 GetDebugTextureIndex() const;
 
 		void SetDebugTexture(Texture* tex);
 
 		void RegisterTexture(Texture* texture, const char* name, const char* category = "null");
 		void UnregisterTexture(Texture* t, const char* name);
-		Texture* GetTexture(s32 index);
+		Texture* GetTexture(int32 index);
 
 		void SetObjectMatrix(CU::Matrix44f* mat);
 
-		void HandleEvent(u64 event, void* data = nullptr);
+		void HandleEvent(uint64 event, void* data = nullptr);
 
 		void AddLUT(const char* lable, Texture* tex);
 		void AddTimingObject(const std::string& view_tree_and_time_string);
@@ -160,7 +160,7 @@ namespace debug
 		std::vector<std::string> m_InstanceLabels;
 
 
-		s32 m_TextureIndex = 0;
+		int32 m_TextureIndex = 0;
 
 		float m_Range = 0.f;
 		float m_CamPos[3];

@@ -7,8 +7,8 @@ class TreeNodeBase;
 struct ComponentPair
 {
 	BaseComponent* m_Component = nullptr;
-	s32 m_ID = -1;
-	s32 m_Type = 0;
+	int32 m_ID = -1;
+	int32 m_Type = 0;
 };
 
 typedef CU::GrowingArray<ComponentPair> ComponentList;
@@ -39,7 +39,7 @@ public:
 	void Initiate(Entity entity, eType type);
 
 	template <typename T>
-	void AddComponent(T* component, s32 component_flag);
+	void AddComponent(T* component, int32 component_flag);
 
 
 	Entity GetEntity() const;
@@ -51,8 +51,8 @@ public:
 	/*void SetSecondNode(TreeNode* node) { m_Second = node; }
 	TreeNode* GetSecondNode() { return m_Second; }*/
 
-	void SetDepth(s32 depth) { m_Depth = depth; }
-	s32 GetDepth() const { return m_Depth; }
+	void SetDepth(int32 depth) { m_Depth = depth; }
+	int32 GetDepth() const { return m_Depth; }
 
 	const CU::Vector3f GetPosition() const;
 
@@ -63,8 +63,8 @@ private:
 	eType m_Type;
 	Entity m_Entity;
 	ComponentList m_ComponentList;
-	s32 m_Depth = 0;
-	s32 m_ComponentFlag = 0;
+	int32 m_Depth = 0;
+	int32 m_ComponentFlag = 0;
 
 	CU::Vector3f m_WHD;
 
@@ -73,7 +73,7 @@ private:
 };
 
 template <typename T>
-void TreeDweller::AddComponent(T* component, s32 component_flag)
+void TreeDweller::AddComponent(T* component, int32 component_flag)
 {
 	ComponentPair pair;
 	pair.m_Component = component;

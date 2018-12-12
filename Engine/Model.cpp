@@ -33,7 +33,7 @@ void Model::Initiate(const std::string& filename)
 {
 	if (m_IsRoot)
 	{
-		const s32 max_instance_count = 300;
+		const int32 max_instance_count = 300;
 
 		graphics::BufferDesc desc;
 		desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
@@ -492,7 +492,7 @@ void Model::CreateCube()
 	m_VertexWrapper.SetStride(sizeof(SDefaultCube));
 	m_VertexWrapper.SetSize(vertices.Size() * sizeof(SDefaultCube));
 
-	s8* data = new s8[m_VertexWrapper.GetSize()];
+	int8* data = new int8[m_VertexWrapper.GetSize()];
 	memcpy(data, &vertices[0], m_VertexWrapper.GetSize());
 
 	m_VertexWrapper.SetData(data);
@@ -527,7 +527,7 @@ void Model::CreateCube()
 	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
 	m_IsRoot = false;
 
-	CU::GrowingArray<s32> indices;
+	CU::GrowingArray<int32> indices;
 	indices.Init(32);
 #pragma region Indices
 
@@ -583,13 +583,13 @@ void Model::CreateCube()
 
 
 	auto& idx = m_IndexWrapper;
-	const s32 idx_buf_size = indices.Size() * sizeof(s32);
+	const int32 idx_buf_size = indices.Size() * sizeof(int32);
 
-	s8* indexData = new s8[idx_buf_size];
+	int8* indexData = new int8[idx_buf_size];
 	memcpy(indexData, &indices[0], idx_buf_size);
 
 	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
-	const s32 idx_IndexCount = indices.Size();
+	const int32 idx_IndexCount = indices.Size();
 
 	graphics::BufferDesc idx_desc;
 	idx_desc.m_Size = idx_buf_size;

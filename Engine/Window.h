@@ -11,19 +11,19 @@ typedef HWND__* HWND;
 struct WindowSize
 {
 	WindowSize() = default;
-	WindowSize(s32 width, s32 height) 
+	WindowSize(int32 width, int32 height) 
 		: m_Width(width)
 		, m_Height(height) 
 	{
 	};
-	s32 m_Width = 0;
-	s32 m_Height = 0;
+	int32 m_Width = 0;
+	int32 m_Height = 0;
 };
 
 struct WindowCreateInfo
 {
-	u16 window_width = 0;
-	u16 window_height = 0;
+	uint16 window_width = 0;
+	uint16 window_height = 0;
 #ifdef _WINDEF_
 	HINSTANCE instance;
 	WNDPROC window_process;
@@ -34,7 +34,7 @@ class Window
 {
 public:
 	Window() = default;
-	bool Initiate(WindowCreateInfo window_create_info, u64 window_style);
+	bool Initiate(WindowCreateInfo window_create_info, uint64 window_style);
 	void ShowWindow();
 	HWND GetHWND() const { return m_HWND; }
 	HINSTANCE GetWindowInstance() { return m_CreateInfo.instance; }

@@ -3,7 +3,7 @@
 
 namespace memory
 {
-	BaseAllocator::BaseAllocator(s32 size_in_bytes, void* pStart)
+	BaseAllocator::BaseAllocator(int32 size_in_bytes, void* pStart)
 		: m_Start(pStart)
 		, m_CurrentPos(pStart)
 		, m_AllocatedMemory(size_in_bytes)

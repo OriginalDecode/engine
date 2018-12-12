@@ -40,7 +40,7 @@ private:
  	CU::Vector2f m_Size;
  
  	CU::GrowingArray<SVertexTypePosColUv> m_Vertices;
- 	CU::GrowingArray<s32> m_Indices;
+ 	CU::GrowingArray<int32> m_Indices;
  
  	cl::SColor m_DefaultColor;
  	cl::SColor m_Color;

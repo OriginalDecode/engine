@@ -30,13 +30,13 @@ void Quad::FillVertexData(float half_width, float half_height)
 {
 	auto& device = Engine::GetAPI()->GetDevice();
 	// Vertex
-	const s32 vtx_count = 4;
-	const s32 stride = sizeof(VertexTypePosUV);
-	const s32 size = vtx_count * stride;
-	const s32 vtx_start = 0;
-	const s32 vtx_byte_offset = 0;
-	const s32 vtx_buffer_count = 1;
-	s8* data = new s8[size];
+	const int32 vtx_count = 4;
+	const int32 stride = sizeof(VertexTypePosUV);
+	const int32 size = vtx_count * stride;
+	const int32 vtx_start = 0;
+	const int32 vtx_byte_offset = 0;
+	const int32 vtx_buffer_count = 1;
+	int8* data = new int8[size];
 
 	VertexTypePosUV vertices[vtx_count];
 	vertices[0].myPosition = { -half_width, -half_height, 0, 1 };
@@ -92,13 +92,13 @@ void Quad::FillIndexData()
 {
 	auto& device = Engine::GetAPI()->GetDevice();
 	const graphics::eTextureFormat format = graphics::R32_UINT;
-	const s32 index_count = 6;
-	const s32 index_size = index_count * 4; // there's 4 vertices, could that be the thing?
-	s8* index_data = new s8[index_size];
-	const s32 index_start = 0;
-	const s32 index_byte_offset = 0;
+	const int32 index_count = 6;
+	const int32 index_size = index_count * 4; // there's 4 vertices, could that be the thing?
+	int8* index_data = new int8[index_size];
+	const int32 index_start = 0;
+	const int32 index_byte_offset = 0;
 
-	s32 indices[index_count];
+	int32 indices[index_count];
 	indices[0] = 1;
 	indices[1] = 0;
 	indices[2] = 2;

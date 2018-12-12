@@ -23,12 +23,12 @@ namespace graphics
 
 		~IGraphicsContext();
 
-		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void DSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void HSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+		virtual void VSSetShaderResource(int32 start_slot, int32 count, void* resources) = 0;
+		virtual void PSSetShaderResource(int32 start_slot, int32 count, void* resources) = 0;
+		virtual void GSSetShaderResource(int32 start_slot, int32 count, void* resources) = 0;
+		virtual void DSSetShaderResource(int32 start_slot, int32 count, void* resources) = 0;
+		virtual void HSSetShaderResource(int32 start_slot, int32 count, void* resources) = 0;
+		virtual void CSSetShaderResource(int32 start_slot, int32 count, void* resources) = 0;
 
 		virtual void SetVertexShader(CompiledShader* shader) = 0;
 		virtual void SetPixelShader(CompiledShader* shader) = 0;
@@ -44,41 +44,41 @@ namespace graphics
 		virtual void SetDomainShader(void* shader) = 0;
 		virtual void SetComputeShader(void* shader) = 0;
 
-		virtual void VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
-		virtual void PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
-		virtual void GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
-		virtual void HSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
-		virtual void DSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
-		virtual void CSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
+		virtual void VSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) = 0;
+		virtual void PSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) = 0;
+		virtual void GSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) = 0;
+		virtual void HSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) = 0;
+		virtual void DSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) = 0;
+		virtual void CSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) = 0;
 
 
-		virtual void VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
-		virtual void PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
-		virtual void GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
-		virtual void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
-		virtual void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
-		virtual void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
+		virtual void VSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) = 0;
+		virtual void PSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) = 0;
+		virtual void GSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) = 0;
+		virtual void HSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) = 0;
+		virtual void DSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) = 0;
+		virtual void CSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) = 0;
 
 
-		virtual void VSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
-		virtual void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
-		virtual void GSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
-		virtual void HSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
-		virtual void DSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
-		virtual void CSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void VSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void PSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void GSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void HSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void DSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void CSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) = 0;
 
 
 
 		virtual void IASetInputLayout(IInputLayout* input_layout) = 0;
 		virtual void IASetTopology(eTopology topology) = 0;
 
-		virtual void OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) = 0;
-		virtual void OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv) = 0;
+		virtual void OMSetRenderTargets(int32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) = 0;
+		virtual void OMSetRenderTargets(int32 num_views, Texture* render_targets, Texture* dsv) = 0;
 		virtual void ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4]) = 0;
 		virtual void ClearRenderTarget(Texture* render_target, const float clear_color[4]) = 0;
 
-		virtual void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) = 0;
-		virtual void ClearDepthStencilView(Texture* dsv, s32 clear_flag, s32 max_depth) = 0;
+		virtual void ClearDepthStencilView(IDepthStencilView* dsv, int32 clear_flag, int32 max_depth) = 0;
+		virtual void ClearDepthStencilView(Texture* dsv, int32 clear_flag, int32 max_depth) = 0;
 
 		virtual void Draw(BaseModel* model, Effect* fx = nullptr) = 0;
 		virtual void Draw(CEmitterInstance* emitter) = 0;
@@ -95,14 +95,14 @@ namespace graphics
 
 
 
-		virtual void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) = 0;
+		virtual void SetDepthState(IDepthStencilState* pDepthStencilState, int32 max_depth) = 0;
 		virtual void SetRasterizerState(IRasterizerState* pRasterizerState) = 0;
 		virtual void SetBlendState(IBlendState* pBlendState) = 0;
 
-		virtual void SetDepthState(eDepthStencilState depth_state, s32 max_depth) = 0;
+		virtual void SetDepthState(eDepthStencilState depth_state, int32 max_depth) = 0;
 		virtual void SetRasterState(eRasterizer raster_state) = 0;
 		//virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask) = 0;
-		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, u32 mask = 0xFFFFFFFF) = 0;
+		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, uint32 mask = 0xFFFFFFFF) = 0;
 
 
 
@@ -111,18 +111,18 @@ namespace graphics
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer*& dest, T* src);
 
-		virtual void UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer) = 0;
+		virtual void UpdateConstantBuffer(IBuffer*& dest, void* src, int32 size, int32 byte_place_in_buffer) = 0;
 
 		template<typename T>
-		void UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size);
+		void UpdateConstantBuffer(IBuffer*& dest, T* src, int32 size);
 
 		template<typename T>
 		void UpdateBuffer(IBuffer*& dest, T* src, eMapping mapping);
 		template<typename T>
-		void UpdateBuffer(IBuffer*& dest, T* src, s32 size, eMapping mapping);
+		void UpdateBuffer(IBuffer*& dest, T* src, int32 size, eMapping mapping);
 
 
-		virtual s8* Map(IBuffer* buffer) = 0;
+		virtual int8* Map(IBuffer* buffer) = 0;
 		virtual void Unmap(IBuffer* buffer) = 0;
 
 	protected:
@@ -132,8 +132,8 @@ namespace graphics
 
 		virtual void* GetContext() = 0;
 
-		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) = 0;
-		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) = 0;
+		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, int8* src, int32 size) = 0;
+		virtual void _InternalUpdateBuffer(IBuffer*& dest, int8* src, int32 size, eMapping mapping) = 0;
 
 		ISamplerState* m_SamplerStates[NOF_SS];
 		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
@@ -144,27 +144,27 @@ namespace graphics
 	
 
 	template<typename T>
-	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size)
+	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src, int32 size)
 	{
-		_InternalUpdateConstantBuffer(dest, (s8*)src, size);
+		_InternalUpdateConstantBuffer(dest, (int8*)src, size);
 	}
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src)
 	{
-		_InternalUpdateConstantBuffer(dest, (s8*)src, sizeof(T));
+		_InternalUpdateConstantBuffer(dest, (int8*)src, sizeof(T));
 	}
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, eMapping mapping)
 	{
-		_InternalUpdateBuffer(dest, (s8*)src, sizeof(T), mapping);
+		_InternalUpdateBuffer(dest, (int8*)src, sizeof(T), mapping);
 	}
 
 	template<typename T>
-	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, s32 size, eMapping mapping)
+	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, int32 size, eMapping mapping)
 	{
-		_InternalUpdateBuffer(dest, (s8*)src, size, mapping);
+		_InternalUpdateBuffer(dest, (int8*)src, size, mapping);
 	}
 
 

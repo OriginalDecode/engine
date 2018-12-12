@@ -6,7 +6,7 @@
 bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 {
 	m_BufferSize = buffer_size;
-	m_Viewport = Engine::GetAPI()->CreateViewport((u16)m_BufferSize, (u16)m_BufferSize, 0.f, 1.f, 0, 0);
+	m_Viewport = Engine::GetAPI()->CreateViewport((uint16)m_BufferSize, (uint16)m_BufferSize, 0.f, 1.f, 0, 0);
 
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
@@ -24,8 +24,8 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	desc.m_Width = (s32)m_BufferSize;
-	desc.m_Height = (s32)m_BufferSize;
+	desc.m_Width = (int32)m_BufferSize;
+	desc.m_Height = (int32)m_BufferSize;
 
 
 	m_Depth = new Texture;

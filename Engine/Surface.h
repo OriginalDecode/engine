@@ -7,7 +7,7 @@ class Surface
 public:
 
 	Surface(Effect* anEffect);
-	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount);
+	Surface(Effect* anEffect, uint32 aStartVertex, uint32 aVertexCount, uint32 aStartIndex, uint32 aIndexCount);
 	//Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology);
 
 	void AddTexture(IShaderResourceView* texture, const std::string& filepath, TextureSlot slot);
@@ -19,11 +19,11 @@ public:
 
 	void SetEffect(Effect* anEffect);
 
-	void SetVertexStart(u32 aStartVertex);
-	void SetVertexCount(u32 aVertexCount);
+	void SetVertexStart(uint32 aStartVertex);
+	void SetVertexCount(uint32 aVertexCount);
 
-	void SetIndexStart(u32 aStartIndex);
-	void SetIndexCount(u32 aIndexCount);
+	void SetIndexStart(uint32 aStartIndex);
+	void SetIndexCount(uint32 aIndexCount);
 
 	//void SetPrimology(graphics::eTopology topology);
 
@@ -41,10 +41,10 @@ private:
 	Material m_Material;
 	Effect* myEffect;
 
-	u32 myIndexStart;
-	u32 myIndexCount;
-	u32 myVertexStart;
-	u32 myVertexCount;
+	uint32 myIndexStart;
+	uint32 myIndexCount;
+	uint32 myVertexStart;
+	uint32 myVertexCount;
 
 };
 

@@ -353,11 +353,11 @@ namespace cl
 
 	}
 
-	u64 Hash(std::string key)
+	uint64 Hash(std::string key)
 	{
 		std::transform(key.begin(), key.end(), key.begin(), tolower);
 
-		u64 result;
+		uint64 result;
 		MurmurHash3_x86_32(key.c_str(), key.length(), 0, &result);
 		return result;
 

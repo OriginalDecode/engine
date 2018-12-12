@@ -137,17 +137,17 @@ bool InputWrapper::PS4OnRelease(UCHAR button)
 
 bool InputWrapper::IsDown(MouseInput button)
 {
-	return (myMouseState.rgbButtons[(s32)button] & 0x80) != 0;
+	return (myMouseState.rgbButtons[(int32)button] & 0x80) != 0;
 }
 
 bool InputWrapper::OnRelease(MouseInput button)
 {
-	return (myMouseState.rgbButtons[(s32)button] & 0x80) == 0 && (myPrevMouseState.rgbButtons[(s32)button] & 0x80) != 0;
+	return (myMouseState.rgbButtons[(int32)button] & 0x80) == 0 && (myPrevMouseState.rgbButtons[(int32)button] & 0x80) != 0;
 }
 
 bool InputWrapper::OnClick(MouseInput button)
 {
-	return (myMouseState.rgbButtons[(s32)button] & 0x80) != 0 && (myPrevMouseState.rgbButtons[(s32)button] & 0x80) == 0;
+	return (myMouseState.rgbButtons[(int32)button] & 0x80) != 0 && (myPrevMouseState.rgbButtons[(int32)button] & 0x80) == 0;
 }
 
 bool InputWrapper::IsDown(UCHAR aKey)

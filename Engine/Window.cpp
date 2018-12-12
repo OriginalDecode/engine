@@ -3,7 +3,7 @@
 
 
 
-bool Window::Initiate(WindowCreateInfo window_create_info, u64 window_style )
+bool Window::Initiate(WindowCreateInfo window_create_info, uint64 window_style )
 {
 	m_CreateInfo = window_create_info;
 	m_WindowSize.m_Height = window_create_info.window_height;
@@ -28,10 +28,10 @@ bool Window::Initiate(WindowCreateInfo window_create_info, u64 window_style )
 		"WindowsClass"
 		, NULL
 		, window_style   //WS_POPUP, Borderless windowed
-		, s32(width) // start x
-		, s32(height) // start y
-		, s32(m_CreateInfo.window_width)
-		, s32(m_CreateInfo.window_height)
+		, int32(width) // start x
+		, int32(height) // start y
+		, int32(m_CreateInfo.window_width)
+		, int32(m_CreateInfo.window_height)
 		, NULL
 		, NULL
 		, GetModuleHandle(NULL), NULL);

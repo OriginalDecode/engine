@@ -15,13 +15,13 @@ class LightManager
 public:
 	LightManager() = default;
 
-	s32 RegisterSpotlight();
-	s32 RegisterPointlight();
-	s32 RegisterDirectionalLight();
+	int32 RegisterSpotlight();
+	int32 RegisterPointlight();
+	int32 RegisterDirectionalLight();
 
-	SpotLight* GetSpotlight(s32 index);
-	PointLight* GetPointlight(s32 index);
-	DirectionalLight* GetDirectionalLight(s32 index);
+	SpotLight* GetSpotlight(int32 index);
+	PointLight* GetPointlight(int32 index);
+	DirectionalLight* GetDirectionalLight(int32 index);
 
 	//Area light?
 	//Light cube? This is a sort of light volume thing, it emits light and looks pretty.

@@ -90,7 +90,7 @@ void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
 
 }
 
-void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, u32 component_id)
+void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, uint32 component_id)
 {
 	for ( EntityComponent& ec : myEntityComponents )
 	{

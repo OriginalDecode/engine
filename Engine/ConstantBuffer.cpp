@@ -9,7 +9,7 @@ namespace graphics
 	{
 		ASSERT(!m_Variables.empty(), "Register Variables before Initializing");
 
-		s32 size = 0;
+		int32 size = 0;
 		for (const BufferVariable& var : m_Variables)
 		{
 			size += var.size;
@@ -18,7 +18,7 @@ namespace graphics
 		IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 
 
-		s32 mul_of_16 = size % 16;
+		int32 mul_of_16 = size % 16;
 		if (mul_of_16 != 0)
 		{
 			size += 16;
@@ -34,25 +34,25 @@ namespace graphics
 		m_Buffer = device.CreateConstantBuffer(size, debug_name);
 	}
 
-	void ConstantBuffer::Bind(s32 index, s32 shader_binding, const RenderContext& rc)
+	void ConstantBuffer::Bind(int32 index, int32 shader_binding, const RenderContext& rc)
 	{
-		const s32 idx[6] = { index, index, index, index, index, index };
+		const int32 idx[6] = { index, index, index, index, index, index };
 		Bind(idx, shader_binding, rc);
 	}
 
 
-	void ConstantBuffer::Bind(const s32 index[], s32 shader_binding, const RenderContext& rc)
+	void ConstantBuffer::Bind(const int32 index[], int32 shader_binding, const RenderContext& rc)
 	{
 		PROFILE_FUNCTION(profiler::colors::Orange);
 
 		IGraphicsContext& ctx = rc.GetContext();
 
 		PROFILE_BLOCK("Mapping");
-		s8* data = ctx.Map(m_Buffer);
-		s32 step = 0;
+		int8* data = ctx.Map(m_Buffer);
+		int32 step = 0;
 		for (BufferVariable& var : m_Variables)
 		{
-			memcpy(&data[step], static_cast<s8*>(var.variable), var.size);
+			memcpy(&data[step], static_cast<int8*>(var.variable), var.size);
 			step += var.size;
 		}
 		ctx.Unmap(m_Buffer);

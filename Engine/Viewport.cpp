@@ -4,7 +4,7 @@
 
 namespace graphics
 {
-	Viewport::Viewport(s32 width, s32 height, s32 top_left_x, s32 top_left_y, float max_depth, float min_depth, IViewport* viewport)
+	Viewport::Viewport(int32 width, int32 height, int32 top_left_x, int32 top_left_y, float max_depth, float min_depth, IViewport* viewport)
 		: m_Width(width)
 		, m_Height(height)
 		, m_TopLeftX(top_left_x)

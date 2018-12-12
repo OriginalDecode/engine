@@ -117,6 +117,6 @@ CU::Matrix44f ShadowDirectional::GetMVP()
 	return orientation * perspective;
 }
 
-void ShadowDirectional::HandleEvent(u64 event, void* pData)
+void ShadowDirectional::HandleEvent(uint64 event, void* pData)
 {
 }

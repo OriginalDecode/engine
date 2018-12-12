@@ -57,13 +57,13 @@ void BaseModel::CreatePlane(float half_width)
 	vert.uv = { 1, 1 };
 	vertices.Add(vert);
 
-	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
-	const s32 vtx_count = vertices.Size();
-	const s32 vtx_size = vtx_count * vtx_stride;
-	const s32 vtx_buff_count = 1;
-	const s32 vtx_start = 0;
-	const s32 vtx_byte_offset = 0;
-	s8* vtx_data = new s8[vtx_size];
+	const int32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const int32 vtx_count = vertices.Size();
+	const int32 vtx_size = vtx_count * vtx_stride;
+	const int32 vtx_buff_count = 1;
+	const int32 vtx_start = 0;
+	const int32 vtx_byte_offset = 0;
+	int8* vtx_data = new int8[vtx_size];
 	memcpy(vtx_data, &vertices[0], vtx_size);
 
 
@@ -91,7 +91,7 @@ void BaseModel::CreatePlane(float half_width)
 	m_VertexWrapper.SetInputLayout(pInputLayout);
 	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
 
-	CU::GrowingArray<u32> indices;
+	CU::GrowingArray<uint32> indices;
 	indices.Add(0);
 	indices.Add(1);
 	indices.Add(2);
@@ -100,13 +100,13 @@ void BaseModel::CreatePlane(float half_width)
 	indices.Add(2);
 	indices.Add(1);
 
-	const s32 idx_count = indices.Size();
-	const s32 idx_stride = sizeof(u32);
-	const s32 idx_size = idx_count * idx_stride;
-	const s32 idx_start = 0;
-	const s32 idx_byte_offset = 0;
+	const int32 idx_count = indices.Size();
+	const int32 idx_stride = sizeof(uint32);
+	const int32 idx_size = idx_count * idx_stride;
+	const int32 idx_start = 0;
+	const int32 idx_byte_offset = 0;
 
-	s8* idx_data = new s8[idx_size];
+	int8* idx_data = new int8[idx_size];
 	memcpy(idx_data, &indices[0], idx_size);
 
 	graphics::BufferDesc idx_desc;

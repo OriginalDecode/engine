@@ -32,7 +32,7 @@ bool InputHandle::Initiate(HWND window_handle, HINSTANCE window_instance)
 	return true;
 }
 
-void InputHandle::AddController(u16 controller_id)
+void InputHandle::AddController(uint16 controller_id)
 {
 #ifdef _DEBUG
 	char buf[128];
@@ -49,7 +49,7 @@ void InputHandle::Update(float dt)
 	if (!Engine::GetInstance()->IsWindowActive())
 		return;
 	
-	for (s32 i = 0; i < m_ControllerID; i++)
+	for (int32 i = 0; i < m_ControllerID; i++)
 	{
 		m_Controller[i]->Update();
 	}
@@ -84,7 +84,7 @@ float InputHandle::GetDY()
 	return m_Input->MouseDirectY(); 
 }
 
-ControllerInput* InputHandle::GetController(u16 controller_id)
+ControllerInput* InputHandle::GetController(uint16 controller_id)
 {
 	return m_Controller[controller_id]; 
 }

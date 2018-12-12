@@ -118,7 +118,7 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	full_path += filepath;
 	full_path += entrypoint;
 
-	u64 hash_key = cl::Hash(full_path.c_str());
+	uint64 hash_key = cl::Hash(full_path.c_str());
 	
 	CompiledShader* shader = CreateShader(full_path, entrypoint, type);
 
@@ -132,19 +132,19 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 
 #ifndef FINAL
 	full_path = "data/shaders/" + filepath;
-	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
+	myFileWatchers[(int32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
 	ASSERT(effect, "Effect pointer was null");
 	m_Shaders[hash_key]->RegisterReload(effect);
 #endif
 }
 
-u64 ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint)
+uint64 ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint)
 {
 	std::string full_path = "data/shaders/";
 	full_path += filepath;
 	full_path += entrypoint;
 
-	u64 hash_key = cl::Hash(full_path.c_str());
+	uint64 hash_key = cl::Hash(full_path.c_str());
 
 	if (m_Shaders.find(hash_key) != m_Shaders.end())
 		return hash_key;
@@ -161,7 +161,7 @@ u64 ShaderFactory::LoadShader(const std::string& filepath, const std::string& en
 	
 #ifndef FINAL
 	full_path = "data/shaders/" + filepath;
-	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
+	myFileWatchers[(int32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
 #endif
 	return hash_key;
 }
@@ -192,7 +192,7 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 {
 	Sleep(SLEEP_TIME);
 	std::string fullpath = file_path + entrypoint;
-	u64 hash_key = cl::Hash(fullpath.c_str());
+	uint64 hash_key = cl::Hash(fullpath.c_str());
 
 	CU::GrowingArray<ShaderReload*> effect_container;
 	CompiledShader* new_shader = nullptr;
@@ -229,7 +229,7 @@ IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const st
 	return Engine::GetAPI()->GetDevice().CompileShaderFromFile(file_path.c_str(), entrypoint.c_str(), shader_type.c_str());
 }
 
-CompiledShader* ShaderFactory::GetShader(u64 key) const
+CompiledShader* ShaderFactory::GetShader(uint64 key) const
 {
 	auto it = m_Shaders.find(key);
 

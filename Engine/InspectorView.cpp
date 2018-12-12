@@ -7,7 +7,7 @@ InspectorView::InspectorView(EntityManager& em)
 {
 }
 
-void InspectorView::SetEntity(Entity e, s32 component_flag)
+void InspectorView::SetEntity(Entity e, int32 component_flag)
 {
 	m_CurrentEntity = e;
 	m_ComponentFlags = component_flag;

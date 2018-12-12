@@ -23,7 +23,7 @@ namespace graphics
 		*/
 		void Initiate(const char* debug_name = "unnamed");
 
-		enum ShaderBinding : s8
+		enum ShaderBinding : int8
 		{
 			VERTEX = BIT(0),
 			PIXEL = BIT(1),
@@ -33,20 +33,20 @@ namespace graphics
 			COMPUTE = BIT(5)
 		};
 
-		void Bind(s32 index, s32 shader_binding, const RenderContext& rc);
-		void Bind(const s32 index[], s32 shader_binding, const RenderContext& rc);
+		void Bind(int32 index, int32 shader_binding, const RenderContext& rc);
+		void Bind(const int32 index[], int32 shader_binding, const RenderContext& rc);
 		
 	private:
 		struct BufferVariable
 		{
 			BufferVariable() { };
-			BufferVariable(void * var, s32 _size) 
+			BufferVariable(void * var, int32 _size) 
 				: variable(var)
 				, size(_size)
 			{
 			}
 			void* variable = nullptr;
-			s32 size = 0;
+			int32 size = 0;
 		};
 
 		IBuffer* m_Buffer = nullptr;

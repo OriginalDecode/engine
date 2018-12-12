@@ -154,7 +154,7 @@ void Game::Render(bool render_through)
 {
 }
 
-void Game::HandleEvent(u64 event, void* data)
+void Game::HandleEvent(uint64 event, void* data)
 {
 #ifdef _DEBUG
 	if (event == DebugEvents_AddEntity)
@@ -172,7 +172,7 @@ void Game::SaveCameraPosition()
 
 	if (camera_save.is_open())
 	{
-		for (s32 i = 0; i < 16; i++)
+		for (int32 i = 0; i < 16; i++)
 		{
 			camera_save << m_Camera->GetOrientation()[i];
 			camera_save << "\n";
@@ -203,7 +203,7 @@ void Game::OldUpdate(float dt)
 	m_Time -= dt;
 	if (m_Time <= 0.f)
 	{
-		m_FPSToPrint = u32(m_AverageFPS / m_FrameCount);
+		m_FPSToPrint = uint32(m_AverageFPS / m_FrameCount);
 		m_FrameCount = 0;
 		m_AverageFPS = 0.f;
 		m_Time = 1.f;

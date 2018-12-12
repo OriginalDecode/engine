@@ -21,9 +21,9 @@ namespace
 
 struct SHeightMap
 {
-	u32 myWidth;
-	u32 myDepth;
-	u8* myData;
+	uint32 myWidth;
+	uint32 myDepth;
+	uint8* myData;
 };
 
 SHeightMap Create(const char* filepath);
@@ -51,7 +51,7 @@ public:
 
 	void AddNormalMap(const std::string& filepath);
 	std::vector<float> GetVerticeArrayCopy();
-	std::vector<s32> GetIndexArrayCopy();
+	std::vector<int32> GetIndexArrayCopy();
 	void SetPosition(CU::Vector2f position);
 	bool HasLoaded() const { return m_HasLoaded; }
 
@@ -75,7 +75,7 @@ private:
 	bool m_HasLoaded = false;
 	void UpdateConstantBuffer(const graphics::RenderContext&) { };
 
-	void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
+	void CreateVertices(uint32 width, uint32 height, const CU::Vector3f& position);
 	void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
 	float GetHeight(unsigned int aX, unsigned int aY) const;
 	float GetHeight(unsigned int aIndex) const;
@@ -86,12 +86,12 @@ private:
 	SHeightMap myHeightmap;
 
 	/* Look into this */
-	std::vector<s32> myIndexes;
+	std::vector<int32> myIndexes;
 	std::vector<float> myVertices;
 
 	CU::Matrix44f myOrientation;
-	u32 myWidth;
-	u32 myDepth;
+	uint32 myWidth;
+	uint32 myDepth;
 	CU::Vector3f m_Color;
 	CU::Vector2f m_UV[4];
 

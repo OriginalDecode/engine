@@ -15,8 +15,8 @@ WaterPlane::WaterPlane()
 	m_ReflectionG.Initiate(false);
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
-	const s32 window_width = window_size.m_Width;
-	const s32 window_height = window_size.m_Height;
+	const int32 window_width = window_size.m_Width;
+	const int32 window_height = window_size.m_Height;
 
 	m_Refraction = new Texture;
 	m_Refraction->InitiateAsDepthStencil(window_width, window_height, "Water : RefractionDepth");
@@ -36,8 +36,8 @@ WaterPlane::WaterPlane()
 	m_ConstantBuffer = engine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbMatrices), "waterplane vertex cb");
 	m_cbPixel = engine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbPixel), "waterplane pixel cb");
 
-	const u64 vtx = engine->LoadShader("water_no_tess.vs", "main");
-	const u64 frag = engine->LoadShader("water_no_tess.ps", "depth");
+	const uint64 vtx = engine->LoadShader("water_no_tess.vs", "main");
+	const uint64 frag = engine->LoadShader("water_no_tess.ps", "depth");
 
 
 	m_Shaders[0] = engine->GetShader(vtx);

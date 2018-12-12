@@ -21,7 +21,7 @@ InstancingManager::InstancingManager()
 	assert(hr == S_OK);*/
 }
 
-bool InstancingManager::FindInstanceObject(u64 key)
+bool InstancingManager::FindInstanceObject(uint64 key)
 {
 	if (m_InstanceObjects.find(key) != m_InstanceObjects.end())
 		return true;
@@ -29,7 +29,7 @@ bool InstancingManager::FindInstanceObject(u64 key)
 	return false;
 }
 
-bool InstancingManager::FindModel(u64 key) const
+bool InstancingManager::FindModel(uint64 key) const
 {
 
 
@@ -38,23 +38,23 @@ bool InstancingManager::FindModel(u64 key) const
 
 void InstancingManager::AddInstanceObject(InstanceObject instance_object)
 {
-	const u64 material_key = instance_object.m_Material->GetKey();
-	const u64 model_key = instance_object.m_Model->GetKey();
+	const uint64 material_key = instance_object.m_Material->GetKey();
+	const uint64 model_key = instance_object.m_Model->GetKey();
 
 	if (m_InstanceObjects.find(material_key) == m_InstanceObjects.end())
 	{
-		m_InstanceObjects.emplace(material_key, std::map<u64, InstanceObject>());
+		m_InstanceObjects.emplace(material_key, std::map<uint64, InstanceObject>());
 	}
 
 	auto it = m_InstanceObjects.find(material_key);
 	if (it->second.find(model_key) == it->second.end())
 	{
-		std::map<u64, InstanceObject>& list = m_InstanceObjects.at(material_key);
+		std::map<uint64, InstanceObject>& list = m_InstanceObjects.at(material_key);
 		list.emplace(model_key, instance_object);
 	}
 }
 
-void InstancingManager::AddGPUDataToInstance(u64 material_key, u64 model_key, GPUModelData data)
+void InstancingManager::AddGPUDataToInstance(uint64 material_key, uint64 model_key, GPUModelData data)
 {
 	auto it = m_InstanceObjects.find(material_key);
 	if (it == m_InstanceObjects.end())

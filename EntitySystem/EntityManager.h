@@ -64,8 +64,8 @@ public:
 
 	float GetDeltaTime();
 
-	void AddSystem(s32 type);
-	s32 GetSystemFlag() const { return m_SystemsAdded; }
+	void AddSystem(int32 type);
+	int32 GetSystemFlag() const { return m_SystemsAdded; }
 
 	template <typename T>
 	void AddSystem();
@@ -83,13 +83,13 @@ private:
 	NodeEntityManager* m_ActiveNode = nullptr;
 
 	CU::GrowingArray<NodeEntityManager*> m_NodeManagers;
-	CU::GrowingArray<s32> m_UsedManagers;
-	const s32 m_Max = (8 * 8 * 8 * 8 * 8);
+	CU::GrowingArray<int32> m_UsedManagers;
+	const int32 m_Max = (8 * 8 * 8 * 8 * 8);
 	Entity myNextEntity = 1;
 	CComponentContainer* myComponents = nullptr;
 	CU::GrowingArray<BaseSystem*> m_Systems;
 	std::atomic<float> myDeltaTime = 0.f;
-	s32 m_SystemsAdded;
+	int32 m_SystemsAdded;
 
 };
 

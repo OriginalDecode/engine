@@ -47,9 +47,9 @@ namespace debug
 	};
 
 
-	static s32 widget_id = 0;
+	static int32 widget_id = 0;
 	static float light_dir[3];
-	static s32 s_MaterialIndex = 0;
+	static int32 s_MaterialIndex = 0;
 
 	static auto GetVector = [](void* vec, int index, const char** out_text)
 	{
@@ -389,7 +389,7 @@ namespace debug
 			const ImVec4 active = style.Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 inactive = style.Colors[ImGuiCol_Button];
 
-			static s32 button_idx = 1;
+			static int32 button_idx = 1;
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.1f, 0.0f));
@@ -583,7 +583,7 @@ namespace debug
 		}
 	}
 
-	s32 DebugHandle::GetDebugTextureIndex() const
+	int32 DebugHandle::GetDebugTextureIndex() const
 	{
 		return m_TextureIndex;
 	}
@@ -619,7 +619,7 @@ namespace debug
 
 	}
 
-	Texture* DebugHandle::GetTexture(s32 index)
+	Texture* DebugHandle::GetTexture(int32 index)
 	{
 		return m_RegisteredSampleTextures[index];
 	}
@@ -631,7 +631,7 @@ namespace debug
 
 
 
-	void DebugHandle::HandleEvent(u64 event, void* data /*= nullptr*/)
+	void DebugHandle::HandleEvent(uint64 event, void* data /*= nullptr*/)
 	{
 		if (event == DebugEvents_OnRightClick)
 		{
@@ -992,7 +992,7 @@ namespace debug
 		EntityManager& em = engine->GetEntityManager();
 
 		DebugComponent& _debug = em.GetComponent<DebugComponent>(m_EditEntity);
-		s32 flags = _debug.m_ComponentFlags;
+		int32 flags = _debug.m_ComponentFlags;
 
 		if (flags & TreeDweller::TRANSLATION)
 		{

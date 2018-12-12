@@ -41,8 +41,8 @@ sRGB luminance values).
 
 #ifndef ATMOSPHERE_CONSTANTS_H_
 #define ATMOSPHERE_CONSTANTS_H_
-constexpr s32 kLambdaMin = 360;
-constexpr s32 kLambdaMax = 830;
+constexpr int32 kLambdaMin = 360;
+constexpr int32 kLambdaMax = 830;
 constexpr float kSunAngularRadius = 0.00935f / 2.f;
 constexpr float kSunSolidAngle = 3.1415926f * kSunAngularRadius * kSunAngularRadius;
 constexpr float kUnitLengthInMeters = 1000.f;

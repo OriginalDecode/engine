@@ -8,21 +8,21 @@ QuadTreeNode::QuadTreeNode(float halfwidth, CU::Vector4f pos)
 {
 	m_AABB = cl::AABB(halfwidth, halfwidth, halfwidth, cl::AsVector3(pos));
 
-	for (s32 i = 0; i < 4; i++)
+	for (int32 i = 0; i < 4; i++)
 	{
 		m_Children[i] = nullptr;
 	}
 
 }
 
-QuadTreeNode::QuadTreeNode(float halfwidth, CU::Vector4f pos, s32 index)
+QuadTreeNode::QuadTreeNode(float halfwidth, CU::Vector4f pos, int32 index)
 	: m_Position(pos)
 	, m_HalfWidth(halfwidth)
 	, m_Index(index)
 {
 	m_AABB = cl::AABB(halfwidth, halfwidth, halfwidth, cl::AsVector3(pos));
 
-	for (s32 i = 0; i < 4; i++)
+	for (int32 i = 0; i < 4; i++)
 	{
 		m_Children[i] = nullptr;
 	}
@@ -49,7 +49,7 @@ void QuadTreeNode::Update(const CU::Matrix44f& camera_pos)
 	}
 }
 
-void QuadTreeNode::CreateNode(CU::Vector4f pos, s32 index)
+void QuadTreeNode::CreateNode(CU::Vector4f pos, int32 index)
 {
 	if (m_Children[index])
 		return;

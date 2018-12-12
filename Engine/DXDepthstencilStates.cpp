@@ -15,7 +15,7 @@ namespace graphics
 	// 	D3D11_DEPTH_STENCILOP_DESC FrontFace;
 	// 	D3D11_DEPTH_STENCILOP_DESC BackFace;
 
-	void DirectX11::CreateDepthStencil(s32 slot, const D3D11_DEPTH_STENCIL_DESC& desc, const std::string& debug_name)
+	void DirectX11::CreateDepthStencil(int32 slot, const D3D11_DEPTH_STENCIL_DESC& desc, const std::string& debug_name)
 	{
 
 		DX11Device* dx11device = static_cast<DX11Device*>(m_Device);

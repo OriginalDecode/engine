@@ -21,7 +21,7 @@ Surface::Surface(Effect* anEffect)
 	//SetPrimology(graphics::TRIANGLE_LIST);
 }
 
-Surface::Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
+Surface::Surface(Effect* anEffect, uint32 aStartVertex, uint32 aVertexCount, uint32 aStartIndex, uint32 aIndexCount)
 {
 	SetVertexCount(aVertexCount);
 	SetVertexStart(aStartVertex);
@@ -89,22 +89,22 @@ void Surface::SetEffect(Effect* anEffect)
 	myEffect = anEffect;
 }
 
-void Surface::SetVertexStart(u32 aStartVertex)
+void Surface::SetVertexStart(uint32 aStartVertex)
 {
 	myVertexStart = aStartVertex;
 }
 
-void Surface::SetVertexCount(u32 aVertexCount)
+void Surface::SetVertexCount(uint32 aVertexCount)
 {
 	myVertexCount = aVertexCount;
 }
 
-void Surface::SetIndexStart(u32 aStartIndex)
+void Surface::SetIndexStart(uint32 aStartIndex)
 {
 	myIndexStart = aStartIndex;
 }
 
-void Surface::SetIndexCount(u32 aIndexCount)
+void Surface::SetIndexCount(uint32 aIndexCount)
 {
 	myIndexCount = aIndexCount;
 }

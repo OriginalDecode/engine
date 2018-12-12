@@ -14,12 +14,12 @@ namespace graphics
 		DX11Context(ID3D11DeviceContext* context);
 
 
-		void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void PSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void GSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void DSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void HSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void CSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
+		void VSSetShaderResource(int32 start_slot, int32 count, void* resources) override;
+		void PSSetShaderResource(int32 start_slot, int32 count, void* resources) override;
+		void GSSetShaderResource(int32 start_slot, int32 count, void* resources) override;
+		void DSSetShaderResource(int32 start_slot, int32 count, void* resources) override;
+		void HSSetShaderResource(int32 start_slot, int32 count, void* resources) override;
+		void CSSetShaderResource(int32 start_slot, int32 count, void* resources) override;
 
 		void SetVertexShader(CompiledShader* shader) override;
 		void SetPixelShader(CompiledShader* shader) override;
@@ -36,38 +36,38 @@ namespace graphics
 		void SetComputeShader(void* shader) override;
 
 
-		void VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
-		void PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
-		void GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
-		void HSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
-		void DSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
-		void CSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+		void VSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) override;
+		void PSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) override;
+		void GSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) override;
+		void HSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) override;
+		void DSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) override;
+		void CSSetConstantBuffer(int32 start_index, int32 buffer_count, IBuffer* pBuffer) override;
 
-		void VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
-		void PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
-		void GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
-		void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
-		void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
-		void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void VSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) override;
+		void PSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) override;
+		void GSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) override;
+		void HSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) override;
+		void DSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) override;
+		void CSSetSamplerState(int32 start_index, int32 sampler_count, ISamplerState* pSamplers) override;
 
 
 
-		void VSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
-		void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
-		void GSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
-		void HSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
-		void DSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
-		void CSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+		void VSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) override;
+		void PSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) override;
+		void GSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) override;
+		void HSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) override;
+		void DSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) override;
+		void CSSetSamplerState(int32 start_index, int32 sampler_count, eSamplerStates samplerstate) override;
 
 
 
 		void IASetInputLayout(IInputLayout* input_layout) override;
 		void IASetTopology(eTopology topology) override;
 
-		void OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) override;
+		void OMSetRenderTargets(int32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) override;
 		void ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4]) override;
 
-		void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) override;
+		void ClearDepthStencilView(IDepthStencilView* dsv, int32 clear_flag, int32 max_depth) override;
 
 
 		void Draw(BaseModel* model, Effect* fx = nullptr) override;
@@ -85,32 +85,32 @@ namespace graphics
 
 
 
-		void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) override;
+		void SetDepthState(IDepthStencilState* pDepthStencilState, int32 max_depth) override;
 		void SetRasterizerState(IRasterizerState* pRasterizerState) override;
 		void SetBlendState(IBlendState* pBlendState) override;
 
 		void SetViewport(Viewport* viewport) override;
 
-		void SetDepthState(eDepthStencilState depth_state, s32 max_depth) override;
+		void SetDepthState(eDepthStencilState depth_state, int32 max_depth) override;
 		void SetRasterState(eRasterizer raster_state) override;
-		void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, u32 mask = 0xFFFFFFFF) override;
+		void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, uint32 mask = 0xFFFFFFFF) override;
 
 		ID3D11DeviceContext* m_Context = nullptr;
 		void* GetContext() override { return m_Context; }
 
 
-		virtual void ClearDepthStencilView(Texture*, s32, s32) { assert(false && "not implemented"); }
+		virtual void ClearDepthStencilView(Texture*, int32, int32) { assert(false && "not implemented"); }
 		virtual void ClearRenderTarget(Texture* render_target, const float clear_color[4]);
-		virtual void OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv);
+		virtual void OMSetRenderTargets(int32 num_views, Texture* render_targets, Texture* dsv);
 
-		void UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer) override;
-		s8* Map(IBuffer* buffer) override;
+		void UpdateConstantBuffer(IBuffer*& dest, void* src, int32 size, int32 byte_place_in_buffer) override;
+		int8* Map(IBuffer* buffer) override;
 		void Unmap(IBuffer* buffer) override;
 	private:
 
 
-		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) override;
-		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) override;
+		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, int8* src, int32 size) override;
+		virtual void _InternalUpdateBuffer(IBuffer*& dest, int8* src, int32 size, eMapping mapping) override;
 
 	};
 

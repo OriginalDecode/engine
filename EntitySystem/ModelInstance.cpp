@@ -42,12 +42,12 @@ void ModelInstance::UpdateMaterial()
 	}
 }
 
-u64 ModelInstance::GetMaterialKey() const
+uint64 ModelInstance::GetMaterialKey() const
 {
 	return m_Key;
 }
 
-void ModelInstance::SetMaterialKey(u64 key)
+void ModelInstance::SetMaterialKey(uint64 key)
 {
 	m_Key = key;
 }

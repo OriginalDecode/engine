@@ -56,7 +56,7 @@ public:
 
 	void Render();
 	void DrawIBL();
-	graphics::IRenderNode* GetNode(u64 type);
+	graphics::IRenderNode* GetNode(uint64 type);
 
 
 	TerrainSystem* GetTerrainSystem() const { return m_TerrainSystem; }
@@ -66,7 +66,7 @@ public:
 	CU::Vector3f GetLightDirection() { return m_Direction; }
 	Camera* GetDirectionalCamera() { return m_DirectionalShadow.GetCamera(); }
 
-	void MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution = 16);
+	void MakeCubemap(CU::Vector3f positon, int32 max_resolution, int32 min_resolution = 16);
 
 	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 

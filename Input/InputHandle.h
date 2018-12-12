@@ -20,7 +20,7 @@ public:
 	InputHandle() = default;
 	~InputHandle();
 	bool Initiate(HWND window_handle, HINSTANCE window_instance);
-	void AddController(u16 controller_id);
+	void AddController(uint16 controller_id);
 	void HandleInput();
 
 
@@ -37,12 +37,12 @@ public:
 	float GetDX();
 	float GetDY();
 
-	ControllerInput* GetController(u16 controller_id);
+	ControllerInput* GetController(uint16 controller_id);
 	InputWrapper* GetInputWrapper() { return m_Input; }
 
 private:
-	static constexpr s32 m_ControllerMaxAmount = 8;
-	s32 m_ControllerID;
+	static constexpr int32 m_ControllerMaxAmount = 8;
+	int32 m_ControllerID;
 	ControllerInput* m_Controller[m_ControllerMaxAmount];
 	
 	InputWrapper* m_Input = nullptr;

@@ -196,7 +196,7 @@ namespace cl
 
 	std::vector<File> FindFilesInDirectory(const char* directory_path);
 
-	u64 Hash(std::string key);
+	uint64 Hash(std::string key);
 
 	
 
@@ -205,19 +205,19 @@ namespace cl
 
 struct Ticket_Mutex
 {
-	u64 volatile ticket = 0;
-	u64 volatile serving = 0;
+	uint64 volatile ticket = 0;
+	uint64 volatile serving = 0;
 };
 
-inline u64 AtmoicAddU64(u64 volatile *value, u64 toAdd)
+inline uint64 AtmoicAddU64(uint64 volatile *value, uint64 toAdd)
 {
-	u64 result = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
+	uint64 result = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
 	return result;
 };
 
 inline void BeginTicketMutex(Ticket_Mutex* mutex)
 {
-	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
+	uint64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
 	while (ticket != mutex->serving)
 	{
 		//should have a timer or something here in debug to auto crash

@@ -45,11 +45,11 @@ public:
 	void WaitForLogic();
 	void RenderIsDone();
 	void LogicIsDone();
-	u16 GetCurrentBufferIndex() const { return m_CurrentBuffer; }
+	uint16 GetCurrentBufferIndex() const { return m_CurrentBuffer; }
 
 	bool LogicHasFinished() { return m_LogicDone; }
 
-	void* GetMemoryBlock(eBufferType buffer_type, s32 index, s32& size_of_block_out);
+	void* GetMemoryBlock(eBufferType buffer_type, int32 index, int32& size_of_block_out);
 
 	void AddRenderCommand(const ModelCommand& render_command);
 	void AddRenderCommand(const ModelCommandNonDeferred& render_command);
@@ -78,7 +78,7 @@ private:
 	volatile bool m_LogicDone = false;
 	volatile bool m_RenderDone = false;
 	volatile bool m_QuitFlag = false;
-	u16 m_CurrentBuffer = 0;
+	uint16 m_CurrentBuffer = 0;
 
 };
 

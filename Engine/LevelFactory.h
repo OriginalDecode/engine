@@ -24,8 +24,8 @@ public:
 	void CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it);
 	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
 	
-	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(s32 steps);
-	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(s32 x_steps, s32 y_steps, s32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing);
+	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(int32 steps);
+	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(int32 x_steps, int32 y_steps, int32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing);
 
 
 	static void SaveLevel(std::string folder, std::string filename);
@@ -49,5 +49,5 @@ private:
 	PhysicsManager* m_PhysicsManager	= nullptr;
 	bool sponza = false;
 
-	void CreateDebugComponent(Entity e, bool isLight, s32 flags);
+	void CreateDebugComponent(Entity e, bool isLight, int32 flags);
 };

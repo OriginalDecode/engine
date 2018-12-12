@@ -41,14 +41,14 @@ class aiMesh;
 class aiScene;
 
 
-constexpr s32 TRIANGLE_VERTEX_COUNT = 3;
-constexpr s32 VERTEX_STRIDE = 4;
-constexpr s32 NORMAL_STRIDE = 4;
-constexpr s32 BINORMAL_STRIDE = 4;
-constexpr s32 TANGENT_STRIDE = 4;
-constexpr s32 SKINWEIGHT_STRIDE = 4;
-constexpr s32 BONEID_STRIDE = 4;
-constexpr s32 UV_STRIDE = 2;
+constexpr int32 TRIANGLE_VERTEX_COUNT = 3;
+constexpr int32 VERTEX_STRIDE = 4;
+constexpr int32 NORMAL_STRIDE = 4;
+constexpr int32 BINORMAL_STRIDE = 4;
+constexpr int32 TANGENT_STRIDE = 4;
+constexpr int32 SKINWEIGHT_STRIDE = 4;
+constexpr int32 BONEID_STRIDE = 4;
+constexpr int32 UV_STRIDE = 2;
 
 
 struct VertexData
@@ -117,18 +117,18 @@ public:
 
 		struct Layout
 		{
-			s32 mySize;
-			s32 myOffset;
+			int32 mySize;
+			int32 myOffset;
 			LayoutType myType;
 		};
 
 		float* myVertexBuffer = nullptr;
-		s32* myIndicies = nullptr;
-		u32 myVertexCount = 0;
-		u32 m_VertexBufferSize = 0;
-		u32 m_IndexBufferSize = 0;
-		u32 myVertexStride = 0; //byte distance between each vertex
-		u32 myIndexCount = 0;
+		int32* myIndicies = nullptr;
+		uint32 myVertexCount = 0;
+		uint32 m_VertexBufferSize = 0;
+		uint32 m_IndexBufferSize = 0;
+		uint32 myVertexStride = 0; //byte distance between each vertex
+		uint32 myIndexCount = 0;
 		CU::GrowingArray<TextureInfo> myTextures;
 		CU::GrowingArray<Layout> myLayout;
 
@@ -171,9 +171,9 @@ private:
 	template<typename T>
 	void ProcessMesh(unsigned int index, const aiScene* scene, std::string file, T* parent);
 
-	void AddTangentData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+	void AddTangentData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount);
 
-	void AddBiNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+	void AddBiNormalData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount);
 
 	
 
@@ -183,18 +183,18 @@ private:
 	void Read(std::string path, T* pModel);
 
 	template <typename T>
-	void ReadBlock(const char* data, u32& position, T* pModel);
+	void ReadBlock(const char* data, uint32& position, T* pModel);
 
 	template <typename T>
-	void ReadData(const char* data, u32& position, T& out);
+	void ReadData(const char* data, uint32& position, T& out);
 
-	void AddBoneData(u32& stride, ModelData& data, u32& size, u32 polygonVertexCount);
+	void AddBoneData(uint32& stride, ModelData& data, uint32& size, uint32 polygonVertexCount);
 	
-	void AddVertexPositionData(u32 &stride, ModelData& data, u32 &size, u32 polygonVertexCount);
+	void AddVertexPositionData(uint32 &stride, ModelData& data, uint32 &size, uint32 polygonVertexCount);
 
-	void AddVertexNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+	void AddVertexNormalData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount);
 	
-	void AddUVData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+	void AddUVData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount);
 
 };
 
@@ -385,8 +385,8 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::strin
 
 	bool _thread = false;
 	bool thread2 = false;
-	volatile s32 _meshes_done = 0;
-	for (u32 i = 0; i < aNode->mNumMeshes; i++)
+	volatile int32 _meshes_done = 0;
+	for (uint32 i = 0; i < aNode->mNumMeshes; i++)
 	{
 #ifdef IMPORT_THREAD
 		if (_thread)
@@ -413,7 +413,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::strin
 	}
 #endif
 
-	for (u32 i = 0; i < aNode->mNumChildren; i++)
+	for (uint32 i = 0; i < aNode->mNumChildren; i++)
 	{
 		aiNode* node = aNode->mChildren[i];
 #ifdef IMPORT_THREAD
@@ -436,10 +436,10 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 	
 	ModelData* data = new ModelData;
 
-	u32 polygonCount = mesh->mNumFaces;
-	u32 size = polygonCount * VERTEX_STRIDE;
-	u32 polygonVertexCount = polygonCount * 4;
-	u32 stride = 0;
+	uint32 polygonCount = mesh->mNumFaces;
+	uint32 size = polygonCount * VERTEX_STRIDE;
+	uint32 polygonVertexCount = polygonCount * 4;
+	uint32 stride = 0;
 
 	if (mesh->HasPositions())
 		AddVertexPositionData(stride, *data, size, polygonVertexCount);
@@ -461,7 +461,7 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 
 	//DL_MESSAGE("Vertex Buffer Array Size : %d", size);
 
-	const u32 vtx_size = size;
+	const uint32 vtx_size = size;
 
 
 	data->myVertexBuffer = new float[vtx_size];
@@ -469,21 +469,21 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 	data->m_VertexBufferSize = sizeof(float) * vtx_size;
 	ASSERT(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
 
-	const u32 index_count = polygonCount * 3;
-	CU::GrowingArray<u32> indices(index_count);
+	const uint32 index_count = polygonCount * 3;
+	CU::GrowingArray<uint32> indices(index_count);
 
-	u32 vertCount = 0;
+	uint32 vertCount = 0;
 	
-	for (u32 i = 0; i < mesh->mNumFaces; i++)
+	for (uint32 i = 0; i < mesh->mNumFaces; i++)
 	{
 		const aiFace* face = &mesh->mFaces[i];
 
-		for (s32 j = 2; j >= 0; j--)
+		for (int32 j = 2; j >= 0; j--)
 		{
-			u32 addedSize = VERTEX_STRIDE;
-			u32 currIndex = vertCount * stride;
+			uint32 addedSize = VERTEX_STRIDE;
+			uint32 currIndex = vertCount * stride;
 			ASSERT(addedSize <= size, "addedSize was larger than the size of the array.");
-			u32 verticeIndex = face->mIndices[j];
+			uint32 verticeIndex = face->mIndices[j];
 
 			if (mesh->HasPositions())
 			{
@@ -587,11 +587,11 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 	data->myIndexCount = indices.Size();
 
 
-	data->myIndicies = new s32[index_count];
-	ZeroMemory(data->myIndicies, sizeof(s32) * index_count);
-	data->m_IndexBufferSize = index_count * sizeof(s32);
+	data->myIndicies = new int32[index_count];
+	ZeroMemory(data->myIndicies, sizeof(int32) * index_count);
+	data->m_IndexBufferSize = index_count * sizeof(int32);
 	
-	memcpy(data->myIndicies, &indices[0], indices.Size() * sizeof(s32));
+	memcpy(data->myIndicies, &indices[0], indices.Size() * sizeof(int32));
 
 
 
@@ -617,18 +617,18 @@ void CModelImporter::FillIndexData(T* out, const ModelData& data)
 	auto& idx = out->m_IndexWrapper;
 	idx.Reset();
 
-	const s32 idx_buf_size = data.m_IndexBufferSize;
+	const int32 idx_buf_size = data.m_IndexBufferSize;
 
 	// 	s8* indexData = new s8[idx_buf_size];
 	// 	memcpy(indexData, &data->myIndicies[0], idx_buf_size);
 
 	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
-	const s32 idx_IndexCount = data.myIndexCount;
-	const s32 idx_Size = idx_IndexCount * sizeof(u32);
+	const int32 idx_IndexCount = data.myIndexCount;
+	const int32 idx_Size = idx_IndexCount * sizeof(uint32);
 
 	graphics::BufferDesc idx_desc;
 	idx_desc.m_Size = idx_buf_size;
-	idx_desc.m_Data = (s8*)data.myIndicies;
+	idx_desc.m_Data = (int8*)data.myIndicies;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	idx_desc.m_StructuredByteStride = 0;
@@ -638,7 +638,7 @@ void CModelImporter::FillIndexData(T* out, const ModelData& data)
 
 	IBuffer* buffer = m_Device->CreateBuffer(idx_desc, data.m_Filename + " IndexBuffer");
 
-	idx.SetData((s8*)data.myIndicies);
+	idx.SetData((int8*)data.myIndicies);
 	idx.SetIndexCount(idx_IndexCount);
 	idx.SetStart(0);
 	idx.SetSize(idx_buf_size);
@@ -656,17 +656,17 @@ void CModelImporter::FillVertexData(T* out, const ModelData& data, Effect* effec
 	auto& vtx = out->m_VertexWrapper;
 	vtx.Reset();
 
-	const s32 vtx_VertexCount = data.myVertexCount;
-	const s32 vtx_Stride = data.myVertexStride;
-	const s32 vtx_start = 0;
-	const s32 vtx_buff_count = 1;
-	const s32 vtx_Size = data.m_VertexBufferSize;
+	const int32 vtx_VertexCount = data.myVertexCount;
+	const int32 vtx_Stride = data.myVertexStride;
+	const int32 vtx_start = 0;
+	const int32 vtx_buff_count = 1;
+	const int32 vtx_Size = data.m_VertexBufferSize;
 
 	//DL_MESSAGE("Buffer Size : %d", vtx_VertexCount);
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_VertexCount * vtx_Stride;
-	vtx_desc.m_Data = (s8*)data.myVertexBuffer;
+	vtx_desc.m_Data = (int8*)data.myVertexBuffer;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
@@ -686,7 +686,7 @@ void CModelImporter::FillVertexData(T* out, const ModelData& data, Effect* effec
 		vtx.SetInputLayout(layout);
 	}
 
-	vtx.SetData((s8*)data.myVertexBuffer);
+	vtx.SetData((int8*)data.myVertexBuffer);
 	vtx.SetStart(vtx_start);
 	vtx.SetStride(vtx_Stride);
 	vtx.SetByteOffset(0);
@@ -706,11 +706,11 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	auto& ins = out->m_InstanceWrapper;
 	ins.Reset();
 
-	const s32 ins_BufferCount = 1;
-	const s32 ins_Start = 0;
-	const s32 ins_ByteOffset = 0;
-	const s32 ins_InstanceCount = 300;
-	const s32 ins_IndicesPerInstance = data.myIndexCount;
+	const int32 ins_BufferCount = 1;
+	const int32 ins_Start = 0;
+	const int32 ins_ByteOffset = 0;
+	const int32 ins_InstanceCount = 300;
+	const int32 ins_IndicesPerInstance = data.myIndexCount;
 
 	/*
 		There's an optimization right here.
@@ -792,7 +792,7 @@ void CModelImporter::Read(std::string path, T* pModel)
 
 		
 
-		u32 position = 0;
+		uint32 position = 0;
 		ReadBlock(data, position, pModel);
 
 
@@ -806,12 +806,12 @@ void CModelImporter::Read(std::string path, T* pModel)
 }
 
 template <typename T>
-void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
+void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 {
 
 	ModelData model_data; // = new ModelData;
 
-	u32 stride = 0;
+	uint32 stride = 0;
 	//if (mesh->HasPositions())
 	{
 		ModelData::Layout newLayout;
@@ -869,7 +869,7 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 	if (model_data.myVertexCount > 0)
 	{
 		model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(VertexData);
-		s8* buffer = new s8[model_data.m_VertexBufferSize];
+		int8* buffer = new int8[model_data.m_VertexBufferSize];
 
 		ZeroMemory(&buffer[0], model_data.m_VertexBufferSize);
 		memcpy(&buffer[0], &data[position], model_data.m_VertexBufferSize);
@@ -884,7 +884,7 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 	if (model_data.myIndexCount > 0)
 	{
 		model_data.m_IndexBufferSize = model_data.myIndexCount * sizeof(int);
-		s8* buffer = new s8[model_data.m_IndexBufferSize];
+		int8* buffer = new int8[model_data.m_IndexBufferSize];
 
 		ZeroMemory(&buffer[0], model_data.m_IndexBufferSize);
 		memcpy(&buffer[0], &data[position], model_data.m_IndexBufferSize);
@@ -945,7 +945,7 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 }
 
 template <typename T>
-void CModelImporter::ReadData(const char* data, u32& position, T& out)
+void CModelImporter::ReadData(const char* data, uint32& position, T& out)
 {
 	memcpy(&out, &data[position], sizeof(T));
 	position += sizeof(T);

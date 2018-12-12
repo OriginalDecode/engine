@@ -34,17 +34,17 @@ public:
 	void ReloadTexture(Texture* texture);
 
 
-	void AddTexture(Texture* pTexture, u64 key);
+	void AddTexture(Texture* pTexture, uint64 key);
 
-	Texture* GetTexture(u64 key);
-	Sprite* GetSprite(u64 key);
-	Effect* GetEffect(u64 key);
-	Material* GetMaterial(u64 key);
+	Texture* GetTexture(uint64 key);
+	Sprite* GetSprite(uint64 key);
+	Effect* GetEffect(uint64 key);
+	Material* GetMaterial(uint64 key);
 
 	template<typename T>
-	RefPointer<T> GetModel(u64 key);
+	RefPointer<T> GetModel(uint64 key);
 
-	Model* GetModelDirect(u64 key);
+	Model* GetModelDirect(uint64 key);
 
 	//u64 GetModelKey(const char* path) const;
 
@@ -52,16 +52,16 @@ public:
 	template<typename T>
 	HashType LoadModel(std::string path, std::string effect_filepath, bool thread = true, int option = 0);
 
-	u64 LoadTexture(std::string path, bool make_mips = false);
-	u64 LoadEffect(std::string path);
-	u64 LoadSprite(std::string path);
-	u64 LoadMaterial(std::string path);
+	uint64 LoadTexture(std::string path, bool make_mips = false);
+	uint64 LoadEffect(std::string path);
+	uint64 LoadSprite(std::string path);
+	uint64 LoadMaterial(std::string path);
 
-	u64 LoadShader(std::string path, std::string entrypoint);
+	uint64 LoadShader(std::string path, std::string entrypoint);
 
 
 	CompiledShader* GetShader(const char* key) const;
-	CompiledShader* GetShader(const u64 key) const;
+	CompiledShader* GetShader(const uint64 key) const;
 
 	ShaderFactory* GetShaderFactory();
 private:
@@ -70,11 +70,11 @@ private:
 #endif
 
 
-	std::map<u64, Texture*> m_Textures;
-	std::map<u64, Effect*> m_Effects;
+	std::map<uint64, Texture*> m_Textures;
+	std::map<uint64, Effect*> m_Effects;
 	std::map<HashType, RefPointer<Model>> m_Models;
-	std::map<u64, Sprite*> m_Sprites;
-	std::map<u64, Material*> m_Materials;
+	std::map<uint64, Sprite*> m_Sprites;
+	std::map<uint64, Material*> m_Materials;
 
 
 
@@ -129,7 +129,7 @@ HashType AssetsContainer::LoadModel(std::string path, std::string effect_filepat
 }
 
 template<typename T>
-RefPointer<T> AssetsContainer::GetModel(u64 key)
+RefPointer<T> AssetsContainer::GetModel(uint64 key)
 {
 	auto it = m_Models.find(key);
 

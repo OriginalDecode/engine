@@ -22,7 +22,7 @@ Terrain* TerrainManager::GetTerrain(const std::string& terrain_name)
 	return GetTerrain(cl::Hash(terrain_name.c_str()));
 }
 
-void TerrainManager::AddTerrain(u64 hash, Terrain* terrain)
+void TerrainManager::AddTerrain(uint64 hash, Terrain* terrain)
 {
 	auto it = m_Terrain.find(hash);
 	if (it != m_Terrain.end())
@@ -35,7 +35,7 @@ void TerrainManager::AddTerrain(u64 hash, Terrain* terrain)
 
 void TerrainManager::LoadTerrain(const std::string& terrain_name)
 {
-	u64 hash = cl::Hash(terrain_name);
+	uint64 hash = cl::Hash(terrain_name);
 	if (m_Terrain.find(hash) == m_Terrain.end())
 	{
 		Terrain* terrain = new Terrain;
@@ -44,7 +44,7 @@ void TerrainManager::LoadTerrain(const std::string& terrain_name)
 	}
 }
 
-Terrain* TerrainManager::GetTerrain(u64 terrain_hash)
+Terrain* TerrainManager::GetTerrain(uint64 terrain_hash)
 {
 	if (m_Terrain.find(terrain_hash) == m_Terrain.end())
 		return nullptr;
@@ -52,7 +52,7 @@ Terrain* TerrainManager::GetTerrain(u64 terrain_hash)
 	return m_Terrain[terrain_hash];
 }
 
-void TerrainManager::LoadTerrain(u64 terrain_hash)
+void TerrainManager::LoadTerrain(uint64 terrain_hash)
 {
 	Terrain* terrain = new Terrain;
 	m_Terrain[terrain_hash] = terrain;

@@ -19,8 +19,8 @@ struct ModelInstanceCmpt
 	std::string m_Filename;
 	std::string m_MaterialFile;
 
-	u64 m_ModelID;
-	u64 m_MaterialKey;
+	uint64 m_ModelID;
+	uint64 m_MaterialKey;
 
 	CU::Matrix44f m_Orientation;
 

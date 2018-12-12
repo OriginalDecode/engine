@@ -16,17 +16,17 @@ namespace texture_format
 };
 struct TextureDesc
 {
-	s32 m_Width = 0;
-	s32 m_Height = 0;
+	int32 m_Width = 0;
+	int32 m_Height = 0;
 	graphics::eTextureFormat m_TextureFormat = graphics::NO_FORMAT;
 	graphics::eTextureFormat m_ShaderResourceFormat = graphics::NO_FORMAT;
 	graphics::eTextureFormat m_RenderTargetFormat = graphics::NO_FORMAT;
 	graphics::eTextureFormat m_DepthTextureFormat = graphics::NO_FORMAT;
-	s32 m_ResourceTypeBinding = 0;
-	s32 m_Usage = 0;
-	s32 m_CPUAccessFlag = 0;
-	s32 m_MiscFlags = 0;
-	s32 m_MipCount = 1;
+	int32 m_ResourceTypeBinding = 0;
+	int32 m_Usage = 0;
+	int32 m_CPUAccessFlag = 0;
+	int32 m_MiscFlags = 0;
+	int32 m_MipCount = 1;
 };
 
 class Texture
@@ -46,13 +46,13 @@ public:
 	void Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name);
 
 
-	void InitiateAsDepthStencil(s32 width, s32 height, const std::string& debug_name);
-	void InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name);
+	void InitiateAsDepthStencil(int32 width, int32 height, const std::string& debug_name);
+	void InitiateAsRenderTarget(int32 width, int32 height, const std::string& debug_name);
 
 	//Used for cubemaps or 3d textures
-	void CreateTextureArray(const char* paths[], const s32 num_tex, const char* filename);
-	void CreateTextureArray(Texture* textures[], const s32 num_tex, const char* filename);
-	void Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
+	void CreateTextureArray(const char* paths[], const int32 num_tex, const char* filename);
+	void CreateTextureArray(Texture* textures[], const int32 num_tex, const char* filename);
+	void Create3DTexture(const char* path, int32 slice_width, int32 slice_height, int32 slice_count, const char* filename);
 	//void Create3DTexture(Texture* textures[], s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 
 	static void SaveToDisk(const wchar_t* path, ITexture2D* tex, texture_format::FORMAT format = texture_format::DDS);
@@ -69,8 +69,8 @@ public:
 	IRenderTargetView** GetRenderTargetRef() { return &m_RenderTargetView; }
 	IDepthStencilView* GetDepthView() const { return m_DepthStencilView; }
 
-	s32 GetWidth() const { return m_Width; }
-	s32 GetHeight() const { return m_Height; }
+	int32 GetWidth() const { return m_Width; }
+	int32 GetHeight() const { return m_Height; }
 
 #ifdef _DEBUG
 	std::string GetDebugName() { return m_DebugName; }
@@ -92,7 +92,7 @@ private:
 	};
 	IDepthStencilView* m_DepthStencilView = nullptr;
 	IRenderTargetView* m_RenderTargetView = nullptr;
-	s32	m_Width;
-	s32	m_Height;
+	int32	m_Width;
+	int32	m_Height;
 
 };

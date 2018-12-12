@@ -26,9 +26,9 @@ void LightComponent::Serialize(JsonWriter& writer) const
 
 	writer.String(c_LightType);
 	if (myType == eLightType::eSPOTLIGHT)
-		writer.Uint((u32)eLightType::eSPOTLIGHT);
+		writer.Uint((uint32)eLightType::eSPOTLIGHT);
 	else if (myType == eLightType::ePOINTLIGHT)
-		writer.Uint((u32)eLightType::ePOINTLIGHT);
+		writer.Uint((uint32)eLightType::ePOINTLIGHT);
 
 	writer.String(c_Color);
 	writer.StartArray();

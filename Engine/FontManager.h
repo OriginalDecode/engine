@@ -59,7 +59,7 @@ public:
 	CFontManager();
 	~CFontManager();
 	void Initiate();
-	CFont* LoadFont(const s8* aFontPath, u16 aFontWidth, u16 aBorderWidth);
+	CFont* LoadFont(const int8* aFontPath, uint16 aFontWidth, uint16 aBorderWidth);
 private:
 	void LoadGlyph(int index, int& pen_x, int& pen_y, int& maxY, FT_FaceRec_* aFace);
 

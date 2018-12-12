@@ -25,13 +25,13 @@
 #include <functional>
 #include <CommonLib/DataStructures/GrowingArray.h>
 #ifdef _WIN32
-typedef s32 Socket_Type;
+typedef int32 Socket_Type;
 #else
 typedef __socket_type Socket_Type;
 #endif
-typedef s32 Socket;
-typedef s32 Socket_Protocol;
-typedef s32 IP_Version;
+typedef int32 Socket;
+typedef int32 Socket_Protocol;
+typedef int32 IP_Version;
 namespace std
 {
 	class thread;
@@ -40,8 +40,8 @@ namespace std
 struct Buffer
 {
 	//Max packet size is 512 bytes.
-	s8 m_Buffer[512];
-	s32 m_Length;
+	int8 m_Buffer[512];
+	int32 m_Length;
 	sockaddr_in m_Sender;
 };
 
@@ -70,8 +70,8 @@ namespace network
 		bool HasStarted() { return m_HasStarted; }
 		void CleanUp();
 
-		s32 Connect(const char* ip, s16 port);
-		s32 Host(s16 port);
+		int32 Connect(const char* ip, int16 port);
+		int32 Host(int16 port);
 
 		template<typename T>
 		void Send(T message, sockaddr_in target);
@@ -88,9 +88,9 @@ namespace network
 		Socket_Protocol GetSocketProtocol() const { return m_SocketProtocol; }
 		IP_Version GetIPVersion() const { return m_IPVersion; }
 		void AddConnection(Connection& client);
-		s32 Connections() const { return (s32)m_Connections.size(); }
-		static s32 ReadType(s8 type_char);
-		static s32 ReadType(const Buffer& buffer);
+		int32 Connections() const { return (int32)m_Connections.size(); }
+		static int32 ReadType(int8 type_char);
+		static int32 ReadType(const Buffer& buffer);
 		const GUID& GetGUID() const { return m_GUID; }
 
 		void Update();
@@ -100,7 +100,7 @@ namespace network
 	private:
 		void HandleConnectionRequest(Buffer& buffer);
 
-		u8 m_CurrentBuffer = 0;
+		uint8 m_CurrentBuffer = 0;
 		volatile bool m_IsDone = false;
 		std::thread* m_Recieve = nullptr;
 
@@ -110,7 +110,7 @@ namespace network
 
 
 
-		s32 InitiateWSAData();
+		int32 InitiateWSAData();
 		bool m_IsHost = false;
 		bool m_HasStarted = false;
 		Socket m_Socket;
@@ -133,7 +133,7 @@ namespace network
 		LOG_NETWORK("Sending %s message. message size : %llu", name, size);
 
 		message.PackMessage();
-		s32 message_length = (s32)message.m_Stream.size();
+		int32 message_length = (int32)message.m_Stream.size();
 		assert(message_length > 0 && "Message Length was 0");
 		sendto(m_Socket, &message.m_Stream[0], message_length, NO_FLAGS, (sockaddr*)&target, sizeof(target));
 	}
@@ -148,7 +148,7 @@ namespace network
 
 
 		message.PackMessage();
-		s32 message_length = (s32)message.m_Stream.size();
+		int32 message_length = (int32)message.m_Stream.size();
 		assert(message_length > 0 && "Message Length was 0");
 
 		for (Connection& connection : m_Connections)

@@ -60,11 +60,11 @@ void EventManager::Subscribe(const eMessageType aMessageType, Subscriber* aSubsc
 
 void EventManager::Subscribe(const std::string& event, Subscriber* subscriber)
 {
-	u64 hash = cl::Hash(event.c_str());
+	uint64 hash = cl::Hash(event.c_str());
 	Subscribe(hash, subscriber);
 }
 
-void EventManager::Subscribe(const u64& event, Subscriber* subscriber)
+void EventManager::Subscribe(const uint64& event, Subscriber* subscriber)
 {
 	SubscriberInfo newSubscriber;
 	newSubscriber.mySubscriber = subscriber;
@@ -132,11 +132,11 @@ bool EventManager::IsSubscribed(const eMessageType aMessageType, Subscriber* aSu
 
 void EventManager::SendMessage(const char* event, void* data)
 {
-	u64 hash = cl::Hash(event);
+	uint64 hash = cl::Hash(event);
 	SendMessage(hash, data);
 }
 
-void EventManager::SendMessage(const u64& event, void* data)
+void EventManager::SendMessage(const uint64& event, void* data)
 {
 
 	auto item = m_EventSubscribers.find(event);
@@ -208,7 +208,7 @@ void EventManager::QuickSort(CU::GrowingArray<SubscriberInfo> &aBuffer, const in
 		QuickSort(aBuffer, upper + 1, aEnd);
 }
 
-void EventManager::SendMessage(const u64& event)
+void EventManager::SendMessage(const uint64& event)
 {
 	SendMessage(event, nullptr);
 }
@@ -219,7 +219,7 @@ void EventManager::SendMessage(const char* event)
 }
 
 
-void EventManager::Send(const u64& event, void* data)
+void EventManager::Send(const uint64& event, void* data)
 {
 	myInstance->SendMessage(event, data);
 }

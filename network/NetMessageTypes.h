@@ -2,7 +2,7 @@
 #include "standard_datatypes.h"
 
 #define REGISTER_ENUM(net) net,
-enum eNetMessageType : u64
+enum eNetMessageType : uint64
 {
 #include "RegisterNetEnums.h"
 };

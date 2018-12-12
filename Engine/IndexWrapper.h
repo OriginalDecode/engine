@@ -8,7 +8,7 @@ class IndexWrapper
 	friend class ModelImporter;
 public:
 	IndexWrapper() = default;
-	IndexWrapper(s8* data, s32 index_count, s32 start, s32 size, graphics::eTextureFormat format, s32 byte_offset, IBuffer* buffer)
+	IndexWrapper(int8* data, int32 index_count, int32 start, int32 size, graphics::eTextureFormat format, int32 byte_offset, IBuffer* buffer)
 		: m_Data(data)
 		, m_IndexCount(index_count)
 		, m_Start(start)
@@ -30,23 +30,23 @@ public:
 		delete[] m_Data;
 	}
 
-	void SetData(s8* data) { m_Data = data; }
-	s8* GetData() const { return m_Data; }
+	void SetData(int8* data) { m_Data = data; }
+	int8* GetData() const { return m_Data; }
 
-	void SetIndexCount(s32 index_count) { m_IndexCount = index_count; }
-	s32 GetIndexCount() const { return m_IndexCount; }
+	void SetIndexCount(int32 index_count) { m_IndexCount = index_count; }
+	int32 GetIndexCount() const { return m_IndexCount; }
 
-	void SetSize(s32 size) { m_Size = size; }
-	s32 GetSize() const { return m_Size; }
+	void SetSize(int32 size) { m_Size = size; }
+	int32 GetSize() const { return m_Size; }
 
 	void SetFormat(graphics::eTextureFormat format) { m_IndexBufferFormat = format; }
 	graphics::eTextureFormat GetFormat() const { return m_IndexBufferFormat; }
 
-	void SetByteOffset(s32 byte_offset) { m_ByteOffset = byte_offset; }
-	s32 GetByteOffset() const { return m_ByteOffset; }
+	void SetByteOffset(int32 byte_offset) { m_ByteOffset = byte_offset; }
+	int32 GetByteOffset() const { return m_ByteOffset; }
 
-	void SetStart(s32 start) { m_Start = start; }
-	s32 GetStart() const { return m_Start; }
+	void SetStart(int32 start) { m_Start = start; }
+	int32 GetStart() const { return m_Start; }
 
 
 	IBuffer* GetIndexBuffer() { return m_IndexBuffer; }
@@ -60,12 +60,12 @@ public:
 
 private:
 
-	s8* m_Data = nullptr;
-	s32 m_IndexCount = 0;
-	s32 m_Size = 0;
-	s32 m_Start = 0;
+	int8* m_Data = nullptr;
+	int32 m_IndexCount = 0;
+	int32 m_Size = 0;
+	int32 m_Start = 0;
 	graphics::eTextureFormat m_IndexBufferFormat;
-	s32 m_ByteOffset = 0;
+	int32 m_ByteOffset = 0;
 	IBuffer* m_IndexBuffer = nullptr;
 
 };

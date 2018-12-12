@@ -22,7 +22,7 @@ public:
 
 private:
 	RigidBody* m_Body = nullptr;
-	u32 m_EntityID = 0;
+	uint32 m_EntityID = 0;
 
 };
 

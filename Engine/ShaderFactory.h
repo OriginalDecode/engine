@@ -55,18 +55,18 @@ public:
 	void LoadShader(Effect* anEffect);
 	void Update();
 
-	const std::map<u64, CompiledShader*>& GetCompiledShaders() const { return m_Shaders; }
+	const std::map<uint64, CompiledShader*>& GetCompiledShaders() const { return m_Shaders; }
 	
 	IShaderBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type);
 
-	__declspec(noinline) CompiledShader* GetShader(u64 key) const;
+	__declspec(noinline) CompiledShader* GetShader(uint64 key) const;
 
-	u64 LoadShader(const std::string& filepath, const std::string& entrypoint);
+	uint64 LoadShader(const std::string& filepath, const std::string& entrypoint);
 private:
 
 	void LoadShader(const std::string& filepath, const std::string& entrypoint, eShaderType type, Effect* effect);
 	CompiledShader* CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type);
-	std::map<u64, CompiledShader*> m_Shaders;
+	std::map<uint64, CompiledShader*> m_Shaders;
 #ifndef FINAL 
 	CU::StaticArray<FileWatcher*, eShaderType::NOF_TYPES> myFileWatchers;
 	void OnReload(const std::string& file_path, const std::string& entrypoint);

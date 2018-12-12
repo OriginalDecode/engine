@@ -26,7 +26,7 @@ public:
 	void Update(float dt, const CU::GrowingArray<TreeDweller*>& dweller_list, bool paused);
 
 	const CU::GrowingArray<Entity>& GetEntities(ComponentFilter filter);
-	s32 GetId() const { return m_Identifier; }
+	int32 GetId() const { return m_Identifier; }
 
 	bool HasComponent(Entity e, ComponentFilter filter);
 
@@ -36,21 +36,21 @@ public:
 	template<typename T>
 	void AddSystem();
 
-	s32 EntityCount() {
+	int32 EntityCount() {
 		return m_Entities.Size();
 	}
 
 	
 
-	void SetMemoryBlockIndex(s32 index);
-	s32 GetMemoryBlockIndex() const { return m_MemoryBlockIndex; }
+	void SetMemoryBlockIndex(int32 index);
+	int32 GetMemoryBlockIndex() const { return m_MemoryBlockIndex; }
 	TreeNodeBase* GetTreeNode() { return m_Node; }
 private:
-	static s32 m_Identifier;
+	static int32 m_Identifier;
 	TreeNodeBase* m_Node = nullptr;
-	s32 m_MemoryBlockIndex = 0;
+	int32 m_MemoryBlockIndex = 0;
 
-	s32 m_ID = 0;
+	int32 m_ID = 0;
 
 	CU::GrowingArray<TreeDweller*> m_Entities;
 	CU::GrowingArray<BaseSystem*> m_Systems;

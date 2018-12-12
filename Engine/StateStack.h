@@ -29,7 +29,7 @@ public:
 
 private:
 	MainStateContainer m_GameStates;
-	s32 m_MainIndex = 0;
-	s32 m_SubIndex = 0;
+	int32 m_MainIndex = 0;
+	int32 m_SubIndex = 0;
 };
 

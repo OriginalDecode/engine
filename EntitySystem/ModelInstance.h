@@ -28,12 +28,12 @@ public:
 
 	const CU::Matrix44f& GetOrientation() const { return  m_Orientation; }
 
-	u64 GetMaterialKey() const;
-	void SetMaterialKey(u64 key);
+	uint64 GetMaterialKey() const;
+	void SetMaterialKey(uint64 key);
 
 
 private:
-	u64 m_Key;
+	uint64 m_Key;
 	Surface* m_Surface = nullptr;
 	BaseModel* m_Model = nullptr;
 	Material* m_Material = nullptr;

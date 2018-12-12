@@ -7,15 +7,15 @@
 
 namespace graphics
 {
-	u64 RenderNodeVegetation::Type = cl::Hash(STRINGIFY(RenderNodeVegetation));
+	uint64 RenderNodeVegetation::Type = cl::Hash(STRINGIFY(RenderNodeVegetation));
 	RenderNodeVegetation::RenderNodeVegetation()
 	{
 
 		Engine* engine = Engine::GetInstance();
 		AssetsContainer* ac = engine->GetAssetsContainer();
-		const u64 vtx = ac->LoadShader("deferred_base_instanced.vs", "main");
-		const u64 fragment = ac->LoadShader("pbl_debug.ps", "main");
-		const u64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");
+		const uint64 vtx = ac->LoadShader("deferred_base_instanced.vs", "main");
+		const uint64 fragment = ac->LoadShader("pbl_debug.ps", "main");
+		const uint64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");
 
 		m_Shaders[VERTEX] = ac->GetShader(vtx);
 		m_Shaders[PIXEL] = ac->GetShader(fragment);
@@ -90,7 +90,7 @@ namespace graphics
 
 	void RenderNodeVegetation::AddInstance(const ModelInstance instance)
 	{
-		const u64 key = instance.GetMaterialKey();
+		const uint64 key = instance.GetMaterialKey();
 		auto it = m_Models.find(key);
 		if (it == m_Models.end())
 		{

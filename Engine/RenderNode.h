@@ -21,7 +21,7 @@ namespace graphics
 
 		virtual void AddInstance(const ModelInstance instance) = 0;
 
-		virtual u64 GetType() const = 0;
+		virtual uint64 GetType() const = 0;
 	protected:
 	};
 

@@ -21,7 +21,7 @@ void HDRPass::Initiate()
 
 	WindowSize window_size = Engine::GetInstance()->GetInnerSize();
 
-	s32 pow2 = cl::nearest_Pow_Under(window_size.m_Height);
+	int32 pow2 = cl::nearest_Pow_Under(window_size.m_Height);
 
 	m_DefaultViewport = Engine::GetAPI()->CreateViewport(pow2, pow2, 0.f, 1.f, 0, 0);
 
@@ -37,7 +37,7 @@ void HDRPass::Initiate()
 	m_HDRTexture = new Texture;
 	m_HDRTexture->Initiate(desc,  "HDRPass | HDRTexture");
 
-	s32 downsample_amount = s32(log(__min(window_size.m_Width, window_size.m_Height)) / log(2.f)) + 1; //can be changed
+	int32 downsample_amount = int32(log(__min(window_size.m_Width, window_size.m_Height)) / log(2.f)) + 1; //can be changed
 
 	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
@@ -108,7 +108,7 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 
 }
 
-void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], s32 resource_count)
+void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], int32 resource_count)
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	ctx.ClearRenderTarget(target, clearcolor::black);

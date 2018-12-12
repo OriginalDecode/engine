@@ -25,7 +25,7 @@ void PostProcessManager::Process(Texture* current_frame_texture, const graphics:
 	Process(current_frame_texture, m_PassFlags, render_context);
 }
 
-void PostProcessManager::Process(Texture* pTexture, s32 process_flag, const graphics::RenderContext& rc) //if you want to run a specific pass
+void PostProcessManager::Process(Texture* pTexture, int32 process_flag, const graphics::RenderContext& rc) //if you want to run a specific pass
 {
 
 	//if (process_flag & SSAO)
@@ -47,12 +47,12 @@ void PostProcessManager::Process(Texture* pTexture, s32 process_flag, const grap
 	//	m_SSRPass.Process(pTexture, rc);
 }
 
-void PostProcessManager::SetPassesToProcess(s32 pass_flags)
+void PostProcessManager::SetPassesToProcess(int32 pass_flags)
 {
 	m_PassFlags |= pass_flags;
 }
 
-void PostProcessManager::RemovePassToProcess(s32 pass_flag)
+void PostProcessManager::RemovePassToProcess(int32 pass_flag)
 {
 	m_PassFlags &= ~pass_flag;
 }

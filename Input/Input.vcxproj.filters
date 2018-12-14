@@ -23,6 +23,18 @@
     <ClInclude Include="InputCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputActions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDevice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDeviceKeyboard_Win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputWrapper.cpp">
@@ -32,6 +44,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputDeviceKeyboard_Win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

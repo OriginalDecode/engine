@@ -17,13 +17,13 @@ namespace graphics
 		const uint64 fragment = ac->LoadShader("pbl_debug.ps", "main");
 		const uint64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");
 
-		m_Shaders[VERTEX] = ac->GetShader(vtx);
-		m_Shaders[PIXEL] = ac->GetShader(fragment);
+		m_Shaders[EShaderType_VERTEX] = ac->GetShader(vtx);
+		m_Shaders[EShaderType_PIXEL] = ac->GetShader(fragment);
 		m_DepthShader = ac->GetShader(depth_frag);
 
 #ifdef _DEBUG
-		m_Shaders[VERTEX]->RegisterReload(this);
-		m_Shaders[PIXEL]->RegisterReload(this);
+		m_Shaders[EShaderType_VERTEX]->RegisterReload(this);
+		m_Shaders[EShaderType_PIXEL]->RegisterReload(this);
 		m_DepthShader->RegisterReload(this);
 #endif
 	}
@@ -36,11 +36,11 @@ namespace graphics
 	{
 		PROFILE_FUNCTION(profiler::colors::Red);
 		auto& ctx = rc.GetContext();
-		ctx.SetVertexShader(m_Shaders[VERTEX]);
+		ctx.SetVertexShader(m_Shaders[EShaderType_VERTEX]);
 
 		if (!m_DrawDepth)
 		{
-			ctx.SetPixelShader(m_Shaders[PIXEL]);
+			ctx.SetPixelShader(m_Shaders[EShaderType_PIXEL]);
 			ctx.SetDepthState(graphics::Z_EQUAL, 1);
 		}
 		else

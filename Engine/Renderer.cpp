@@ -181,7 +181,7 @@ void Renderer::Render()
 
 	m_RenderContext.GetAPI().BeginFrame();
 	m_RenderContext.GetAPI().ResetViewport();
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
+	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 	m_TerrainSystem->Update();
 
 
@@ -254,7 +254,7 @@ void Renderer::Render()
 void Renderer::DrawIBL()
 {
 	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+	m_PixelBuffer.Bind(0, EShaderTypeFlag_PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
 
 	m_Atmosphere.UpdateBuffer(m_RenderContext, m_Camera);
@@ -386,7 +386,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, int32 max_resolution, int32 min
 
 
 	Texture* cubemap[NOF_SIDES];
-	int32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
+	int32 flags = EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN;
 
 
 
@@ -402,7 +402,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, int32 max_resolution, int32 min
 		camera->Update();
 		buffer.Bind(0, flags, m_RenderContext);
 		terrain_buffer.Bind(1, flags, m_RenderContext);
-		pixel_buffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+		pixel_buffer.Bind(0, EShaderTypeFlag_PIXEL, m_RenderContext);
 
 
 		ctx.SetDepthState(graphics::Z_DISABLED, 1);

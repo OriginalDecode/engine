@@ -93,7 +93,7 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	testUV.y = 1 - ((output.worldpos.z) / depth);
 
 
-	const float height = HeightTexture.SampleLevel(sampler1, testUV, 0).r * 128;
+	const float height = HeightTexture.SampleLevel(sampler1, testUV, 0).r * 255;
 	vertex_pos.y = height;
 
 	// float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);

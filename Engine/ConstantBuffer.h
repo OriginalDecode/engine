@@ -22,17 +22,6 @@ namespace graphics
 			Call this function after all the variables has been registered.
 		*/
 		void Initiate(const char* debug_name = "unnamed");
-
-		enum ShaderBinding : int8
-		{
-			VERTEX = BIT(0),
-			PIXEL = BIT(1),
-			GEOMETRY = BIT(2),
-			HULL = BIT(3),
-			DOMAINS = BIT(4),
-			COMPUTE = BIT(5)
-		};
-
 		void Bind(int32 index, int32 shader_binding, const RenderContext& rc);
 		void Bind(const int32 index[], int32 shader_binding, const RenderContext& rc);
 		

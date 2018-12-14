@@ -61,22 +61,22 @@ namespace graphics
 
 		PROFILE_BLOCK("Setting Constant Buffer");
 
-		if (shader_binding & VERTEX)
+		if (shader_binding & EShaderTypeFlag_VERTEX)
 			ctx.VSSetConstantBuffer(index[0], 1, &m_Buffer);
 
-		if (shader_binding & PIXEL)
+		if (shader_binding & EShaderTypeFlag_PIXEL)
 			ctx.PSSetConstantBuffer(index[1], 1, &m_Buffer);
 
-		if (shader_binding & GEOMETRY)
+		if (shader_binding & EShaderTypeFlag_GEOMETRY)
 			ctx.GSSetConstantBuffer(index[2], 1, &m_Buffer);
 
-		if (shader_binding & HULL)
+		if (shader_binding & EShaderTypeFlag_HULL)
 			ctx.HSSetConstantBuffer(index[3], 1, &m_Buffer);
 
-		if (shader_binding & DOMAINS)
+		if (shader_binding & EShaderTypeFlag_DOMAIN)
 			ctx.DSSetConstantBuffer(index[4], 1, &m_Buffer);
 
-		if (shader_binding & COMPUTE)
+		if (shader_binding & EShaderTypeFlag_COMPUTE)
 			ctx.CSSetConstantBuffer(index[5], 1, &m_Buffer);
 
 		PROFILE_BLOCK_END;

@@ -31,6 +31,7 @@ float4 Tonemap(float4 color)
 float4 main(VS_OUTPUT input) : SV_Target
 {	
 	float4 diffuse = DiffuseTexture.Sample(sampler0, input.uv);
+	return pow(diffuse, .4545);
 	// if(input.uv.x < 0.5 && input.uv.x > 0.0 && input.uv.y < 0.5 && input.uv.y > 0.0)
 	// 	return diffuse;	
 	float4 LumPixel = LuminanceTexture.Sample(sampler0, input.uv);

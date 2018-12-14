@@ -5,6 +5,9 @@
 #include <standard_datatype.hpp>
 #include "../CommonLib/Math/Vector/Vector.h"
 
+
+class InputDeviceKeyboard_Win32;
+
 enum class MouseInput
 {
 	LEFT,
@@ -112,16 +115,6 @@ public:
 	void Update();
 
 
-	//________________________
-	// KEYBOARD
-	bool IsDown(KButton aKey);
-	bool OnDown(KButton aKey);
-	bool OnRelease(KButton aKey);
-
-	bool IsDown(UCHAR aKey);
-	bool OnDown(UCHAR aKey);
-	bool OnRelease(UCHAR aKey);
-
 	bool PS4IsDown(UCHAR button);
 	bool PS4OnDown(UCHAR button);
 	bool PS4OnRelease(UCHAR button);
@@ -143,9 +136,7 @@ private:
 	IDirectInput8* myDInput;
 
 	/* Keyboard */
-	IDirectInputDevice8* myKeyboard;
-	UCHAR myKeyState[256];
-	UCHAR myPrevKeyState[256];
+	InputDeviceKeyboard_Win32* m_Keyboard = nullptr;
 	
 	/* Mouse */
 	IDirectInputDevice8* myMouse;

@@ -47,7 +47,7 @@ void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const gra
 	//m_RenderToDepth->Use();
 
 	shadow_directional->Update();
-	shadow_directional->GetConstBuffer().Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
+	shadow_directional->GetConstBuffer().Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, rc);
 	ProcessShadows(shadow_directional->GetCamera());
 
 	//m_RenderToDepth->Clear();

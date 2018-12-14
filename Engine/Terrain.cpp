@@ -118,8 +118,8 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 	ctx.SetRasterState(draw_wireframe ? graphics::WIREFRAME : graphics::CULL_BACK);
 
-	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
-	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
+	m_Buffer.Bind(1, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, rc);
+	m_PixelBuffer.Bind(1, EShaderTypeFlag_PIXEL, rc);
 
 	ctx.VSSetSamplerState(0, 1, graphics::POINT_CLAMP);
 	ctx.PSSetSamplerState(0, 1, graphics::POINT_CLAMP);
@@ -157,7 +157,7 @@ void Terrain::Render(const graphics::RenderContext& rc, bool, bool)
 
 	ctx.SetRasterState(graphics::CULL_NONE);
 	
-	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
+	m_PixelBuffer.Bind(1, EShaderTypeFlag_PIXEL, rc);
 
 	rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x16);
@@ -179,8 +179,8 @@ void Terrain::Wireframe(const graphics::RenderContext& rc)
 	translation.y += offset;
 	m_Orientation.SetTranslation(translation);
 
-	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
-	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
+	m_Buffer.Bind(1, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, rc);
+	m_PixelBuffer.Bind(1, EShaderTypeFlag_PIXEL, rc);
 
 	translation.y -= offset;
 	m_Orientation.SetTranslation(translation);
@@ -201,7 +201,7 @@ void Terrain::ShadowRender(const graphics::RenderContext& rc)
 	ctx.SetBlendState(graphics::BLEND_FALSE);
 	ctx.SetRasterState(graphics::CULL_FRONT);
 
-	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
+	m_Buffer.Bind(1, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, rc);
 
 	rc.GetContext().DSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.DrawIndexed(this);

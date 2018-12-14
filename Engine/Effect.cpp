@@ -44,12 +44,12 @@ void Effect::Use()
 	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 	if (set_shaders)
 	{
-		context.SetVertexShader(m_Shaders[eShaderType::VERTEX]);
-		context.SetPixelShader(m_Shaders[eShaderType::PIXEL]);
-		context.SetGeometryShader(m_Shaders[eShaderType::GEOMETRY]);
-		context.SetHullShader(m_Shaders[eShaderType::HULL]);
-		context.SetDomainShader(m_Shaders[eShaderType::DOMAINS]);
-		context.SetComputeShader(m_Shaders[eShaderType::COMPUTE]);
+		context.SetVertexShader(m_Shaders[EShaderType_VERTEX]);
+		context.SetPixelShader(m_Shaders[EShaderType_PIXEL]);
+		context.SetGeometryShader(m_Shaders[EShaderType_GEOMETRY]);
+		context.SetHullShader(m_Shaders[EShaderType_HULL]);
+		context.SetDomainShader(m_Shaders[EShaderType_DOMAIN]);
+		context.SetComputeShader(m_Shaders[EShaderType_COMPUTE]);
 	}
 
 	context.VSSetShaderResource(0, TextureSlot::SLOT_COUNT, m_Resources);

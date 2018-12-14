@@ -224,13 +224,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="InputActions.h" />
     <ClInclude Include="InputCommand.h" />
+    <ClInclude Include="InputDevice.h" />
+    <ClInclude Include="InputDeviceKeyboard_Win32.h" />
     <ClInclude Include="InputHandle.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="InputWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControllerInput.cpp" />
+    <ClCompile Include="InputDeviceKeyboard_Win32.cpp" />
     <ClCompile Include="InputHandle.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InputWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

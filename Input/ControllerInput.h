@@ -4,6 +4,25 @@
 #pragma comment(lib,"XInput9_1_0.lib")
 #include <standard_datatype.hpp>
 
+
+enum eGamepad
+{
+	Gamepad_LUP			= XINPUT_GAMEPAD_DPAD_UP,
+	Gamepad_LDOWN		= XINPUT_GAMEPAD_DPAD_DOWN,
+	Gamepad_LLEFT		= XINPUT_GAMEPAD_DPAD_LEFT,
+	Gamepad_LRIGHT		= XINPUT_GAMEPAD_DPAD_RIGHT,
+	Gamepad_START		= XINPUT_GAMEPAD_START,
+	Gamepad_BACK		= XINPUT_GAMEPAD_BACK,
+	Gamepad_LTHUMB		= XINPUT_GAMEPAD_LEFT_THUMB,
+	Gamepad_RTHUMB		= XINPUT_GAMEPAD_RIGHT_THUMB,
+	Gamepad_LShoulder	= XINPUT_GAMEPAD_LEFT_SHOULDER,
+	Gamepad_RShoulder	= XINPUT_GAMEPAD_RIGHT_SHOULDER,
+	Gamepad_RUP			= XINPUT_GAMEPAD_A,
+	Gamepad_RDOWN		= XINPUT_GAMEPAD_B,
+	Gamepad_RLEFT		= XINPUT_GAMEPAD_X,
+	Gamepad_RRIGHT		= XINPUT_GAMEPAD_Y,
+};
+
 enum eXboxButton
 {
 	eDPAD_UP = XINPUT_GAMEPAD_DPAD_UP,

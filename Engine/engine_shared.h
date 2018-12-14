@@ -85,13 +85,24 @@ typedef uint32 uptr;
 
 enum eShaderType
 {
-	VERTEX,
-	PIXEL,
-	GEOMETRY,
-	HULL,
-	DOMAINS,
-	COMPUTE,
+	EShaderType_VERTEX,
+	EShaderType_PIXEL,
+	EShaderType_GEOMETRY,
+	EShaderType_HULL,
+	EShaderType_DOMAIN,
+	EShaderType_COMPUTE,
 	NOF_TYPES
+};
+
+enum eShaderTypeFlag
+{
+	EShaderTypeFlag_VERTEX = BIT(0),
+	EShaderTypeFlag_PIXEL = BIT(1),
+	EShaderTypeFlag_GEOMETRY = BIT(2),
+	EShaderTypeFlag_HULL = BIT(3),
+	EShaderTypeFlag_DOMAIN = BIT(4),
+	EShaderTypeFlag_COMPUTE = BIT(5),
+	NOF_FLAGS = 6
 };
 
 

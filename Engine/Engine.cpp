@@ -258,17 +258,17 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 	graphics::IGraphicsDevice& device = m_API->GetDevice();
 	switch (type)
 	{
-	case eShaderType::VERTEX:
+	case EShaderType_VERTEX:
 		return device.CreateVertexShader(pShader, debug_name);
-	case eShaderType::PIXEL:
+	case EShaderType_PIXEL:
 		return device.CreatePixelShader(pShader, debug_name);
-	case eShaderType::GEOMETRY:
+	case EShaderType_GEOMETRY:
 		return device.CreateGeometryShader(pShader, debug_name);
-	case eShaderType::HULL:
+	case EShaderType_HULL:
 		return device.CreateHullShader(pShader, debug_name);
-	case eShaderType::DOMAINS:
+	case EShaderType_DOMAIN:
 		return device.CreateDomainShader(pShader, debug_name);
-	case eShaderType::COMPUTE:
+	case EShaderType_COMPUTE:
 		return device.CreateComputeShader(pShader, debug_name);
 	default:
 		DL_ASSERT("Invalid shader type");

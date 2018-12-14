@@ -94,6 +94,7 @@ void Game::Initiate(const std::string& level)
 
 		CU::Matrix44f orientation;
 		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
+		orientation *= CU::Matrix44f::CreateScaleMatrix({ 0.1f, 0.1f, 0.1f, 1.f });
 		orientation.SetTranslation({ x , y , z  , 1.f });
 
 		ModelInstance instance;
@@ -277,12 +278,6 @@ void Game::OldUpdate(float dt)
 	{
 		m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
-
-	if(input_wrapper->IsDown(KButton::LSHIFT) && input_wrapper->OnDown(KButton::D))
-	{
-		//m_StateStack->PushState(&m_DebugState, StateStack::SUB);
-	}
-
 
 	float mul = 1.f;
 

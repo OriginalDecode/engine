@@ -127,7 +127,7 @@ void CFont::Render(const graphics::RenderContext& rc)
 	ctx.SetBlendState(graphics::ALPHA_BLEND);
 	ctx.PSSetSamplerState(0, 1, graphics::POINT_CLAMP);
 
-	m_Buffer.Bind(0, graphics::ConstantBuffer::VERTEX, rc);
+	m_Buffer.Bind(0, EShaderTypeFlag_VERTEX, rc);
 	ctx.DrawIndexed(this, m_Effect[1]);
 
 }

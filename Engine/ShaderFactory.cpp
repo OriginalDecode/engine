@@ -39,37 +39,37 @@ void ShaderFactory::LoadShader(Effect* anEffect)
 	if (reader.DocumentHasMember("VertexShader"))
 	{
 		const JSONElement& el = reader.GetElement("VertexShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::VERTEX, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), EShaderType_VERTEX, anEffect);
 	}
 
 	if (reader.DocumentHasMember("PixelShader"))
 	{
 		const JSONElement& el = reader.GetElement("PixelShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::PIXEL, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), EShaderType_PIXEL, anEffect);
 	}
 
 	if (reader.DocumentHasMember("GeometryShader"))
 	{
 		const JSONElement& el = reader.GetElement("GeometryShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::GEOMETRY, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), EShaderType_GEOMETRY, anEffect);
 	}
 
 	if (reader.DocumentHasMember("HullShader"))
 	{
 		const JSONElement& el = reader.GetElement("HullShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::HULL, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), EShaderType_HULL, anEffect);
 	}
 
 	if (reader.DocumentHasMember("DomainShader"))
 	{
 		const JSONElement& el = reader.GetElement("DomainShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::DOMAINS, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), EShaderType_DOMAIN, anEffect);
 	}
 
 	if (reader.DocumentHasMember("ComputeShader"))
 	{
 		const JSONElement& el = reader.GetElement("ComputeShader");
-		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), eShaderType::COMPUTE, anEffect);
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), EShaderType_COMPUTE, anEffect);
 	}
 }
 
@@ -77,17 +77,17 @@ char* CheckType(eShaderType type)
 {
 	switch (type)
 	{
-		case eShaderType::VERTEX:
+		case EShaderType_VERTEX:
 			return "vs";
-		case eShaderType::PIXEL:
+		case EShaderType_PIXEL:
 			return "ps";
-		case eShaderType::GEOMETRY:
+		case EShaderType_GEOMETRY:
 			return "gs";
-		case eShaderType::HULL:
+		case EShaderType_HULL:
 			return "hs";
-		case eShaderType::DOMAINS:
+		case EShaderType_DOMAIN:
 			return "ds";
-		case eShaderType::COMPUTE:
+		case EShaderType_COMPUTE:
 			return "cs";
 	}
 	return "invalid";
@@ -96,17 +96,17 @@ char* CheckType(eShaderType type)
 eShaderType CheckType(std::string type)
 {
 	if (type.find("vs") != type.npos)
-		return eShaderType::VERTEX;
+		return EShaderType_VERTEX;
 	else if (type.find("ps") != type.npos)
-		return eShaderType::PIXEL;
+		return EShaderType_PIXEL;
 	else if (type.find("gs") != type.npos)
-		return eShaderType::GEOMETRY;
+		return EShaderType_GEOMETRY;
 	else if (type.find("hs") != type.npos)
-		return eShaderType::HULL;
+		return EShaderType_HULL;
 	else if (type.find("ds") != type.npos)
-		return eShaderType::DOMAINS;
+		return EShaderType_DOMAIN;
 	else if (type.find("cs") != type.npos)
-		return eShaderType::COMPUTE;
+		return EShaderType_COMPUTE;
 
 	assert(false && "failed to find shader type");
 	return NOF_TYPES;

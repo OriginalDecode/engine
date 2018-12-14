@@ -67,12 +67,12 @@ public:
 	Effect(const std::string& filepath);
 	Effect();
 
-	CompiledShader* GetVertexShader() { return m_Shaders[VERTEX]; }
-	CompiledShader* GetPixelShader() { return m_Shaders[PIXEL]; }
-	CompiledShader* GetGeometryShader() { return m_Shaders[GEOMETRY]; }
-	CompiledShader* GetHullShader() { return m_Shaders[HULL]; }
-	CompiledShader* GetDomainShader() { return m_Shaders[DOMAINS]; }
-	CompiledShader* GetComputeShader() { return m_Shaders[COMPUTE]; }
+	CompiledShader* GetVertexShader() { return m_Shaders[EShaderType_VERTEX]; }
+	CompiledShader* GetPixelShader() { return m_Shaders[EShaderType_PIXEL]; }
+	CompiledShader* GetGeometryShader() { return m_Shaders[EShaderType_GEOMETRY]; }
+	CompiledShader* GetHullShader() { return m_Shaders[EShaderType_HULL]; }
+	CompiledShader* GetDomainShader() { return m_Shaders[EShaderType_DOMAIN]; }
+	CompiledShader* GetComputeShader() { return m_Shaders[EShaderType_COMPUTE]; }
 
 	void AddShaderResource(IShaderResourceView* pResource, int32 slot);
 	void AddShaderResource(Texture* pResource, int32 slot);

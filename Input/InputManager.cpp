@@ -10,16 +10,22 @@ namespace Input
 {
 	InputManager::InputManager(HWND window_handle, HINSTANCE window_instance)
 	{
-		AddMapping(A_MOVE_FORWARD, DIK_W);
-		AddMapping(A_MOVE_BACK, DIK_S);
-		AddMapping(A_MOVE_LEFT, DIK_A);
-		AddMapping(A_MOVE_RIGHT, DIK_D);
-		AddMapping(A_MOVE_UP, DIK_SPACE);
-		AddMapping(A_MOVE_DOWN, DIK_X);
-		AddMapping(A_ROTATE_CAMERA, 1);
 
 		m_Devices.emplace_back(new InputDeviceKeyboard_Win32(window_handle, window_instance));
 		m_Devices.emplace_back(new InputDeviceMouse_Win32(window_handle, window_instance));
+		m_Mouse = m_Devices.back();
+
+
+		AddMapping(A_MOVE_FORWARD, DIK_W, DeviceType::KEYBOARD);
+		AddMapping(A_MOVE_BACK, DIK_S, DeviceType::KEYBOARD);
+		AddMapping(A_MOVE_LEFT, DIK_A, DeviceType::KEYBOARD);
+		AddMapping(A_MOVE_RIGHT, DIK_D, DeviceType::KEYBOARD);
+		AddMapping(A_MOVE_UP, DIK_SPACE, DeviceType::KEYBOARD);
+		AddMapping(A_MOVE_DOWN, DIK_X, DeviceType::KEYBOARD);
+
+		AddMapping(A_ROTATE_CAMERA, 1, DeviceType::MOUSE);
+
+
 	}
 
 
@@ -36,12 +42,9 @@ namespace Input
 	{
 		for (IInputDevice* device : m_Devices)
 		{
-			for (uint8 key : m_ActionMapping[action])
+			if (device->IsDown(action))
 			{
-				if (device->IsDown(key))
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
@@ -51,12 +54,9 @@ namespace Input
 	{
 		for (IInputDevice* device : m_Devices)
 		{
-			for (uint8 key : m_ActionMapping[action])
+			if (device->OnDown(action))
 			{
-				if (device->OnDown(key))
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
@@ -66,12 +66,9 @@ namespace Input
 	{
 		for (IInputDevice* device : m_Devices)
 		{
-			for (uint8 key : m_ActionMapping[action])
+			if (device->OnRelease(action))
 			{
-				if (device->OnRelease(key))
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
@@ -85,10 +82,20 @@ namespace Input
 		}
 	}
 
-	void InputManager::AddMapping(const EAction& action, const uint8 key)
+	const Input::Cursor& InputManager::GetCursor() const
 	{
-		auto placed = m_ActionMapping.emplace(action, std::vector<uint8>());
-		placed.first->second.push_back(key);
+		return static_cast<InputDeviceMouse_Win32*>(m_Mouse)->GetCursor();
+	}
+
+	void InputManager::AddMapping(const EAction& action, const uint8 key, const DeviceType& device_type)
+	{
+		for (IInputDevice* device : m_Devices)
+		{
+			if (device->GetType() == device_type)
+			{
+				device->AddMapping(action, key);
+			}
+		}
 	}
 
 }; //namespace Input

@@ -1,6 +1,9 @@
 #pragma once
 #include <standard_datatype.hpp>
+
 #include "InputActions.h"
+#include "InputDevice.h"
+
 #include <unordered_map>
 #include <vector>
 
@@ -15,9 +18,7 @@ namespace Input
 {
 	class IInputDevice;
 
-	struct KeyState
-	{
-	};
+	struct Cursor;
 
 	class InputManager
 	{
@@ -25,20 +26,19 @@ namespace Input
 		InputManager(HWND window_handle, HINSTANCE window_instance);
 		~InputManager();
 
-
 		bool IsDown(const EAction& action);
 		bool OnDown(const EAction& action);
 		bool OnRelease(const EAction& action);
 
 		void Update();
+		
+		const Cursor& GetCursor() const;
 
 	private:
 
-		void AddMapping(const EAction& action, const uint8 key);
-
-		std::unordered_map<EAction, std::vector<uint8>> m_ActionMapping;
-
+		void AddMapping(const EAction& action, const uint8 key, const DeviceType& device_type);
 		std::vector<IInputDevice*> m_Devices;
+		IInputDevice* m_Mouse = nullptr;
 
 
 	};

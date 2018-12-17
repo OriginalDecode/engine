@@ -54,19 +54,46 @@ namespace Input
 		m_Input = nullptr;
 	}
 
-	bool InputDeviceKeyboard_Win32::OnDown(uint8 key) const
+	bool InputDeviceKeyboard_Win32::OnDown(const EAction& action) const
 	{
-		return (m_State[key] & 0x80) != 0 && (m_PrevState[key] & 0x80) == 0;
+		auto it = m_ActionMapping.find(action);
+
+		if (it == m_ActionMapping.end())
+			return false;
+
+		for (uint8 key : it->second)
+		{
+			return (m_State[key] & 0x80) != 0 && (m_PrevState[key] & 0x80) == 0;
+		}
+		return false;
 	}
 
-	bool InputDeviceKeyboard_Win32::OnRelease(uint8 key) const
+	bool InputDeviceKeyboard_Win32::OnRelease(const EAction& action) const
 	{
-		return (m_State[key] & 0x80) == 0 && (m_PrevState[key] & 0x80) != 0;
+		auto it = m_ActionMapping.find(action);
+
+		if (it == m_ActionMapping.end())
+			return false;
+
+		for (uint8 key : it->second)
+		{
+			return (m_State[key] & 0x80) == 0 && (m_PrevState[key] & 0x80) != 0;
+		}
+		return false;
 	}
 
-	bool InputDeviceKeyboard_Win32::IsDown(uint8 key) const
+	bool InputDeviceKeyboard_Win32::IsDown(const EAction& action) const
 	{
-		return (m_State[key] & 0x80) != 0;
+		auto it = m_ActionMapping.find(action);
+
+		if (it == m_ActionMapping.end())
+			return false;
+		
+		for (uint8 key : it->second)
+		{
+			return (m_State[key] & 0x80) != 0;
+		}
+		return false;
 	}
 
 	void InputDeviceKeyboard_Win32::Update()

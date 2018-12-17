@@ -1,48 +1,46 @@
 #include "Game.h"
+#include "CameraHandle.h"
+#include "Player.h"
 
-#include <EntityManager.h>
+#include <CommonLib/Utilities.h>
+#include <CommonLib/Randomizer.h>
+#include <CommonLib/XML/XMLReader.h>
 
-#include <Synchronizer.h>
-#include <RenderCommand.h>
-#include <Line3D.h>
+#include <DL_Debug/DL_Debug.h>
 
-#include <DL_Debug.h>
-#include <Engine.h>
-#include <Utilities.h>
-#include <MousePicker.h>
+#include <Engine/Camera.h>
+#include <Engine/Effect.h>
+#include <Engine/Engine.h>
+#include <Engine/EngineDefines.h>
+#include <Engine/LevelFactory.h>
+#include <Engine/ModelImporterFlags.h>
+#include <Engine/MousePicker.h>
+#include <Engine/Renderer.h>
+#include <Engine/RenderNodeGeneral.h>
+#include <Engine/RenderNodeVegetation.h>
+#include <Engine/StateStack.h>
+#include <Engine/Synchronizer.h>
+#include <Engine/TerrainSystem.h>
+#include <Engine/Texture.h>
 
-#include <EngineDefines.h>
-
-#include <Camera.h>
-#include "../Input/InputHandle.h"
+#include <EntitySystem/EntityManager.h>
 
 #include <EventManager/EventManager.h>
-#include <EventManager/Messages/OnLeftClick.h>
-#include <StateStack.h>
-#include <Math/Vector/Vector.h>
-#include "../Physics/PhysicsManager.h"
-#include "../EntitySystem/EntityManager.h"
-#include "CameraHandle.h"
-#include <Engine/Effect.h>
-#include <Engine/Texture.h>
+
+#include <Input/InputManager.h>
+#include <Input/InputHandle.h>
+#include <Input/InputDeviceMouse_Win32.h>
 #include <Input/ControllerInput.h>
-#include <Engine/LevelFactory.h>
 
-#include <XML/XMLReader.h>
+#include <Math/Vector/Vector.h>
 
-#include <Engine/Renderer.h>
-#include "Player.h"
+#include <Physics/PhysicsManager.h>
+
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-#include <CommonLib/Randomizer.h>
-#include <Engine/RenderNodeGeneral.h>
-#include <Engine/RenderNodeVegetation.h>
-#include <Engine/Renderer.h>
-#include <Engine/TerrainSystem.h>
 
-#include <Engine/ModelImporterFlags.h>
-#include <Input/InputManager.h>
+
 
 static float s_CamSpeed = 50.f;
 
@@ -274,10 +272,10 @@ void Game::OldUpdate(float dt)
 
 
 
-	/*if (input_wrapper->IsDown(MouseInput::RIGHT))
+	if (input->IsDown(Input::A_ROTATE_CAMERA))
 	{
-		m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
-	}*/
+		m_Camera->Orient({ input->GetCursor().dx, input->GetCursor().dy });
+	}
 
 	float mul = 1.f;
 

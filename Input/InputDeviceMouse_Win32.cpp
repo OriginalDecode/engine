@@ -40,19 +40,45 @@ namespace Input
 	{
 	}
 
-	bool InputDeviceMouse_Win32::OnDown(uint8 key) const
+	bool InputDeviceMouse_Win32::OnDown(const EAction& action) const
 	{
-		return (m_State.rgbButtons[key] & 0x80) != 0 && (m_PrevState.rgbButtons[key] & 0x80) == 0;
+		auto it = m_ActionMapping.find(action);
+
+		if (it == m_ActionMapping.end())
+			return false;
+
+		for (uint8 key : it->second)
+		{
+			return (m_State.rgbButtons[key] & 0x80) != 0 && (m_PrevState.rgbButtons[key] & 0x80) == 0;
+		}
+		return false;
 	}
 
-	bool InputDeviceMouse_Win32::OnRelease(uint8 key) const
+	bool InputDeviceMouse_Win32::OnRelease(const EAction& action) const
 	{
-		return (m_State.rgbButtons[key] & 0x80) == 0 && (m_PrevState.rgbButtons[key] & 0x80) != 0;
+		auto it = m_ActionMapping.find(action);
+
+		if (it == m_ActionMapping.end())
+			return false;
+
+		for (uint8 key : it->second)
+		{
+			return (m_State.rgbButtons[key] & 0x80) == 0 && (m_PrevState.rgbButtons[key] & 0x80) != 0;
+		}
 	}
 
-	bool InputDeviceMouse_Win32::IsDown(uint8 key) const
+	bool InputDeviceMouse_Win32::IsDown(const EAction& action) const
 	{
-		return (m_State.rgbButtons[key] & 0x80) != 0;
+		auto it = m_ActionMapping.find(action);
+
+		if (it == m_ActionMapping.end())
+			return false;
+
+		for (uint8 key : it->second)
+		{
+			return (m_State.rgbButtons[key] & 0x80) != 0;
+		}
+		return false;
 	}
 
 	void InputDeviceMouse_Win32::Update()
@@ -74,6 +100,10 @@ namespace Input
 		ScreenToClient(m_WindowHandle, &cursor_point);
 		m_Cursor.x = cursor_point.x;
 		m_Cursor.y = cursor_point.y;
+
+		m_Cursor.dx = m_PrevState.lX;
+		m_Cursor.dy = m_PrevState.lY;
+
 
 	}
 

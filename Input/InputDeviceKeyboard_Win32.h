@@ -19,9 +19,9 @@ namespace Input
 		InputDeviceKeyboard_Win32(HWND window_handle, HINSTANCE instance_handle);
 		~InputDeviceKeyboard_Win32() override;
 
-		bool OnDown(uint8 key) const override;
-		bool OnRelease(uint8 key) const override;
-		bool IsDown(uint8 key) const override;
+		bool OnDown(const EAction& action) const override;
+		bool OnRelease(const EAction& action) const override;
+		bool IsDown(const EAction& action) const override;
 
 		void Update() override;
 

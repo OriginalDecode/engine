@@ -48,7 +48,7 @@ struct ControllerState
 	int16 m_ThumbRY = 0;
 	int16 m_ThumbLY = 0;
 	int16 m_ThumbLX = 0;
-	int16 m_PacketNum = 0;
+	uint64 m_PacketNum = 0;
 	uint8 m_RTrigger = 0;
 	uint8 m_LTrigger = 0;
 	XINPUT_STATE myControllerState;

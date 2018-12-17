@@ -1,6 +1,7 @@
 #include "InputDeviceKeyboard_Win32.h"
-#include <dinput.h>
 #include <cassert>
+
+#include <dinput.h>
 
 namespace Input
 {
@@ -13,30 +14,44 @@ namespace Input
 		hr = m_Input->CreateDevice(GUID_SysKeyboard, &m_Device, nullptr);
 		assert(hr == S_OK && "Failed to create input device!");
 
-		hr = m_Device->Acquire();
-		if (hr != S_OK)
-		{
-			assert(!"Failed to acquire keyboard input device!");
-			m_Input->Release();
-			return;
-		}
+		hr = m_Device->SetDataFormat(&c_dfDIKeyboard);
+		assert(hr == S_OK && "Failed to set data format!");
 
 		hr = m_Device->SetCooperativeLevel(window_handle, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
 		if (hr != S_OK)
 		{
-			m_Input->Release();
 			assert(!"Failed to set cooperative level on keyboard!");
+			Release();
+			return;
 		}
 
-		ZeroMemory(m_PrevState, 256);
-		ZeroMemory(m_State, 256);
+		hr = m_Device->Acquire();
+		if (hr != S_OK)
+		{
+			assert(!"Failed to acquire keyboard input device!");
+			Release();
+			return;
+		}
+
+		ZeroMemory(&m_PrevState, 256);
+		ZeroMemory(&m_State, 256);
 
 	}
 
 	InputDeviceKeyboard_Win32::~InputDeviceKeyboard_Win32()
 	{
+		Release();
+	}
+
+	void InputDeviceKeyboard_Win32::Release()
+	{
 		m_Device->Unacquire();
+
+		m_Device->Release();
+		m_Device = nullptr;
+
 		m_Input->Release();
+		m_Input = nullptr;
 	}
 
 	bool InputDeviceKeyboard_Win32::OnDown(uint8 key) const
@@ -61,7 +76,12 @@ namespace Input
 		if (FAILED(hr))
 		{
 			ZeroMemory(m_State, sizeof(m_State));
-			m_Device->Acquire();
+			hr = m_Device->Acquire();
+			if (hr != S_OK)
+			{
+				int apa;
+				apa = 5;
+			}
 		}
 	}
 }; //namespace Input

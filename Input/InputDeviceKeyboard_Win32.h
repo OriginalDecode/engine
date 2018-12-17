@@ -21,5 +21,9 @@ namespace Input
 		bool IsDown(uint8 key) const override;
 
 		void Update() override;
+
+	private:
+		void Release() override;
+
 	};
 }; //namespace Input

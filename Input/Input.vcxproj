@@ -185,6 +185,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\Timer\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <PreBuildEvent>
       <Command>
@@ -197,6 +198,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\Timer\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <PreBuildEvent>
       <Command>
@@ -212,6 +214,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\Timer\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <PreBuildEvent>
       <Command>

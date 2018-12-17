@@ -33,6 +33,7 @@ namespace Input
 		virtual void Update() = 0;
 
 	protected:
+		virtual void Release() = 0;
 		DeviceType m_Type = DeviceType::NONE;
 		IDirectInput8* m_Input = nullptr;
 		IDirectInputDevice8* m_Device = nullptr;

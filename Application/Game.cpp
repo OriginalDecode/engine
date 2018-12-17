@@ -227,11 +227,11 @@ void Game::OldUpdate(float dt)
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 
-	/*ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
-	const ControllerState& input_state = input->GetState();
-	m_Camera->Update(input->GetState());*/
+	ControllerInput* controller = m_Engine->GetInputHandle()->GetController(0);
+	const ControllerState& input_state = controller->GetState();
+	m_Camera->Update(controller->GetState());
 
-	/*float x_value = (float)input_state.m_ThumbLX;
+	float x_value = (float)input_state.m_ThumbLX;
 	float y_value = (float)input_state.m_ThumbLY;
 
 	float magnitude = (x_value * x_value + y_value * y_value);
@@ -253,31 +253,31 @@ void Game::OldUpdate(float dt)
 		x_value = 0.f;
 		y_value = 0.f;
 	}
-*/
-	//if (normalized < -0.5f || normalized > 0.5f)
-	//{
-	//	x_value /= 2.f;
-	//	y_value /= 2.f;
-	//}
 
-	//if (x_value / SHRT_MAX > 0.15)
-	//	m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
+	if (normalized < -0.5f || normalized > 0.5f)
+	{
+		x_value /= 2.f;
+		y_value /= 2.f;
+	}
 
-	//if (x_value / SHRT_MAX < -0.15)
-	//	m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
+	if (x_value / SHRT_MAX > 0.15)
+		m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
 
-	//if (y_value / SHRT_MAX > 0.15)
-	//	m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
+	if (x_value / SHRT_MAX < -0.15)
+		m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
 
-	//if (y_value / SHRT_MAX < -0.15)
-	//	m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
+	if (y_value / SHRT_MAX > 0.15)
+		m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
+
+	if (y_value / SHRT_MAX < -0.15)
+		m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
 
 
 
-	//if (input_wrapper->IsDown(MouseInput::RIGHT))
-	//{
-	//	m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
-	//}
+	/*if (input_wrapper->IsDown(MouseInput::RIGHT))
+	{
+		m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
+	}*/
 
 	float mul = 1.f;
 

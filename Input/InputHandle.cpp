@@ -54,7 +54,7 @@ void InputHandle::Update(float dt)
 		m_Controller[i]->Update();
 	}
 	
-	m_Input->Update();
+	//m_Input->Update();
 }
 
 void InputHandle::HandleInput()

@@ -249,9 +249,11 @@ void Engine::Update()
 
 void Engine::UpdateInput()
 {
-	if (!m_PauseInput || m_Window.IsWindowActive())
-		m_InputManager->Update();
-		//m_InputHandle->Update(m_DeltaTime);
+	if (m_PauseInput || !m_Window.IsWindowActive())
+		return;
+
+	m_InputManager->Update();
+	m_InputHandle->Update(m_DeltaTime);
 }
 
 int Engine::RegisterLight()

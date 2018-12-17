@@ -20,7 +20,7 @@ namespace Input
 		hr = m_Device->SetCooperativeLevel(window_handle, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
 		if (hr != S_OK)
 		{
-			assert(!"Failed to set cooperative level on keyboard!");
+			assert(!"Failed to set cooperative level on device!");
 			Release();
 			return;
 		}
@@ -28,7 +28,7 @@ namespace Input
 		hr = m_Device->Acquire();
 		if (hr != S_OK)
 		{
-			assert(!"Failed to acquire keyboard input device!");
+			assert(!"Failed to acquire input device!");
 			Release();
 			return;
 		}
@@ -79,8 +79,6 @@ namespace Input
 			hr = m_Device->Acquire();
 			if (hr != S_OK)
 			{
-				int apa;
-				apa = 5;
 			}
 		}
 	}

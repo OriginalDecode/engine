@@ -231,6 +231,7 @@
     <ClInclude Include="InputCommand.h" />
     <ClInclude Include="InputDevice.h" />
     <ClInclude Include="InputDeviceKeyboard_Win32.h" />
+    <ClInclude Include="InputDeviceMouse_Win32.h" />
     <ClInclude Include="InputHandle.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InputWrapper.h" />
@@ -238,6 +239,7 @@
   <ItemGroup>
     <ClCompile Include="ControllerInput.cpp" />
     <ClCompile Include="InputDeviceKeyboard_Win32.cpp" />
+    <ClCompile Include="InputDeviceMouse_Win32.cpp" />
     <ClCompile Include="InputHandle.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InputWrapper.cpp" />

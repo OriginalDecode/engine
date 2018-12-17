@@ -32,12 +32,12 @@ namespace Input
 
 		virtual void Update() = 0;
 
+		const DeviceType& GetType() const { return m_Type; }
+
 	protected:
 		virtual void Release() = 0;
 		DeviceType m_Type = DeviceType::NONE;
 		IDirectInput8* m_Input = nullptr;
 		IDirectInputDevice8* m_Device = nullptr;
-		uint8 m_State[256];
-		uint8 m_PrevState[256];
 	};
 }; //namespace Input

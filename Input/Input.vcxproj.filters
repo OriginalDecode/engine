@@ -35,6 +35,9 @@
     <ClInclude Include="InputDeviceKeyboard_Win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputDeviceMouse_Win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputWrapper.cpp">
@@ -50,6 +53,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputDeviceKeyboard_Win32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputDeviceMouse_Win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

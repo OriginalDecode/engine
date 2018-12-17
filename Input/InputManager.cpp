@@ -4,6 +4,7 @@
 #include <dinput.h>
 
 #include "InputDeviceKeyboard_Win32.h"
+#include "InputDeviceMouse_Win32.h"
 
 namespace Input
 {
@@ -15,8 +16,10 @@ namespace Input
 		AddMapping(A_MOVE_RIGHT, DIK_D);
 		AddMapping(A_MOVE_UP, DIK_SPACE);
 		AddMapping(A_MOVE_DOWN, DIK_X);
+		AddMapping(A_ROTATE_CAMERA, 1);
 
 		m_Devices.emplace_back(new InputDeviceKeyboard_Win32(window_handle, window_instance));
+		m_Devices.emplace_back(new InputDeviceMouse_Win32(window_handle, window_instance));
 	}
 
 

@@ -10,5 +10,7 @@ namespace Input
 		A_MOVE_RIGHT,
 		A_MOVE_UP,
 		A_MOVE_DOWN,
+
+		A_ROTATE_CAMERA,
 	};
 };

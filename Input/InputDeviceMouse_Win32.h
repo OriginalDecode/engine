@@ -1,8 +1,6 @@
 #pragma once
 #include "InputDevice.h"
 
-
-
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -10,25 +8,33 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
-
 namespace Input
 {
-	class InputDeviceKeyboard_Win32 final : public IInputDevice
+	struct Cursor
+	{
+		float x;
+		float y;
+		float z; //wheel
+	};
+
+	class InputDeviceMouse_Win32 : public IInputDevice
 	{
 	public:
-		InputDeviceKeyboard_Win32(HWND window_handle, HINSTANCE instance_handle);
-		~InputDeviceKeyboard_Win32() override;
-
+		InputDeviceMouse_Win32(HWND window_handle, HINSTANCE instance_handle);
+		~InputDeviceMouse_Win32() override;
 		bool OnDown(uint8 key) const override;
 		bool OnRelease(uint8 key) const override;
 		bool IsDown(uint8 key) const override;
 
 		void Update() override;
 
+		const Cursor& GetCursor() const { return m_Cursor; }
+
 	private:
 		void Release() override;
-		uint8 m_State[256];
-		uint8 m_PrevState[256];
-
+		Cursor m_Cursor;
+		DIMOUSESTATE2 m_State;
+		DIMOUSESTATE2 m_PrevState;
+		HWND m_WindowHandle = nullptr;
 	};
 }; //namespace Input

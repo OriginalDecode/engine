@@ -47,16 +47,16 @@ void Application::Update()
 		float deltaTime = myEngine->GetDeltaTime();
 
 		myEngine->UpdateInput();
-		InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
-		if (input_wrapper->OnDown(KButton::P))
-		{
-			m_States.PauseCurrentState();
-		}
+		//InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
+		//if (input_wrapper->OnDown(KButton::P))
+		//{
+		//	m_States.PauseCurrentState();
+		//}
 
-		if (input_wrapper->OnDown(KButton::O))
-		{
-			m_States.ResumeCurrentState();
-		}
+		//if (input_wrapper->OnDown(KButton::O))
+		//{
+		//	m_States.ResumeCurrentState();
+		//}
 
 		if (!m_States.UpdateCurrentState(deltaTime))
 		{

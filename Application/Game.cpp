@@ -42,7 +42,7 @@
 #include <Engine/TerrainSystem.h>
 
 #include <Engine/ModelImporterFlags.h>
-
+#include <Input/InputManager.h>
 
 static float s_CamSpeed = 50.f;
 
@@ -209,29 +209,29 @@ void Game::OldUpdate(float dt)
 		m_AverageFPS = 0.f;
 		m_Time = 1.f;
 	}
+	Input::InputManager* input = Engine::GetInstance()->GetInputManager();
+	//InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
+	//EventManager* pEventHandle = EventManager::GetInstance();
+	//if (input_wrapper->OnClick(MouseInput::LEFT))
+	//	pEventHandle->SendMessage("left_click");
 
-	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
-	EventManager* pEventHandle = EventManager::GetInstance();
-	if (input_wrapper->OnClick(MouseInput::LEFT))
-		pEventHandle->SendMessage("left_click");
+	//if (input_wrapper->OnDown(KButton::ESCAPE))
+	//	m_StateStack->PopCurrentMainState();
 
-	if (input_wrapper->OnDown(KButton::ESCAPE))
-		m_StateStack->PopCurrentMainState();
+	//if (input_wrapper->OnDown(KButton::NUMADD))
+	//	Engine::GetInstance()->GetRenderer()->font_scale += 0.25f;
 
-	if (input_wrapper->OnDown(KButton::NUMADD))
-		Engine::GetInstance()->GetRenderer()->font_scale += 0.25f;
-
-	if (input_wrapper->OnDown(KButton::NUMMINUS))
-		Engine::GetInstance()->GetRenderer()->font_scale -= 0.25f;
+	//if (input_wrapper->OnDown(KButton::NUMMINUS))
+	//	Engine::GetInstance()->GetRenderer()->font_scale -= 0.25f;
 
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 
-	ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
+	/*ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
 	const ControllerState& input_state = input->GetState();
-	m_Camera->Update(input->GetState());
+	m_Camera->Update(input->GetState());*/
 
-	float x_value = (float)input_state.m_ThumbLX;
+	/*float x_value = (float)input_state.m_ThumbLX;
 	float y_value = (float)input_state.m_ThumbLY;
 
 	float magnitude = (x_value * x_value + y_value * y_value);
@@ -253,114 +253,114 @@ void Game::OldUpdate(float dt)
 		x_value = 0.f;
 		y_value = 0.f;
 	}
+*/
+	//if (normalized < -0.5f || normalized > 0.5f)
+	//{
+	//	x_value /= 2.f;
+	//	y_value /= 2.f;
+	//}
 
-	if (normalized < -0.5f || normalized > 0.5f)
-	{
-		x_value /= 2.f;
-		y_value /= 2.f;
-	}
+	//if (x_value / SHRT_MAX > 0.15)
+	//	m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
 
-	if (x_value / SHRT_MAX > 0.15)
-		m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
+	//if (x_value / SHRT_MAX < -0.15)
+	//	m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
 
-	if (x_value / SHRT_MAX < -0.15)
-		m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
+	//if (y_value / SHRT_MAX > 0.15)
+	//	m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
 
-	if (y_value / SHRT_MAX > 0.15)
-		m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
-
-	if (y_value / SHRT_MAX < -0.15)
-		m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
+	//if (y_value / SHRT_MAX < -0.15)
+	//	m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
 
 
 
-	if (input_wrapper->IsDown(MouseInput::RIGHT))
-	{
-		m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
-	}
+	//if (input_wrapper->IsDown(MouseInput::RIGHT))
+	//{
+	//	m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
+	//}
 
 	float mul = 1.f;
 
-	if (input_wrapper->IsDown(KButton::LCTRL))
-		mul = 100.f;
+	//if (input->IsDown(Input::A_))
+		//mul = 100.f;
 
 	float acceleration = (s_CamSpeed * dt) * mul;
 
-	if (input_wrapper->IsDown(KButton::W))
+	if (input->IsDown(Input::A_MOVE_FORWARD))
 		m_Camera->Move(eDirection::FORWARD, acceleration);
 
-	if (input_wrapper->IsDown(KButton::S))
+	if (input->IsDown(Input::A_MOVE_BACK))
 		m_Camera->Move(eDirection::BACK, -acceleration);
 
-	if (input_wrapper->IsDown(KButton::A))
+	if (input->IsDown(Input::A_MOVE_LEFT))
 		m_Camera->Move(eDirection::LEFT, -acceleration);
 
-	if (input_wrapper->IsDown(KButton::D))
+	if (input->IsDown(Input::A_MOVE_RIGHT))
 		m_Camera->Move(eDirection::RIGHT, acceleration);
 
-	if (input_wrapper->IsDown(KButton::SPACE))
+	if (input->IsDown(Input::A_MOVE_UP))
 		m_Camera->Move(eDirection::UP, acceleration);
 
-	if (input_wrapper->IsDown(KButton::X))
+	if (input->IsDown(Input::A_MOVE_DOWN))
 		m_Camera->Move(eDirection::DOWN, -acceleration);
 
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-	if (input_wrapper->OnDown(KButton::P))
-		m_Engine->GetRenderer()->CreateCubemaps();
-#endif
+//#if !defined(_PROFILE) && !defined(_FINAL)
+//	if (input_wrapper->OnDown(KButton::P))
+//		m_Engine->GetRenderer()->CreateCubemaps();
+//#endif
 
 	const CU::Vector4f forward = m_Orientation.GetForward();
 	const CU::Vector4f right = m_Orientation.GetRight();
 	const CU::Vector4f up = m_Orientation.GetUp();
 	CU::Vector4f translation = m_Orientation.GetTranslation();
 
-	static float speed = 10.f;
-	if (input_wrapper->IsDown(KButton::NUMMINUS))
-		speed -= 0.5f * dt;
-	if (input_wrapper->IsDown(KButton::NUMADD))
-		speed += 0.5f * dt;
+	//static float speed = 10.f;
+	//if (input_wrapper->IsDown(KButton::NUMMINUS))
+	//	speed -= 0.5f * dt;
+	//if (input_wrapper->IsDown(KButton::NUMADD))
+	//	speed += 0.5f * dt;
 
 
 
-	if (input_wrapper->IsDown(KButton::UP_ARROW))
-		translation += forward * speed;
+	//if (input_wrapper->IsDown(KButton::UP_ARROW))
+	//	translation += forward * speed;
 
-	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
-		translation += forward * -speed;
+	//if (input_wrapper->IsDown(KButton::DOWN_ARROW))
+	//	translation += forward * -speed;
 
-	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
-		translation += right * speed;
+	//if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
+	//	translation += right * speed;
 
-	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
-		translation += right * -speed;
+	//if (input_wrapper->IsDown(KButton::LEFT_ARROW))
+	//	translation += right * -speed;
 
-	if (input_wrapper->IsDown(KButton::PGDOWN))
-		translation += up * -speed;
+	//if (input_wrapper->IsDown(KButton::PGDOWN))
+	//	translation += up * -speed;
 
-	if (input_wrapper->IsDown(KButton::PGUP))
-		translation += up * speed;
+	//if (input_wrapper->IsDown(KButton::PGUP))
+	//	translation += up * speed;
 
-	m_Orientation.SetTranslation(translation);
+	//m_Orientation.SetTranslation(translation);
 
 
-	if (input_wrapper->IsDown(KButton::NUMPAD6))
-		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+	//if (input_wrapper->IsDown(KButton::NUMPAD6))
+	//	m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
 
-	if (input_wrapper->IsDown(KButton::NUMPAD4))
-		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
+	//if (input_wrapper->IsDown(KButton::NUMPAD4))
+	//	m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
-	if (input_wrapper->IsDown(KButton::NUMPAD8))
-		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+	//if (input_wrapper->IsDown(KButton::NUMPAD8))
+	//	m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
 
-	if (input_wrapper->IsDown(KButton::NUMPAD2))
-		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
+	//if (input_wrapper->IsDown(KButton::NUMPAD2))
+	//	m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
-	if (input_wrapper->IsDown(KButton::NUMPAD9))
-		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+	//if (input_wrapper->IsDown(KButton::NUMPAD9))
+	//	m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
 
-	if (input_wrapper->IsDown(KButton::NUMPAD7))
-		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
+	//if (input_wrapper->IsDown(KButton::NUMPAD7))
+	//	m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
 	m_World.Update(dt, m_Paused); //This function takes a long time
 }

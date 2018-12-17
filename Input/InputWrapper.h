@@ -4,9 +4,7 @@
 #include <dinput.h>
 #include <standard_datatype.hpp>
 #include "../CommonLib/Math/Vector/Vector.h"
-
-
-class InputDeviceKeyboard_Win32;
+#include "../CommonLib/DataStructures/GrowingArray.h"
 
 enum class MouseInput
 {
@@ -104,6 +102,10 @@ enum class KButton
 	NUMMINUS = DIK_SUBTRACT
 };
 
+namespace Input 
+{
+	class IInputDevice;
+};
 
 class InputWrapper
 {
@@ -135,11 +137,17 @@ private:
 	HWND myHWND;
 	IDirectInput8* myDInput;
 
+	CU::GrowingArray<Input::IInputDevice*> m_Devices;
+	
+
+
 	/* Keyboard */
-	InputDeviceKeyboard_Win32* m_Keyboard = nullptr;
+	//Input::InputDeviceKeyboard_Win32* m_Keyboard = nullptr;
 	
 	/* Mouse */
 	IDirectInputDevice8* myMouse;
+	IDirectInputDevice8* myKeyboard;
+	IDirectInputDevice8* myGamepad;
 	DIMOUSESTATE2 myMouseState;
 	DIMOUSESTATE2 myPrevMouseState;
 

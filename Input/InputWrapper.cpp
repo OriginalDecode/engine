@@ -4,16 +4,15 @@
 
 bool InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
 {
-	DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&myDInput, nullptr);
-	myDInput->CreateDevice(GUID_SysMouse, &myMouse, nullptr);
-	myMouse->SetDataFormat(&c_dfDIMouse);
+	//DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&myDInput, nullptr);
+	//myDInput->CreateDevice(GUID_SysMouse, &myMouse, nullptr);
+	//myMouse->SetDataFormat(&c_dfDIMouse);
 
+	//m_Devices.Add(new Input::InputDeviceKeyboard_Win32(aHWND, hInstance));
 
-	m_Keyboard = new InputDeviceKeyboard_Win32(aHWND, hInstance);
+	//myHWND = aHWND;
 
-	myHWND = aHWND;
-
-	myMouse->SetCooperativeLevel(myHWND, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+	//myMouse->SetCooperativeLevel(myHWND, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
 
 
 	//myDInput->CreateDevice(GUID_Joystick, &m_PS4, nullptr);
@@ -22,34 +21,37 @@ bool InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
 	//m_PS4->Acquire();
 
 
-	myMouse->Acquire();
+	//myMouse->Acquire();
 
 	return true;
 }
 
 bool InputWrapper::CleanUp()
 {
-	myMouse->Unacquire();
-	m_PS4->Unacquire();
+	//myMouse->Unacquire();
+	//m_PS4->Unacquire();
 	return true;
 }
 
 void InputWrapper::Update()
 {
-	m_Keyboard->Update();
-
-	memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
-	HRESULT hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (void**)&myMouseState);
-	if (FAILED(hr))
+	for (Input::IInputDevice* device : m_Devices)
 	{
-		ZeroMemory(&myMouseState, sizeof(myMouseState));
-		myMouse->Acquire();
+		device->Update();
 	}
 
-	GetPhysicalCursorPos(&myCursorPos);
-	ScreenToClient(myHWND, &myCursorPos);
-	m_CurorPos.x = float(myCursorPos.x);
-	m_CurorPos.y = float(myCursorPos.y);
+	//memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
+	//HRESULT hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (void**)&myMouseState);
+	//if (FAILED(hr))
+	//{
+	//	ZeroMemory(&myMouseState, sizeof(myMouseState));
+	//	myMouse->Acquire();
+	//}
+
+	//GetPhysicalCursorPos(&myCursorPos);
+	//ScreenToClient(myHWND, &myCursorPos);
+	//m_CurorPos.x = float(myCursorPos.x);
+	//m_CurorPos.y = float(myCursorPos.y);
 
 }
 

@@ -52,11 +52,16 @@ class Texture;
 class Effect;
 class Terrain;
 class Sprite;
-class InputHandle;
 class PhysicsManager;
 class Material;
 struct ModelCommand;
 
+class InputHandle;
+
+namespace Input
+{
+	class InputManager;
+};
 
 namespace network
 {
@@ -200,6 +205,9 @@ public:
 
 	AssetsContainer* GetAssetsContainer();
 	Model* GetModelDirect(uint64 key);
+
+	Input::InputManager* GetInputManager() { return m_InputManager; }
+
 private:
 	uint32 PickEntity(Texture* pTexture);
 	Engine();
@@ -224,6 +232,8 @@ private:
 	EntityManager m_EntityManager;
 
 	InputHandle* m_InputHandle       = nullptr;
+	Input::InputManager* m_InputManager = nullptr;
+	
 	PhysicsManager* m_PhysicsManager = nullptr;
 	CFontManager* myFontManager      = nullptr;
 	CU::TimeManager myTimeManager;

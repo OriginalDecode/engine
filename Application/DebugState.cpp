@@ -17,11 +17,11 @@ void DebugState::EndState()
 
 void DebugState::Update(float dt)
 {
-    InputWrapper* input_wrapper = Engine::GetInstance()->GetInputHandle()->GetInputWrapper();
-    if(input_wrapper->IsDown(KButton::LSHIFT) && input_wrapper->OnDown(KButton::D))
-    {
-        m_StateStack->PopCurrentSubState();
-    }
+    //InputWrapper* input_wrapper = Engine::GetInstance()->GetInputHandle()->GetInputWrapper();
+    //if(input_wrapper->IsDown(KButton::LSHIFT) && input_wrapper->OnDown(KButton::D))
+    //{
+    //    m_StateStack->PopCurrentSubState();
+    //}
 }
 
 void DebugState::Render(bool render_through)

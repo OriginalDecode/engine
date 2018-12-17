@@ -45,6 +45,8 @@
 
 #include <Engine/DebugRenderer.h>
 
+#include <Input/InputManager.h>
+
 bool Engine::HasInitiated()
 {
 	return true;
@@ -113,6 +115,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
 	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
 
+	m_InputManager = new Input::InputManager(m_Window.GetHWND(), instance_handle);
+
 #ifdef _DEBUG
 	ImGui::CreateContext();
 #endif
@@ -180,6 +184,7 @@ bool Engine::CleanUp()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Destroy();
 #endif
+	SAFE_DELETE(m_InputManager);
 	AssetFactory::Destroy();
 	m_NetManager->CleanUp();
 	SAFE_DELETE(m_NetManager);
@@ -226,12 +231,12 @@ void Engine::Update()
 	m_Threadpool.Update();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	static bool render_imgui = true;
-	if (m_InputHandle->GetInputWrapper()->OnDown(KButton::U))
-		render_imgui = !render_imgui;
+	//static bool render_imgui = true;
+	//if (m_InputHandle->GetInputWrapper()->OnDown(KButton::U))
+	//	render_imgui = !render_imgui;
 
-	if (render_imgui)
-		debug::DebugHandle::GetInstance()->Update();
+	//if (render_imgui)
+	debug::DebugHandle::GetInstance()->Update();
 #endif
 
 	m_Camera->Update();
@@ -245,7 +250,8 @@ void Engine::Update()
 void Engine::UpdateInput()
 {
 	if (!m_PauseInput || m_Window.IsWindowActive())
-		m_InputHandle->Update(m_DeltaTime);
+		m_InputManager->Update();
+		//m_InputHandle->Update(m_DeltaTime);
 }
 
 int Engine::RegisterLight()

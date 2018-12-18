@@ -79,8 +79,8 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 	GBuffer output = (GBuffer)0;
 	bool override_pbl = false;
-	float4 metalness_override = 0; //MetalnessTexture.Sample(sampler0, input.uv);
-	float4 roughness_override = 1; //RoughnessTexture.Sample(sampler0, input.uv); 
+	float4 metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
+	float4 roughness_override = RoughnessTexture.Sample(sampler0, input.uv); 
 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);

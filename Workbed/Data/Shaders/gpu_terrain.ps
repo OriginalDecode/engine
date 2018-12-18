@@ -64,13 +64,13 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 
 	float height_col =  input.worldpos.y;
 	float4 _color = height_col.xxxx;
-	float3 _normal = NormalTexture.Sample(sampler0, input.uv);
+	float3 _normal = float3(0,1,0);//NormalTexture.Sample(sampler0, input.uv);
 	float3 nnormal = normalize(input.normal);
 	
 	float3 binorm = normalize(cross(input.normal, input.tang));
 	float3 tang = normalize(cross(input.normal, binorm));
 	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
-	_normal = normalize(mul(_normal, tangentSpaceMatrix));
+	_normal = normalize(mul(nnormal, tangentSpaceMatrix));
 
 	output.m_Albedo = AlbedoTexture.Sample(sampler0, input.worlduv * 128); 
 	output.m_Albedo = pow(output.m_Albedo, 2.2);

@@ -1,6 +1,7 @@
 #pragma once
 #include "IGraphicsDevice.h"
 #include "IGraphicsAPI.h"
+#include <tuple>
 struct ID3D11Device;
 namespace graphics
 {
@@ -18,6 +19,8 @@ namespace graphics
 		IDomainShader* CreateDomainShader(IShaderBlob* pShader, const std::string& debug_name) override;
 		IComputeShader* CreateComputeShader(IShaderBlob* pShader, const std::string& debug_name) override;
 		
+		std::tuple<IShaderResourceView*, ITexture2D*> CreateTextureFromFile(const std::string& filepath, IGraphicsContext* ctx);
+
 		IShaderResourceView* CreateTextureFromFile(const std::string& filepath, bool generate_mips, IGraphicsContext* ctx) override;
 		IShaderResourceView* CreateTextureFromFile(const std::string& filepath, ITexture2D*& tex_out, bool generate_mips, IGraphicsContext* ctx) override;
 

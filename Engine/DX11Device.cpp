@@ -194,7 +194,25 @@ namespace graphics
 			}
 
 
+			if (generate_mips)
+			{
+				HRESULT hr = DirectX::CreateWICTextureFromFileEx( m_Device
+																, path.c_str()
+																, 0
+																, D3D11_USAGE_DEFAULT
+																, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET
+																, D3D11_CPU_ACCESS_READ
+																, D3D11_RESOURCE_MISC_GENERATE_MIPS
+																, false
+																, &resource
+																, &srv);
+				DirectX11::HandleErrors(hr, "Failed to load texture");
+				tex_out = resource;
+				return srv;
+			}
+
 			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), &resource, &srv);
+
 #ifndef FINAL
 			DirectX11::HandleErrors(hr, "Failed to load texture");
 #endif

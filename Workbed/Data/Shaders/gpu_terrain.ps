@@ -51,6 +51,12 @@ float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const f
 	return fresnel;
 };
 
+SamplerState TestSampler
+{
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
 
 cbuffer b1 : register ( b1 ) 
 {
@@ -72,7 +78,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
 	_normal = normalize(mul(nnormal, tangentSpaceMatrix));
 
-	output.m_Albedo = AlbedoTexture.Sample(sampler0, input.worlduv * 128); 
+	output.m_Albedo = AlbedoTexture.Sample(TestSampler, input.worlduv * 128); 
 	output.m_Albedo = pow(output.m_Albedo, 2.2);
 	output.m_Albedo.a = 0;
 	float roughness = 1; //RoughnessTexture.Sample(sampler0, input.worlduv * 128).r;

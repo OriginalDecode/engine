@@ -92,9 +92,27 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	testUV.x = ((output.worldpos.x) / width);
 	testUV.y = 1 - ((output.worldpos.z) / depth);
 
+	float texel_size =  1.0 / 1024.0;
 
-	const float height = HeightTexture.SampleLevel(sampler1, testUV, 0).r * 255;
-	vertex_pos.y = height;
+    float2 offsets[4];
+    offsets[0] = testUV + float2(-texel_size, 0);
+    offsets[1] = testUV + float2(texel_size, 0);
+    offsets[2] = testUV + float2(0, texel_size);
+    offsets[3] = testUV + float2(0, -texel_size);
+    
+	float average = 0;
+    for(int i = 0; i < 4; i++)
+    {
+        average += HeightTexture.SampleLevel(sampler1, offsets[i], 0).r * 255; //tex2D(tex, offsets[i]).x;
+    }
+
+	average += HeightTexture.SampleLevel(sampler1, testUV, 0).r * 255;
+
+	average /= 5.0;
+	
+	
+	
+	vertex_pos.y = average;
 
 	// float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);
 

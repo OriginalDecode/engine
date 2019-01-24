@@ -279,8 +279,8 @@ void Game::OldUpdate(float dt)
 
 	float mul = 1.f;
 
-	//if (input->IsDown(Input::A_))
-		//mul = 100.f;
+	if (input->IsDown(Input::A_ACCELERATE))
+		mul = 100.f;
 
 	float acceleration = (s_CamSpeed * dt) * mul;
 
@@ -360,5 +360,5 @@ void Game::OldUpdate(float dt)
 	//if (input_wrapper->IsDown(KButton::NUMPAD7))
 	//	m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
-	m_World.Update(dt, m_Paused); //This function takes a long time
+	m_World.Update(dt, m_Paused);
 }

@@ -194,7 +194,7 @@ namespace graphics
 			}
 
 
-			if (generate_mips)
+			/*if (generate_mips)
 			{
 				HRESULT hr = DirectX::CreateWICTextureFromFileEx( m_Device
 																, path.c_str()
@@ -209,7 +209,7 @@ namespace graphics
 				DirectX11::HandleErrors(hr, "Failed to load texture");
 				tex_out = resource;
 				return srv;
-			}
+			}*/
 
 			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), &resource, &srv);
 

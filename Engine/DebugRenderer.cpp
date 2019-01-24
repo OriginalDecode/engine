@@ -121,6 +121,8 @@ void DebugRenderer::DrawCube()
 
 void DebugRenderer::DrawPosition(CU::Vector3f position)
 {
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	Renderer* renderer = Engine::GetInstance()->GetRenderer();
 
 	LinePoint points[2];
@@ -145,6 +147,6 @@ void DebugRenderer::DrawPosition(CU::Vector3f position)
 	points[1].position = position;
 	points[1].position.z -= 1.f;
 	renderer->m_Line->AddLine(points);
-
+#endif
 }
 

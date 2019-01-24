@@ -22,12 +22,13 @@ namespace Input
 		AddMapping(A_MOVE_RIGHT, DIK_D, DeviceType::KEYBOARD);
 		AddMapping(A_MOVE_UP, DIK_SPACE, DeviceType::KEYBOARD);
 		AddMapping(A_MOVE_DOWN, DIK_X, DeviceType::KEYBOARD);
+		AddMapping(A_ACCELERATE, DIK_LCONTROL, DeviceType::KEYBOARD);
+
 
 		AddMapping(A_ROTATE_CAMERA, 1, DeviceType::MOUSE);
 
 
 	}
-
 
 	InputManager::~InputManager()
 	{

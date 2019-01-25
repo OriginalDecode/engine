@@ -18,16 +18,6 @@
 #include <EventManager.h>
 #include <PhysicsManager.h>
 
-#include <DebugComponent.h>
-
-#include <DebugSystem.h>
-#include <PhysicsSystem.h>
-#include <RenderSystem.h>
-#include <LightSystem.h>
-#include <InputSystem.h>
-#include <AISystem.h>
-#include <NetworkSystem.h>
-#include <CameraSystem.h>
 
 #include <Engine/LightModel.h>
 

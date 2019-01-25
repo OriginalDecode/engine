@@ -458,18 +458,14 @@
     <ClInclude Include="LinearAllocator.h">
       <Filter>Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Stacktrace.h" />
     <ClInclude Include="DownsamplePass.h" />
     <ClInclude Include="graphics_flags.h" />
     <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="RenderNode.h" />
-    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="RenderNodeVegetation.h" />
     <ClInclude Include="RenderNodeGeneral.h" />
     <ClInclude Include="RenderNodeTerrain.h" />
     <ClInclude Include="ModelExporter.h" />
-    <ClInclude Include="TextureSlotEnum.h" />
-    <ClInclude Include="ModelImporterImpl.h" />
     <ClInclude Include="ModelImporterFlags.h" />
   </ItemGroup>
   <ItemGroup>

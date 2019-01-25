@@ -348,7 +348,6 @@
     <ClInclude Include="IPostprocessPass.h" />
     <ClInclude Include="ModelExporter.h" />
     <ClInclude Include="ModelImporterFlags.h" />
-    <ClInclude Include="ModelImporterImpl.h" />
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />
@@ -356,12 +355,9 @@
     <ClInclude Include="RenderNodeGeneral.h" />
     <ClInclude Include="RenderNodeTerrain.h" />
     <ClInclude Include="RenderNodeVegetation.h" />
-    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="shader_types.h" />
     <ClInclude Include="SSRPass.h" />
-    <ClInclude Include="Stacktrace.h" />
     <ClInclude Include="TerrainSystem.h" />
-    <ClInclude Include="TextureSlotEnum.h" />
     <ClInclude Include="TransformView.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />

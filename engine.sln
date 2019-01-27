@@ -12,6 +12,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DL_Debug", "DL_Debug\DL_Debug.vcxproj", "{D924F659-A78C-4B48-A76E-49600A883990}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonLib", "CommonLib\CommonLib.vcxproj", "{DBC8372D-E04F-4BBB-8964-12022ADCA9F6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D924F659-A78C-4B48-A76E-49600A883990} = {D924F659-A78C-4B48-A76E-49600A883990}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Input", "Input\Input.vcxproj", "{BD22FF31-48A5-4061-AB37-17E68E058912}"
 EndProject

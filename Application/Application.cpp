@@ -44,7 +44,7 @@ void Application::Update()
 #endif
 	while (!m_Synchronizer->HasQuit())
 	{
-		float deltaTime = myEngine->GetDeltaTime();
+		float deltaTime = 0.016f;
 
 		myEngine->UpdateInput();
 		//InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();

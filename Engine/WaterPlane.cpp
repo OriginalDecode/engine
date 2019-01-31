@@ -81,7 +81,7 @@ void WaterPlane::SetOrientation(const CU::Matrix44f orientation)
 void WaterPlane::UpdateConstantBuffer(const graphics::RenderContext& rc)
 {
 	m_VertexMatrices.m_World = m_Orientation;
-	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
+	//m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
 	rc.GetContext().UpdateConstantBuffer(m_ConstantBuffer, &m_VertexMatrices, sizeof(cbMatrices));
 }
 

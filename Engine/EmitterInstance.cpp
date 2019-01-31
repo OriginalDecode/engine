@@ -167,7 +167,7 @@ void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, c
 	}
 
 
-	time += Engine::GetInstance()->GetDeltaTime();
+	time += 0.016f; // Engine::GetInstance()->GetDeltaTime();
 
 	m_GeometryCB.index_x = index_x;
 	m_GeometryCB.index_y = index_y;

@@ -109,7 +109,6 @@ void Model::SetInstanceBuffer(IBuffer* const buffer)
 void Model::RenderCube(const graphics::RenderContext& rc)
 {
 	UpdateConstantBuffer(rc);
-	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 	rc.GetContext().DrawIndexed(this, m_Effect);
 }
 
@@ -189,7 +188,6 @@ void Model::ShadowRender(const graphics::RenderContext& rc)
 		return;
 
 	UpdateConstantBuffer(rc);
-	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 	rc.GetContext().DrawIndexed(this);
 }
 
@@ -213,7 +211,6 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	}
 
 	UpdateConstantBuffer(rc);
-	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
 	rc.GetContext().DrawIndexedInstanced(this);
 

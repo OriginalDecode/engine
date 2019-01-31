@@ -60,7 +60,6 @@ void DebugSystem::HandleEvent(uint64 event, void*)
 	{
 #ifdef _DEBUG
 		debug::DebugHandle::GetInstance()->ConfirmEntity();
-		m_Engine->PickEntity();
  		Entity e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
 		e = 0;
 #endif
@@ -78,7 +77,6 @@ void DebugSystem::HandleEvent(uint64 event, void*)
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
 	//debug::DebugHandle::GetInstance()->ConfirmEntity();
-	m_Engine->PickEntity();
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)

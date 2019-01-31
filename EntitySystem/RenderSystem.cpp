@@ -77,23 +77,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		CU::Matrix44f world;
 		for (const ModelInstanceCmpt& instance : render.m_Instances)
 		{
-
-			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * instance.m_Orientation;
-			const CU::Matrix44f orientation = world * (relative * translation.GetOrientation());
-
-			const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
-
-			ASSERT(instance.m_ModelID > 0, "Invalid Model Key!");
-
-			AddRenderCommand(ModelCommand(instance.m_ModelID
-										  , instance.m_MaterialKey
-										  , orientation
-										  , render.m_RenderWireframe
-#ifdef _DEBUG
-										  , e));
-#else 
-											));
-#endif
+			break;
 		}
 	}
 	PROFILE_BLOCK_END;
@@ -105,22 +89,4 @@ bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& d
 	if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 		return true;
 	return true;
-}
-
-void RenderSystem::AddRenderCommand(const ModelCommand& command)
-{
-
-	//this is the slowdown, this is what is causing the start up to go so immensly slow.
-#ifdef _PER_NODE_SYSTEM
-	const uint16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
-	void * current = allocator.Alloc(sizeof(ModelCommand));
-	memcpy(current, &command, sizeof(ModelCommand));
-#else
-	Engine& engine = Engine::GetRef();
-	const uint16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
-	memory::CommandAllocator& allocator = engine.GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
-	void * current = allocator.Alloc(sizeof(ModelCommand));
-	memcpy(current, &command, sizeof(ModelCommand));
-#endif
 }

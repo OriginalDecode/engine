@@ -33,7 +33,6 @@ void AtmosphereModel::Render(const graphics::RenderContext& rc)
 	UpdateConstantBuffer(rc);
 
 	auto& ctx = rc.GetContext();
-	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetCurrentSampler());
 	ctx.DrawIndexed(this, m_Effect);
 }
 

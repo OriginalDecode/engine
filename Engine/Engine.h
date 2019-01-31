@@ -88,24 +88,14 @@ public:
 	int RegisterLight();
 
 	static graphics::IGraphicsAPI* GetAPI() { return m_API; }
-	//_________________________________________
-	// Settings
-	void ToggleVsync();
-
+	
 	Camera* GetCamera();
 
-	TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
 
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 
 	CFont* LoadFont(const int8* filepath, uint16 aFontWidth, uint16 aBorderWidth);
-	float GetDeltaTime();
-	float& GetDeltaTimeRef();
-	float GetTotalTime();
-	float GetFPS();
-	float GetFrameTime();
-
 	VirtualFileSystem& GetVFS();
 
 	//_________________________________________
@@ -129,9 +119,6 @@ public:
 	Sprite* GetSprite(const char* key);
 	Material* GetMaterial(const char* key);
 
-
-
-	//std::string LoadModel(const std::string& filepath, std::string effect, bool thread);
 	template<typename T>
 	HashType LoadModel(const std::string& filepath, std::string effect, bool thread, int option = 0);
 
@@ -143,9 +130,6 @@ public:
 
 	void AddTexture(Texture* pTexture, uint64 key);
 
-	void ResetRenderTargetAndDepth();
-
-	//_________________________________________
 	// Windows Message Handling
 	void OnAltEnter();
 	void OnPause();
@@ -170,9 +154,7 @@ public:
 	const Window& GetWindow() const { return m_Window; }
 
 	const SLocalTime& GetLocalTime();
-	std::string GetLocalTimeAsString(); // should probably return a static buffered string instead that doesn't get newed all the time
 	InputHandle* GetInputHandle() { return m_InputHandle; }
-	// This can probably stay
 
 
 	void* CreateShader(IShaderBlob* pShader, eShaderType type, const std::string& debug_name);
@@ -183,25 +165,18 @@ public:
 
 	HWND GetHWND() const { return m_Window.GetHWND(); }
 
-	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
-	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
-
-	//ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
-	//void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
 	bool VSync() const { return m_VSyncOn; }
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
 	HashType LoadModelA(std::string path, std::string effect, bool threaded, int option = 0);
 
-	void PickEntity();
 
 	Renderer* GetRenderer() { return m_Renderer; }
 	TerrainManager* GetTerrainManager() { return m_TerrainManager; }
 
 	LevelFactory* GetLevelFactory() { return m_LevelFactory; }
 
-	void AddRenderCommand(const ModelCommand& command);
 
 	AssetsContainer* GetAssetsContainer();
 	Model* GetModelDirect(uint64 key);
@@ -209,26 +184,24 @@ public:
 	Input::InputManager* GetInputManager() { return m_InputManager; }
 
 private:
-	uint32 PickEntity(Texture* pTexture);
+	bool HasInitiated();
+	
 	Engine();
 	~Engine();
 	static Engine* myInstance;
 	static graphics::IGraphicsAPI* m_API;
-	memory::MemorySegmentHandle m_SegmentHandle; //
-
-	graphics::eSamplerStates m_CurrentSampler;
-	bool m_VSyncOn = false;
 
 
-	bool HasInitiated();
+	CU::TimeManager myTimeManager;
 
-	bool m_HasPickedEntity = false;
+	Window m_Window;
+
+
 
 	SLocalTime myLocalTime;
 
 	VirtualFileSystem m_VirtualFileSystem;
 	Threadpool m_Threadpool;
-	Window m_Window;
 	EntityManager m_EntityManager;
 
 	InputHandle* m_InputHandle       = nullptr;
@@ -236,7 +209,7 @@ private:
 	
 	PhysicsManager* m_PhysicsManager = nullptr;
 	CFontManager* myFontManager      = nullptr;
-	CU::TimeManager myTimeManager;
+
 	Synchronizer* m_Synchronizer     = nullptr;
 	Renderer* m_Renderer             = nullptr;
 	Camera* m_Camera                 = nullptr;
@@ -250,9 +223,11 @@ private:
 
 	float m_DeltaTime = 0.f;
 
-	bool m_PauseInput : 1;
-	bool m_CameraUseMouse  : 1;
-	bool m_RenderInstanced : 1;
+	bool m_PauseInput : 2;
+	bool m_CameraUseMouse  : 2;
+	bool m_RenderInstanced : 2;
+	bool m_VSyncOn : 2;
+
 
 
 	void* hinstance = nullptr;

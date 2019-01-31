@@ -46,6 +46,7 @@ Engine::Engine()
 	: m_PauseInput(false)
 	, m_CameraUseMouse(false)
 	, m_RenderInstanced(true)
+	, m_VSyncOn(false)
 {
 	DebugRenderer::Create();
 }
@@ -122,8 +123,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	AssetFactory::Create();
 	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
-	m_CurrentSampler = graphics::MSAA_x16;
-
 
 	m_InputHandle = new InputHandle;
 	m_InputHandle->Initiate(m_Window.GetHWND(), instance_handle);
@@ -135,8 +134,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_Synchronizer = new Synchronizer;
 	m_Synchronizer->Initiate();
-
-	//m_SegmentHandle.Initiate();
 
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.1f, 1000.f, 90.f); //these variables should probably be exposed to a settings file
@@ -221,11 +218,6 @@ void Engine::Update()
 	m_Threadpool.Update();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	//static bool render_imgui = true;
-	//if (m_InputHandle->GetInputWrapper()->OnDown(KButton::U))
-	//	render_imgui = !render_imgui;
-
-	//if (render_imgui)
 	debug::DebugHandle::GetInstance()->Update();
 #endif
 
@@ -279,24 +271,6 @@ HashType Engine::LoadModelA(std::string path, std::string effect, bool threaded,
 	return LoadModel<Model>(path, effect, threaded, option);
 }
 
-uint32 Engine::PickEntity(Texture* pTexture)
-{
-	return m_API->PickColor(pTexture).color;
-}
-
-void Engine::PickEntity()
-{
-	m_HasPickedEntity = true;
-}
-
-void Engine::AddRenderCommand(const ModelCommand& command)
-{
-	//const u16 current_buffer = m_Synchronizer->GetCurrentBufferIndex();
-	//memory::CommandAllocator& allocator = m_SegmentHandle.GetCommandAllocator(current_buffer ^ 1, 0);
-	//void * current = allocator.Alloc(sizeof(ModelCommand));
-	//memcpy(current, &command, sizeof(ModelCommand));
-}
-
 AssetsContainer* Engine::GetAssetsContainer()
 {
 	return myAssetsContainer;
@@ -320,31 +294,6 @@ const WindowSize& Engine::GetInnerSize() const
 CFont* Engine::LoadFont(const int8* filepath, uint16 aFontWidth, uint16 aBorderWidth)
 {
 	return myFontManager->LoadFont(filepath, aFontWidth, aBorderWidth);
-}
-
-float Engine::GetDeltaTime()
-{
-	return m_DeltaTime;
-}
-
-float& Engine::GetDeltaTimeRef()
-{
-	return m_DeltaTime;
-}
-
-float Engine::GetTotalTime()
-{
-	return myTimeManager.GetMasterTimer().GetTotalTime().GetSeconds();
-}
-
-float Engine::GetFPS()
-{
-	return myTimeManager.GetFPS();
-}
-
-float Engine::GetFrameTime()
-{
-	return myTimeManager.GetFrameTime();
 }
 
 VirtualFileSystem& Engine::GetVFS()
@@ -394,6 +343,8 @@ Effect* Engine::GetEffect(const char* key)
 }
 
 
+
+
 CompiledShader* Engine::GetShader(const char* key)
 {
 	return GetShader(cl::Hash(key));
@@ -434,25 +385,6 @@ std::string string_together(uint16 time, uint16 to_compare)
 	return to_return;
 }
 
-std::string Engine::GetLocalTimeAsString()
-{
-	GetLocalTime();
-	std::string return_value = "Local Time : ";
-	return_value += string_together(myLocalTime.hour, 10) + ":";
-	return_value += string_together(myLocalTime.minute, 10) + ":";
-	return_value += string_together(myLocalTime.second, 10);
-	return return_value;
-}
-
-void Engine::ResetRenderTargetAndDepth()
-{
-	//GetAPI()->ResetRenderTargetAndDepth();
-}
-
-void Engine::ToggleVsync()
-{
-	//m_States[(u16)eEngineStates::USE_VSYNC] = !m_States[(u16)eEngineStates::USE_VSYNC];
-}
 
 void Engine::OnAltEnter()
 {

@@ -197,16 +197,16 @@ void Game::Update(float dt)
 
 void Game::OldUpdate(float dt)
 {
-	m_FrameCount++;
-	m_AverageFPS += m_Engine->GetFPS();
-	m_Time -= dt;
-	if (m_Time <= 0.f)
-	{
-		m_FPSToPrint = uint32(m_AverageFPS / m_FrameCount);
-		m_FrameCount = 0;
-		m_AverageFPS = 0.f;
-		m_Time = 1.f;
-	}
+	//m_FrameCount++;
+	//m_AverageFPS += m_Engine->GetFPS();
+	//m_Time -= dt;
+	//if (m_Time <= 0.f)
+	//{
+	//	m_FPSToPrint = uint32(m_AverageFPS / m_FrameCount);
+	//	m_FrameCount = 0;
+	//	m_AverageFPS = 0.f;
+	//	m_Time = 1.f;
+	//}
 	Input::InputManager* input = Engine::GetInstance()->GetInputManager();
 	//InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	//EventManager* pEventHandle = EventManager::GetInstance();

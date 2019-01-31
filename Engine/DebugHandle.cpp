@@ -723,8 +723,8 @@ namespace debug
 
 		if (ImGui::BeginChildFrame(1, ImVec2(ImGui::GetWindowWidth() - 10, 0), 0))
 		{
-			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
-			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
+			//ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
+			//ImGui::Text("FPS : %.1f", pEngine->GetFPS());
 			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage()); /* does not show individual cores */
 			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
 			ImGui::Separator();

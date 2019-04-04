@@ -467,6 +467,7 @@
     <ClInclude Include="RenderNodeTerrain.h" />
     <ClInclude Include="ModelExporter.h" />
     <ClInclude Include="ModelImporterFlags.h" />
+    <ClInclude Include="RenderNodeShadows.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -777,5 +778,6 @@
     <ClCompile Include="RenderNodeTerrain.cpp" />
     <ClCompile Include="ModelExporter.cpp" />
     <ClCompile Include="engine_shared.cpp" />
+    <ClCompile Include="RenderNodeShadows.cpp" />
   </ItemGroup>
 </Project>

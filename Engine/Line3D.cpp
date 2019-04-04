@@ -52,6 +52,15 @@ void Line3D::AddLine(LinePoint points[2])
 	m_Vertices.Add(points[1]);
 }
 
+void Line3D::AddLine(LinePoint first, LinePoint second)
+{
+	if (m_Vertices.Size() >= (m_LineAmount * 2))
+		return;
+
+	m_Vertices.Add(first);
+	m_Vertices.Add(second);
+}
+
 void Line3D::CreateBuffer()
 {
 	graphics::InputElementDesc layout[] = {

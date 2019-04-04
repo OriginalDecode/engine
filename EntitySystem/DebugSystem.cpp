@@ -136,19 +136,6 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position += right * component.m_MaxPoint.x;
 	p8.position += up * component.m_MaxPoint.y;
 	p8.position += forward * component.m_MaxPoint.z;
-	
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p2), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p2, p3), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p3, p4), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p4, p1), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p5), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p5, p6), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p6, p8), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p8, p7), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p7, p5), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p6, p4), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p7, p2), false));
-	m_Synchronizer->AddRenderCommand(LineCommand(Line(p8, p3), false));
 }
 
 #endif

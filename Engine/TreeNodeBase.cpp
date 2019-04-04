@@ -278,18 +278,18 @@ void TreeNodeBase::RenderBox()
 	points[7].position = points[6].position;
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[3], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[7], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[3], points[5], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[5], points[7], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[4], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[4], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[3], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[7], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[3], points[5], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[5], points[7], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[4], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[4], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
 }
 
 int32 TreeNodeBase::GetMemoryBlockIndex()

@@ -174,18 +174,18 @@ void Frustum::DrawFrustum()
 
 	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
 
-	sync->AddRenderCommand(LineCommand(p1, p2, true));
-	sync->AddRenderCommand(LineCommand(p2, p3, true));
-	sync->AddRenderCommand(LineCommand(p3, p4, true));
-	sync->AddRenderCommand(LineCommand(p4, p1, true));
-	sync->AddRenderCommand(LineCommand(p1, p5, true));
-	sync->AddRenderCommand(LineCommand(p5, p6, true));
-	sync->AddRenderCommand(LineCommand(p6, p8, true));
-	sync->AddRenderCommand(LineCommand(p8, p7, true));
-	sync->AddRenderCommand(LineCommand(p7, p5, true));
-	sync->AddRenderCommand(LineCommand(p6, p4, true));
-	sync->AddRenderCommand(LineCommand(p7, p2, true));
-	sync->AddRenderCommand(LineCommand(p8, p3, true));
+	//sync->AddRenderCommand(LineCommand(p1, p2, true));
+	//sync->AddRenderCommand(LineCommand(p2, p3, true));
+	//sync->AddRenderCommand(LineCommand(p3, p4, true));
+	//sync->AddRenderCommand(LineCommand(p4, p1, true));
+	//sync->AddRenderCommand(LineCommand(p1, p5, true));
+	//sync->AddRenderCommand(LineCommand(p5, p6, true));
+	//sync->AddRenderCommand(LineCommand(p6, p8, true));
+	//sync->AddRenderCommand(LineCommand(p8, p7, true));
+	//sync->AddRenderCommand(LineCommand(p7, p5, true));
+	//sync->AddRenderCommand(LineCommand(p6, p4, true));
+	//sync->AddRenderCommand(LineCommand(p7, p2, true));
+	//sync->AddRenderCommand(LineCommand(p8, p3, true));
 
 	p1.color = CU::Vector4f(0, 1, 1, 1);
 	p2.color = p1.color;
@@ -229,7 +229,7 @@ void Frustum::DrawFrustum()
 
 
 
-	sync->AddRenderCommand(LineCommand(p1, p2, true));
+	/*sync->AddRenderCommand(LineCommand(p1, p2, true));
 	sync->AddRenderCommand(LineCommand(p2, p3, true));
 	sync->AddRenderCommand(LineCommand(p3, p4, true));
 	sync->AddRenderCommand(LineCommand(p4, p1, true));
@@ -240,7 +240,7 @@ void Frustum::DrawFrustum()
 	sync->AddRenderCommand(LineCommand(p7, p5, true));
 	sync->AddRenderCommand(LineCommand(p6, p4, true));
 	sync->AddRenderCommand(LineCommand(p7, p2, true));
-	sync->AddRenderCommand(LineCommand(p8, p3, true));
+	sync->AddRenderCommand(LineCommand(p8, p3, true));*/
 
 }
 

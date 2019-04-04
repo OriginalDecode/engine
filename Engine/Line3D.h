@@ -25,6 +25,7 @@ public:
 	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	Effect* GetEffect() const { return m_Effect; }
 	void AddLine(LinePoint points[2]);
+	void AddLine(LinePoint first, LinePoint second);
 private:
 	void CreateBuffer();
 	CU::GrowingArray<LinePoint> m_Points;

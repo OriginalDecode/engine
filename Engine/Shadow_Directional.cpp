@@ -105,8 +105,8 @@ void ShadowDirectional::Update()
 	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
 	const CU::Vector4f cam_dir = m_Camera->GetAt();
 
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
+	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
+	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
 
 }
 

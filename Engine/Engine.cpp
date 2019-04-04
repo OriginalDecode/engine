@@ -133,7 +133,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	myFontManager->Initiate();
 
 	m_Synchronizer = new Synchronizer;
-	m_Synchronizer->Initiate();
 
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.1f, 1000.f, 90.f); //these variables should probably be exposed to a settings file

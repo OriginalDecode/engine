@@ -11,7 +11,7 @@ public:
 	static void Destroy();
 	static DebugRenderer* GetInstance() { return m_Instance; }
 
-	void DrawCone(CU::Matrix44f orientation, const CU::Vector4f color, float range, float angle, float sides = 32);
+	void DrawCone(const CU::Matrix44f& orientation, const CU::Vector4f& color, float range, float angle, float sides = 32);
 	void DrawSphere();
 	void DrawLine();
 	void DrawCube();

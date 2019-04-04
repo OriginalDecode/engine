@@ -109,10 +109,13 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	average += HeightTexture.SampleLevel(sampler1, testUV, 0).r * 255;
 
 	average /= 5.0;
-	
-	
-	
 	vertex_pos.y = average;
+
+	const float height = HeightTexture.SampleLevel(sampler1, testUV, 0).r * 128;
+	vertex_pos.y = height;
+	
+	
+	
 
 	// float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);
 

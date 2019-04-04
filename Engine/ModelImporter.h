@@ -789,16 +789,8 @@ void CModelImporter::Read(std::string path, T* pModel)
 		file.read(data, length);
 		file.close();
 
-
-		
-
 		uint32 position = 0;
 		ReadBlock(data, position, pModel);
-
-
-
-
-
 
 		delete data;
 		data = nullptr;

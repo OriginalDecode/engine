@@ -45,10 +45,8 @@ void DebugRenderer::Destroy()
 	m_Instance = nullptr;
 }
 
-void DebugRenderer::DrawCone(CU::Matrix44f orientation, const CU::Vector4f color, float range, float angle, float sides)
+void DebugRenderer::DrawCone(const CU::Matrix44f& orientation, const CU::Vector4f& color, float range, float angle, float sides)
 {
-	//Should probably cache the cones and then just scale?
-
 	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
 	const float theta = tan(angle);
 	const float halfwidth = theta * range;
@@ -68,22 +66,19 @@ void DebugRenderer::DrawCone(CU::Matrix44f orientation, const CU::Vector4f color
 	_180deg.position = { c180 * halfwidth, y_pos, s180 * halfwidth, 1 };
 	_270deg.position = { c270 * halfwidth, y_pos, s270 * halfwidth, 1 };
 
+	CU::Matrix44f matrix = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
 
-	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
+	_0deg.position = _0deg.position		* matrix;
+	_90deg.position = _90deg.position	* matrix;
+	_180deg.position = _180deg.position * matrix;
+	_270deg.position = _270deg.position * matrix;
 
-	_0deg.position = _0deg.position		* orientation;
-	_90deg.position = _90deg.position	* orientation;
-	_180deg.position = _180deg.position * orientation;
-	_270deg.position = _270deg.position * orientation;
+	Renderer* renderer = Engine::GetInstance()->GetRenderer();
 
-
-
-	//render commands are no longer used!
-	sync->AddRenderCommand(LineCommand(origo, _0deg, true));
-	sync->AddRenderCommand(LineCommand(origo, _90deg, true));
-	sync->AddRenderCommand(LineCommand(origo, _180deg, true));
-	sync->AddRenderCommand(LineCommand(origo, _270deg, true)); 
-
+	renderer->m_Line->AddLine(origo, _0deg);
+	renderer->m_Line->AddLine(origo, _90deg);
+	renderer->m_Line->AddLine(origo, _180deg);
+	renderer->m_Line->AddLine(origo, _270deg);
 
 	//Draw circle at the base of cone
 	for (int i = 0; i < _360Degrees; i += max)
@@ -99,8 +94,7 @@ void DebugRenderer::DrawCone(CU::Matrix44f orientation, const CU::Vector4f color
 
 		p0.position = p0.position * orientation;
 		p1.position = p1.position * orientation;
-
-		sync->AddRenderCommand(LineCommand(p0, p1, true));
+		renderer->m_Line->AddLine(p0, p1);
 	}
 }
 

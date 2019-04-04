@@ -30,6 +30,7 @@ namespace graphics
 
 	RenderNodeGeneral::~RenderNodeGeneral()
 	{
+
 	}
 
 	void RenderNodeGeneral::Draw(const RenderContext& rc)

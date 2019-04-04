@@ -7,7 +7,6 @@
 
 namespace graphics
 {
-	uint64 RenderNodeVegetation::Type = cl::Hash(STRINGIFY(RenderNodeVegetation));
 	RenderNodeVegetation::RenderNodeVegetation()
 	{
 

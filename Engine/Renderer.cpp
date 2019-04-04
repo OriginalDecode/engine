@@ -293,7 +293,7 @@ graphics::IRenderNode* Renderer::GetNode(uint64 type)
 {
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
-		if (node->GetType() == type)
+		if (node->GetNodeType() == type)
 		{
 			return node;
 		}

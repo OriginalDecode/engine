@@ -8,7 +8,6 @@
 
 namespace graphics
 {
-	uint64 RenderNodeGeneral::Type = cl::Hash(STRINGIFY(RenderNodeGeneral));
 	RenderNodeGeneral::RenderNodeGeneral()
 	{
 		Engine* engine = Engine::GetInstance();

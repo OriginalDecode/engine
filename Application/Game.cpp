@@ -74,8 +74,8 @@ void Game::Initiate(const std::string& level)
 	// CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 
 
-	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
-	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::Type);
+	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::GetType());
+	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::GetType());
 
 	HashType hash = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
 	int tree_count = cl::Rand(128, 128, 0);

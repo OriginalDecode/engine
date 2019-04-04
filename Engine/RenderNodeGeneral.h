@@ -8,6 +8,7 @@ namespace graphics
 	class RenderNodeGeneral : public IRenderNode
 	{
 	public:
+		DECLARE_RENDER_NODE(RenderNodeGeneral);
 		RenderNodeGeneral();
 		~RenderNodeGeneral();
 
@@ -15,8 +16,6 @@ namespace graphics
 		void Reload(CompiledShader* shader) override;
 		void AddInstance(const ModelInstance instance) override;
 
-		static uint64 Type;
-		uint64 GetType() const { return Type; }
 	private:
 		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
 		CompiledShader* m_DepthShader = nullptr;

@@ -4,7 +4,7 @@
 #include <engine/ShaderFactory.h>
 #include "ModelInstance.h"
 
-#define DECLARE_RENDER_NODE(_class) uint64 GetType() { static uint64 Type = cl::Hash(#_class); return Type; }
+#define DECLARE_RENDER_NODE(_class) static uint64 GetType() { static uint64 Type = cl::Hash(#_class); return Type; } uint64 GetNodeType() const override { return GetType(); }
 
 namespace graphics
 {
@@ -23,7 +23,7 @@ namespace graphics
 
 		virtual void AddInstance(const ModelInstance instance) = 0;
 
-		virtual uint64 GetType() const = 0;
+		virtual uint64 GetNodeType() const = 0;
 	};
 		
 

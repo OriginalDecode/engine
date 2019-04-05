@@ -35,6 +35,10 @@
 #endif
 #include "ModelExporter.h"
 #include "shader_types.h"
+
+#include <CommonLib/File.h>
+
+
 class Engine;
 class aiNode;
 class aiMesh;
@@ -709,7 +713,7 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	const int32 ins_BufferCount = 1;
 	const int32 ins_Start = 0;
 	const int32 ins_ByteOffset = 0;
-	const int32 ins_InstanceCount = 300;
+	const int32 ins_InstanceCount = 500;
 	const int32 ins_IndicesPerInstance = data.myIndexCount;
 
 	/*
@@ -772,29 +776,9 @@ template <typename T>
 void CModelImporter::Read(std::string path, T* pModel)
 {
 	pModel->m_FileName = path;
-	FILE* hFile = fopen(path.c_str(), "rb");
-	assert(hFile && "failed to open file!");
-
-	size_t pos = 5;
-
-	if (hFile != nullptr)
-	{
-		std::ifstream file(path.c_str(), std::ios::binary);
-
-		file.seekg(0, file.end);
-		size_t length = file.tellg();
-		file.seekg(0, file.beg);
-
-		char* data = new char[length];
-		file.read(data, length);
-		file.close();
-
-		uint32 position = 0;
-		ReadBlock(data, position, pModel);
-
-		delete data;
-		data = nullptr;
-	}
+	Core::File file(path.c_str());
+	uint32 position = 0;
+	ReadBlock(file.GetBuffer(), position, pModel);
 }
 
 template <typename T>
@@ -942,36 +926,3 @@ void CModelImporter::ReadData(const char* data, uint32& position, T& out)
 	memcpy(&out, &data[position], sizeof(T));
 	position += sizeof(T);
 }
-
-/*
-
-	break out the current ModelImporter code to it's own class (again) and write a wrapper that will work for all the things.
-	
-	It should realistically just be one call.
-
-	CModelImporter importer;
-	importer.Load("modelpathhere");
-
-	void CModelImporter::Load(const char* path)
-	{
-		EType type = CheckEXT(path);
-
-		ModelData data;
-		switch(type)
-		{
-			case type_1:
-				LoadType1(path, data);
-			break;
-			case type_2:
-				LoadType2(path, data);
-				break;
-			case type_n:
-				LoadTypeN(path, data);
-			break;
-			default: assert(0);
-				break;
-			
-		}
-	}
-
-*/

@@ -10,6 +10,12 @@ class Surface;
     Export models to support the correct formatting we use in the engine.
     This should preferably be converted into a tool that can be used for Blender 2.7+ and Autodesk Maya / Autodesk Maya LT
 */
+
+namespace Core
+{
+	class File;
+}
+
 class ModelExporter
 {
 public:
@@ -20,12 +26,20 @@ public:
 
 private:
 
-	void WriteBlock(Model* const pModel, FILE* pOut);
-	void WriteSurface(Surface* const pSurface, FILE* pOut);
+	void WriteBlock(Model* const pModel, Core::File* pOut);
+	void WriteSurface(Surface* const pSurface, Core::File* pOut);
 	void WriteVertices(float* const pVertices, int vertex_count, FILE* pOut);
 	void WriteIndices(int* const pIndices, int indices_count, FILE* pOut);
 
+	struct LPMFHeader
+	{
+		const char* fileExt{ nullptr };
+		bool hasVertices = false;
+		bool hasNormals = false;
+		bool hasBiNormals = false;
+		bool hasTangents = false;
 
+	};
 };
 
 

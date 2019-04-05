@@ -172,6 +172,7 @@
     <ClInclude Include="EventManager\Messages\OnLeftClick.h">
       <Filter>Event\Messages</Filter>
     </ClInclude>
+    <ClInclude Include="File.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
@@ -216,6 +217,7 @@
     <ClCompile Include="EventManager\Subscriber.cpp">
       <Filter>Event</Filter>
     </ClCompile>
+    <ClCompile Include="File.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

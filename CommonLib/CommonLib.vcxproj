@@ -38,6 +38,7 @@
     <ClInclude Include="EventManager\Messages\Message.h" />
     <ClInclude Include="EventManager\Messages\OnLeftClick.h" />
     <ClInclude Include="EventManager\Subscriber.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="JSON\JSONReader.h" />
     <ClInclude Include="Math\Line\Line.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
     <ClCompile Include="EventManager\EventManager.cpp" />
     <ClCompile Include="EventManager\Subscriber.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />

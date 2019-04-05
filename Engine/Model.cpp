@@ -33,7 +33,7 @@ void Model::Initiate(const std::string& filename)
 {
 	if (m_IsRoot)
 	{
-		const int32 max_instance_count = 300;
+		const int32 max_instance_count = 2048; 
 
 		graphics::BufferDesc desc;
 		desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
@@ -44,7 +44,7 @@ void Model::Initiate(const std::string& filename)
 	}
 
 
-	m_GPUData.Init(250);
+	m_GPUData.Init(2048);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
 

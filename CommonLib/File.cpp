@@ -1,44 +1,78 @@
 #include "File.h"
 #include <cstdio>
 #include <cassert>
+#include <memory>
 namespace Core
 {
 	File::File(const char* filepath, FileMode mode, int offset)
 	{
-
-		char* fileMode = { 0 };
-		if (mode == FileMode::READ_FILE)
-			fileMode = "rb";
-		else if (mode == FileMode::WRITE_FILE)
-			fileMode = "wb";
-
-		if (m_FileHandle = fopen(filepath, fileMode))
-		{
-			fseek(m_FileHandle, 0, SEEK_END);
-			m_FileSize = ftell(m_FileHandle);
-			rewind(m_FileHandle);
-
-			m_Buffer = new char[m_FileSize];
-
-			fread(m_Buffer, 1, m_FileSize, m_FileHandle);
-		}
-		else
-		{
-			assert(!"Failed to open file!");
-		}
-
+		Open(filepath, mode, offset);
 	}
 
 	File::~File()
 	{
-		fclose(m_FileHandle);
+		if (m_Mode == FileMode::WRITE_FILE)
+		{
+			if (FILE* hFile = fopen(m_Filepath, "wb"))
+			{
+				fwrite(m_Buffer, 1, m_FileSize, hFile);
+				fclose(hFile);
+			}
+		}
+		
 		delete m_Buffer;
 		m_Buffer = nullptr;
 	}
 
-	void File::Write(const void* data, int element_size, int length)
+	void File::Open(const char* filepath, FileMode mode, int offset /*= 0*/)
 	{
-		fwrite(data, element_size, length, m_FileHandle);
+		m_Mode = mode;
+		m_Filepath = filepath;
+		if (m_Mode == FileMode::READ_FILE)
+			OpenForRead();
+		else if (m_Mode == FileMode::WRITE_FILE)
+			OpenForWrite();
+		else
+			assert(!"Failed to open file!");
+	}
+
+	void File::Write(const void* data, int element_size, int nof_elements)
+	{
+		if (m_FileSize + (element_size * nof_elements) > m_AllocatedSize)
+		{
+			char* buffer = new char[m_AllocatedSize * 2];
+			memcpy(&buffer[0], &m_Buffer[0], m_FileSize);
+			m_AllocatedSize *= 2;
+			delete m_Buffer;
+			m_Buffer = nullptr;
+			m_Buffer = buffer;
+		}
+
+		memcpy(&m_Buffer[m_FileSize], data, (element_size * nof_elements));
+		m_FileSize += element_size * nof_elements;
+
+	}
+
+	void File::OpenForWrite()
+	{
+		constexpr int allocSize = 1024;
+		m_Buffer = new char[allocSize];
+		m_AllocatedSize = allocSize;
+	}
+
+	void File::OpenForRead()
+	{
+		if (FILE* hFile = fopen(m_Filepath, "rb"))
+		{
+			fseek(hFile, 0, SEEK_END);
+			m_FileSize = ftell(hFile);
+			rewind(hFile);
+
+			m_Buffer = new char[m_FileSize];
+
+			fread(m_Buffer, 1, m_FileSize, hFile);
+			fclose(hFile);
+		}
 	}
 
 };

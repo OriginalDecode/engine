@@ -45,8 +45,3 @@ private:
 
 	CU::GrowingArray<ResourceBinding> m_Resources;
 };
-
-const int n = sizeof(Material::ResourceBinding) *16;
-const int x = (sizeof(Material) + n) * 96;
-
-

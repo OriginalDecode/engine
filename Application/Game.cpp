@@ -77,7 +77,9 @@ void Game::Initiate(const std::string& level)
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::GetType());
 	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::GetType());
 
-	HashType hash = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
+	m_Engine->LoadModelA("Data/Model/trees/Japanese Maple/LowPoly/Japanese_Maple_LowPoly.fbx", "Shaders/debug_pbl_instanced.json", false);
+
+	HashType hash = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.EMF", "Shaders/debug_pbl_instanced.json", false);
 	int tree_count = cl::Rand(2048, 2048, 0);
 	for (int i = 0; i < tree_count; ++i)
 	{

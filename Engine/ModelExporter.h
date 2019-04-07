@@ -14,32 +14,45 @@ class Surface;
 namespace Core
 {
 	class File;
-}
+};
+
+struct EMFHeader
+{
+	const char fileExt[3]{ 'E', 'M', 'F' };
+	bool hasVertices = true;
+	bool hasNormals = true;
+	bool hasBiNormals = true;
+	bool hasTangents = true;
+	bool hasTexcoord = true;
+};
+
+struct EMFFile
+{
+	~EMFFile();
+	EMFHeader m_Header;
+	Core::File* m_File = nullptr;
+};
+
+
+
 
 class ModelExporter
 {
 public:
-    ModelExporter();
-    ~ModelExporter();
+    ModelExporter() = default;
+    ~ModelExporter() = default;
 
     void Export(Model* const pModel, const char* out);
 
 private:
 
-	void WriteBlock(Model* const pModel, Core::File* pOut);
-	void WriteSurface(Surface* const pSurface, Core::File* pOut);
-	void WriteVertices(float* const pVertices, int vertex_count, FILE* pOut);
-	void WriteIndices(int* const pIndices, int indices_count, FILE* pOut);
 
-	struct LPMFHeader
-	{
-		const char* fileExt{ nullptr };
-		bool hasVertices = false;
-		bool hasNormals = false;
-		bool hasBiNormals = false;
-		bool hasTangents = false;
+	void WriteBlock(Model* const pModel, EMFFile* file);
+	void WriteSurface(Surface* const pSurface, EMFFile* file);
+	void WriteVertices(float* const pVertices, int vertex_count, FILE* file);
+	void WriteIndices(int* const pIndices, int indices_count, FILE* file);
 
-	};
+	
 };
 
 

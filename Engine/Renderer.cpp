@@ -320,7 +320,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, int32 max_resolution, int32 min
 	_device->GetImmediateContext(&_ctx);
 
 	Camera* camera = new Camera;
-	const float far_plane = 100000.f; //configurable parameter?
+	const float far_plane = 100000.f;
 	const float near_plane = 0.1f;
 	const float fov = 90.f;
 	camera->CreatePerspectiveProjection(max_resolution, max_resolution, near_plane, far_plane, fov);

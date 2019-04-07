@@ -213,7 +213,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
 	m_Effect = effect;
 
-	if (filepath.find("LPMF") != filepath.npos)
+	if (filepath.find("EMF") != filepath.npos)
 	{
 		pModel->m_FileName = filepath;
 		Read(filepath, pModel);
@@ -313,7 +313,7 @@ void CModelImporter::FillData(const ModelData& data, T* out, std::string filepat
 	if (filepath.find("cube_100x100") != filepath.npos)
 		return;
 
-	bool custom_format = filepath.find("LPMF") != std::string::npos;
+	bool custom_format = filepath.find("EMF") != std::string::npos;
 	//	return;
 
 	Surface* surface = new Surface(m_Effect);
@@ -778,6 +778,10 @@ void CModelImporter::Read(std::string path, T* pModel)
 	pModel->m_FileName = path;
 	Core::File file(path.c_str());
 	uint32 position = 0;
+	EMFHeader header = {};
+	memcpy(&header, &file.GetBuffer()[0], sizeof(EMFHeader));
+	position += sizeof(EMFHeader);
+
 	ReadBlock(file.GetBuffer(), position, pModel);
 }
 
@@ -785,12 +789,14 @@ template <typename T>
 void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 {
 
+
+
 	ModelData model_data; // = new ModelData;
 
 	uint32 stride = 0;
-	//if (mesh->HasPositions())
+	ModelData::Layout newLayout;
+	//if (header.hasVertices)
 	{
-		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_POS;
 		newLayout.mySize = VERTEX_STRIDE;
 		newLayout.myOffset = 0;
@@ -798,7 +804,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 		stride += VERTEX_STRIDE;
 	}
 
-	//if (mesh->HasNormals())
+	//if (header.hasNormals)
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_NORMAL;
@@ -809,7 +815,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 		stride += NORMAL_STRIDE;
 	}
 
-	//if (mesh->HasTextureCoords(0)) //this is multiple coords 
+	//if (header.hasTexcoord) 
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_UV;
@@ -820,7 +826,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 		stride += UV_STRIDE;
 	}
 
-	//if (mesh->HasTangentsAndBitangents())
+	//if (header.hasBiNormals)
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_BINORMAL;
@@ -829,7 +835,10 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 		model_data.myLayout.Add(newLayout);
 
 		stride += BINORMAL_STRIDE;
+	}
 
+	//if(header.hasTangents)
+	{
 		newLayout.myType = ModelData::VERTEX_TANGENT;
 		newLayout.mySize = TANGENT_STRIDE;
 		newLayout.myOffset = stride * 4;
@@ -853,8 +862,6 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 		model_data.myVertexBuffer = (float*)buffer;
 		position += model_data.m_VertexBufferSize;
 	}
-
-
 
 	ReadData(data, position, model_data.myIndexCount);
 	if (model_data.myIndexCount > 0)

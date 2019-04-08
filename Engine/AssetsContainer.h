@@ -2,7 +2,7 @@
 #include <map>
 #include <unordered_map>
 #include "engine_shared.h"
-#include <DataStructures/GrowingArray.h>
+#include <CommonLib/DataStructures/GrowingArray.h>
 #include <Engine/ModelImporter.h>
 #include <CommonLib/DataStructures/StaticArray.h>
 #include <Engine/DebugHandle.h>
@@ -25,8 +25,16 @@ class AssetsContainer
 	friend debug::DebugHandle;
 #endif
 public:
-	AssetsContainer() = default;
-	~AssetsContainer();
+
+	static AssetsContainer* GetInstance() 
+	{ 
+		static AssetsContainer * instance = nullptr;
+		if (!instance)
+			instance = new AssetsContainer;
+
+		return instance; 
+	}
+
 	void Initiate();
 
 	void Update();
@@ -65,6 +73,10 @@ public:
 
 	ShaderFactory* GetShaderFactory();
 private:
+
+	AssetsContainer() = default;
+	~AssetsContainer();
+
 #ifndef FINAL
 	FileWatcher* m_Watcher = nullptr;
 #endif

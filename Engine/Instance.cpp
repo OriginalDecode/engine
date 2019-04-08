@@ -12,7 +12,7 @@ void CInstance::Initiate(const char* filepath, const std::string& effect, const 
 	switch (aModelType)
 	{
 		case eModelType::STATIC:
-		Engine::GetInstance()->LoadModel<Model>(filepath, effect, true);
+		AssetsContainer::GetInstance()->LoadModel<Model>(filepath, effect, true);
 		break;
 		case eModelType::ANIMATED:
 		DL_ASSERT("Not implemented!");

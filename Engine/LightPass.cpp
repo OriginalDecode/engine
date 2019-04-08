@@ -4,6 +4,8 @@
 #include "SpotLight.h"
 #include <Engine/engine_shared.h>
 #include <Engine/GBuffer.h>
+#include <Engine/IGraphicsDevice.h>
+
 
 namespace graphics_deprecated
 {

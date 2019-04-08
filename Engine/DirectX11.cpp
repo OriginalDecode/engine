@@ -14,7 +14,7 @@
 #include <Engine/DX11Context.h>
 #include <Engine/Viewport.h>
 #include <Input/InputHandle.h>
-
+#include <Engine/Texture.h>
 
 
 namespace graphics

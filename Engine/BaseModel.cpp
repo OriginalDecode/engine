@@ -5,6 +5,7 @@
 #include <easy/profiler.h>
 #endif
 #include <Engine/IGraphicsContext.h>
+#include <Engine/IGraphicsDevice.h>
 
 BaseModel::~BaseModel() = default;
 

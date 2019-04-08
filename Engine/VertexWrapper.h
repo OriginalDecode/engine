@@ -1,8 +1,9 @@
 #pragma once
-#include <Engine/Engine.h>
+#include "Engine.h"
 #include <Engine/engine_shared.h>
 #include <Engine/IGraphicsAPI.h>
 #include <Engine/VertexStructs.h>
+
 class VertexWrapper
 {
 	friend class CModelImporter;
@@ -38,11 +39,14 @@ public:
 
 	void Reset()
 	{
-		Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
-		m_VertexBuffer = nullptr;
-		Engine::GetAPI()->ReleasePtr(m_VertexInputLayout);
-		m_VertexInputLayout = nullptr;
-		SAFE_DELETE(m_Data);
+		if (graphics::IGraphicsAPI* api = Engine::GetAPI())
+		{
+			api->ReleasePtr(m_VertexBuffer);
+			m_VertexBuffer = nullptr;
+			api->ReleasePtr(m_VertexInputLayout);
+			m_VertexInputLayout = nullptr;
+		}
+		delete[] m_Data;
 	}
 
 	void SetData(int8* data) { m_Data = data; }

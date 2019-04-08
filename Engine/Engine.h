@@ -20,7 +20,6 @@
 #include <Engine/DebugHandle.h>
 
 #include <CommonLib/RefPointer.h>
-
 #include <string>
 #include <queue>
 
@@ -39,7 +38,6 @@ struct SLocalTime
 };
 
 class TerrainManager;
-class AssetsContainer;
 class TreeDweller;
 class LevelFactory;
 class Camera;
@@ -106,21 +104,16 @@ public:
 	CompiledShader* GetShader(uint64 key);
 	CompiledShader* GetShader(const char* key);
 
-	template<typename T>
-	RefPointer<T> GetModel(uint64 key);
 	Sprite* GetSprite(uint64 key);
 	Material* GetMaterial(uint64 key);
 
 
 	Texture* GetTexture(const char* key);
 	Effect* GetEffect(const char* key);
-	template<typename T>
-	RefPointer<T> GetModel(const char* key);
+
 	Sprite* GetSprite(const char* key);
 	Material* GetMaterial(const char* key);
 
-	template<typename T>
-	HashType LoadModel(const std::string& filepath, std::string effect, bool thread, int option = 0);
 
 	uint64 LoadTexture(const std::string& path, bool make_mips = false);
 	uint64 LoadEffect(const std::string& path);
@@ -169,16 +162,12 @@ public:
 	bool VSync() const { return m_VSyncOn; }
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
-	HashType LoadModelA(std::string path, std::string effect, bool threaded, int option = 0);
-
-
 	Renderer* GetRenderer() { return m_Renderer; }
 	TerrainManager* GetTerrainManager() { return m_TerrainManager; }
 
 	LevelFactory* GetLevelFactory() { return m_LevelFactory; }
 
 
-	AssetsContainer* GetAssetsContainer();
 	Model* GetModelDirect(uint64 key);
 
 	Input::InputManager* GetInputManager() { return m_InputManager; }
@@ -216,7 +205,6 @@ private:
 	network::NetworkManager* m_NetManager = nullptr;
 
 
-	AssetsContainer* myAssetsContainer = nullptr;
 	TerrainManager* m_TerrainManager   = nullptr;
 	LevelFactory* m_LevelFactory       = nullptr;
 	CSystemMonitor m_SystemMonitor;
@@ -235,20 +223,20 @@ private:
 
 };
 
-template<typename T>
-HashType Engine::LoadModel(const std::string& filepath, std::string effect, bool thread, int option)
-{
-	return myAssetsContainer->LoadModel<T>(filepath, effect, thread, option);
-}
+//template<typename T>
+//HashType Engine::LoadModel(const std::string& filepath, std::string effect, bool thread, int option)
+//{
+//	return myAssetsContainer->LoadModel<T>(filepath, effect, thread, option);
+//}
+//
+//template<typename T>
+//RefPointer<T> Engine::GetModel(uint64 key)
+//{
+//	return myAssetsContainer->GetModel<T>(key);
+//}
 
-template<typename T>
-RefPointer<T> Engine::GetModel(uint64 key)
-{
-	return myAssetsContainer->GetModel<T>(key);
-}
-
-template<typename T>
-RefPointer<T> Engine::GetModel(const char* key)
-{
-	return GetModel<T>(cl::Hash(key));
-}
+//template<typename T>
+//RefPointer<T> Engine::GetModel(const char* key)
+//{
+//	return GetModel<T>(cl::Hash(key));
+//}

@@ -1,6 +1,7 @@
 #pragma once
 #include <Engine/engine_shared.h>
-
+#include <Engine/Engine.h>
+#include <Engine/IGraphicsAPI.h>
 
 class InstanceWrapper
 {
@@ -26,10 +27,13 @@ public:
 
 	void Reset()
 	{
-		Engine::GetAPI()->ReleasePtr(m_InstanceInputLayout);
-		m_InstanceInputLayout = nullptr;
-		Engine::GetAPI()->ReleasePtr(m_InstanceBuffer);
-		m_InstanceBuffer = nullptr;
+		if (graphics::IGraphicsAPI* api = Engine::GetAPI())
+		{
+			api->ReleasePtr(m_InstanceInputLayout);
+			m_InstanceInputLayout = nullptr;
+			api->ReleasePtr(m_InstanceBuffer);
+			m_InstanceBuffer = nullptr;
+		}
 	}
 
 

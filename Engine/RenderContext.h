@@ -20,7 +20,7 @@ namespace graphics
 		{
 		};
 
-		Engine& GetEngine() const { return *m_Engine; }
+		Engine* GetEngine() const { return m_Engine; }
 		IGraphicsAPI& GetAPI() const { return *m_API; }
 		IGraphicsDevice& GetDevice() const { return *m_Device; }
 		IGraphicsContext& GetContext() const { return *m_Context; }

@@ -2,6 +2,7 @@
 #include "ShadowSpotlight.h"
 #include <Utilities.h>
 #include <Engine/Viewport.h>
+#include <Engine/Texture.h>
 
 bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 {

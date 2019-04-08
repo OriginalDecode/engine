@@ -5,6 +5,7 @@
 #include <Engine/IGraphicsContext.h>
 #include <Engine/RenderContext.h>
 #include <Engine/Quad.h>
+#include <Engine/IGraphicsDevice.h>
 
 #ifdef _PROFILE
 #include <Engine/profile_defines.h>
@@ -51,8 +52,8 @@ void SSAOPass::Process(Texture* scene_texture, const graphics::RenderContext& re
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	auto& ctx = render_context.GetContext();
 
-	const CU::Matrix44f& projection = CU::Math::InverseReal(render_context.GetEngine().GetCamera()->GetPerspective());
-	const CU::Matrix44f& view = render_context.GetEngine().GetCamera()->GetOrientation();
+	const CU::Matrix44f& projection = CU::Math::InverseReal(render_context.GetEngine()->GetCamera()->GetPerspective());
+	const CU::Matrix44f& view = render_context.GetEngine()->GetCamera()->GetOrientation();
 
 	m_SSAOStruct.m_Projection = projection;
 	m_SSAOStruct.m_View = view;

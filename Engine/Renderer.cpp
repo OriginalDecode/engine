@@ -94,7 +94,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_Spotlights.Add(new SpotLight);
 
-	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
+	m_RenderContext.GetEngine()->LoadEffect("Data/Shaders/wireframe_terrain.json");
 	m_TerrainSystem = new TerrainSystem;
 
 
@@ -269,7 +269,7 @@ void Renderer::DrawIBL()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
-	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
+	Effect* debug_textures = m_RenderContext.GetEngine()->GetEffect("Shaders/debug_textures.json");
 	const int32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
 	Texture* pTex = debug::DebugHandle::GetInstance()->GetTexture(index);
 	debug_textures->AddShaderResource(pTex, TextureSlot::DIFFUSE);

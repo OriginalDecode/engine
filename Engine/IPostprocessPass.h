@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Engine/Texture.h>
 namespace graphics 
 { 
 	class RenderContext; 

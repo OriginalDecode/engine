@@ -2,7 +2,6 @@
 #include <Engine/Engine.h>
 #include <Engine/Material.h>
 
-
 constexpr char* s_RelativeScale = "relative_scale";
 constexpr char* s_RelativePos = "relative_position";
 constexpr char* s_RelativeRot = "relative_rotation";
@@ -16,7 +15,7 @@ constexpr char* s_Instances = "instances";
 void ModelInstanceCmpt::Deserialize(const rapidjson::Value& json_value, ModelInstanceCmpt& instance)
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
-	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_base, false).m_Hash;
+	//instance.m_ModelID = AssetsContainer::GetInstance()->LoadModel<Model>(instance.m_Filename, s_base, false).m_Hash;
 	instance.m_MaterialFile = json_value[s_MaterialFile].GetString();
 	if (instance.m_MaterialFile.empty())
 	{

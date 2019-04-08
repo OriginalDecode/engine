@@ -3,6 +3,7 @@
 #include <Engine/engine_shared.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsAPI.h>
+#include <Engine/Texture.h>
 
 namespace graphics
 {

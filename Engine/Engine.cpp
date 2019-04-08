@@ -37,6 +37,9 @@
 
 #include <Input/InputManager.h>
 
+#include <Engine/AssetsContainer.h>
+
+
 bool Engine::HasInitiated()
 {
 	return true;
@@ -121,8 +124,12 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 #endif
 
 	AssetFactory::Create();
-	myAssetsContainer = new AssetsContainer;
-	myAssetsContainer->Initiate();
+	//myAssetsContainer = new AssetsContainer;
+	//myAssetsContainer->Initiate();
+
+	AssetsContainer* ac = AssetsContainer::GetInstance();
+	ac->Initiate();
+
 
 	m_InputHandle = new InputHandle;
 	m_InputHandle->Initiate(m_Window.GetHWND(), instance_handle);
@@ -191,7 +198,6 @@ bool Engine::CleanUp()
 	SAFE_DELETE(m_PhysicsManager);
 
 	SAFE_DELETE(m_LevelFactory);
-	SAFE_DELETE(myAssetsContainer);
 	SAFE_DELETE(m_Synchronizer);
 	SAFE_DELETE(m_API);
 	EventManager::Destroy();
@@ -211,7 +217,6 @@ void Engine::Update()
 	m_PhysicsManager->Update();
 
 	myTimeManager.Update();
-	myAssetsContainer->Update();
 
 	m_NetManager->Update();
 	m_Threadpool.Update();
@@ -265,19 +270,9 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 	return nullptr;
 }
 
-HashType Engine::LoadModelA(std::string path, std::string effect, bool threaded, int option)
-{
-	return LoadModel<Model>(path, effect, threaded, option);
-}
-
-AssetsContainer* Engine::GetAssetsContainer()
-{
-	return myAssetsContainer;
-}
-
 Model* Engine::GetModelDirect(uint64 key)
 {
-	return myAssetsContainer->GetModelDirect(key);
+	return AssetsContainer::GetInstance()->GetModelDirect(key);
 }
 
 const WindowSize& Engine::GetWindowSize() const
@@ -302,43 +297,43 @@ VirtualFileSystem& Engine::GetVFS()
 
 Texture* Engine::GetTexture(uint64 key)
 {
-	return myAssetsContainer->GetTexture(key);
+	return AssetsContainer::GetInstance()->GetTexture(key);
 }
 
 Texture* Engine::GetTexture(const char* key)
 {
-	Texture* texture = myAssetsContainer->GetTexture(cl::Hash(key));
+	Texture* texture = AssetsContainer::GetInstance()->GetTexture(cl::Hash(key));
 
 	if (texture)
 		return texture;
 
 
-	uint64 hash = myAssetsContainer->LoadTexture(key);
-	return myAssetsContainer->GetTexture(hash);
+	uint64 hash = AssetsContainer::GetInstance()->LoadTexture(key);
+	return AssetsContainer::GetInstance()->GetTexture(hash);
 }
 
 Material* Engine::GetMaterial(const char* key)
 {
-	uint64 hash = myAssetsContainer->LoadMaterial(key);
-	Material* material = myAssetsContainer->GetMaterial(hash);
+	uint64 hash = AssetsContainer::GetInstance()->LoadMaterial(key);
+	Material* material = AssetsContainer::GetInstance()->GetMaterial(hash);
 	return material;
 }
 
 Effect* Engine::GetEffect(uint64 key)
 {
-	return myAssetsContainer->GetEffect(key);
+	return AssetsContainer::GetInstance()->GetEffect(key);
 }
 
 Effect* Engine::GetEffect(const char* key)
 {
 	std::string file = m_VirtualFileSystem.GetFile(key);
-	Effect* effect = myAssetsContainer->GetEffect(cl::Hash(file.c_str()));
+	Effect* effect = AssetsContainer::GetInstance()->GetEffect(cl::Hash(file.c_str()));
 
 	if (effect)
 		return effect;
 
-	uint64 hash = myAssetsContainer->LoadEffect(file);
-	return myAssetsContainer->GetEffect(hash);
+	uint64 hash = AssetsContainer::GetInstance()->LoadEffect(file);
+	return AssetsContainer::GetInstance()->GetEffect(hash);
 }
 
 
@@ -351,30 +346,30 @@ CompiledShader* Engine::GetShader(const char* key)
 
 CompiledShader* Engine::GetShader(uint64 key)
 {
-	return myAssetsContainer->GetShader(key);
+	return AssetsContainer::GetInstance()->GetShader(key);
 }
 
 Sprite* Engine::GetSprite(uint64 key)
 {
-	return myAssetsContainer->GetSprite(key);
+	return AssetsContainer::GetInstance()->GetSprite(key);
 }
 
 Sprite* Engine::GetSprite(const char* key)
 {
 	uint64 hash = cl::Hash(key);
-	Sprite* sprite = myAssetsContainer->GetSprite(hash);
+	Sprite* sprite = AssetsContainer::GetInstance()->GetSprite(hash);
 
 	if (sprite)
 		return sprite;
 
 
-	myAssetsContainer->LoadEffect(key);
-	return myAssetsContainer->GetSprite(hash);
+	AssetsContainer::GetInstance()->LoadEffect(key);
+	return AssetsContainer::GetInstance()->GetSprite(hash);
 }
 
 Material* Engine::GetMaterial(uint64 key)
 {
-	return myAssetsContainer->GetMaterial(key);
+	return AssetsContainer::GetInstance()->GetMaterial(key);
 }
 
 std::string string_together(uint16 time, uint16 to_compare)
@@ -440,26 +435,26 @@ const SLocalTime& Engine::GetLocalTime()
 
 uint64 Engine::LoadTexture(const std::string& path, bool make_mips)
 {
-	return myAssetsContainer->LoadTexture(m_VirtualFileSystem.GetFile(path), make_mips);
+	return AssetsContainer::GetInstance()->LoadTexture(m_VirtualFileSystem.GetFile(path), make_mips);
 }
 
 uint64 Engine::LoadEffect(const std::string& path)
 {
-	return myAssetsContainer->LoadEffect(m_VirtualFileSystem.GetFile(path));
+	return AssetsContainer::GetInstance()->LoadEffect(m_VirtualFileSystem.GetFile(path));
 }
 
 uint64 Engine::LoadSprite(const std::string& path)
 {
-	return myAssetsContainer->LoadSprite(m_VirtualFileSystem.GetFile(path));
+	return AssetsContainer::GetInstance()->LoadSprite(m_VirtualFileSystem.GetFile(path));
 }
 
 uint64 Engine::LoadShader(const std::string& path, const std::string& entrypoint)
 {
-	return myAssetsContainer->LoadShader(path, entrypoint);
+	return AssetsContainer::GetInstance()->LoadShader(path, entrypoint);
 }
 
 void Engine::AddTexture(Texture* pTexture, uint64 key)
 {
-	myAssetsContainer->AddTexture(pTexture, key);
+	AssetsContainer::GetInstance()->AddTexture(pTexture, key);
 }
 

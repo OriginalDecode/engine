@@ -47,7 +47,7 @@ void HDRPass::Initiate()
 
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
-	std::vector<cl::File> filesInFolder = cl::FindFilesInDirectory("Data/Textures/lut/*.*");
+	std::vector<std::string> filesInFolder = cl::FindFilesInDirectory("Data/Textures/lut/*.*");
 	for (auto file : filesInFolder)
 	{
 		Texture* t = new Texture;
@@ -55,11 +55,11 @@ void HDRPass::Initiate()
 			m_ColorGradingTex = t;
 
 		std::string path("Data/Textures/lut/");
-		path += file.filename;
+		path += file;
 
-		t->Create3DTexture(path.c_str(), 16, 16, 0, file.filename);
+		t->Create3DTexture(path.c_str(), 16, 16, 0, file.c_str());
 #ifdef _DEBUG
-		debug::DebugHandle::GetInstance()->AddLUT(file.filename, t);
+		debug::DebugHandle::GetInstance()->AddLUT(file.c_str(), t);
 #endif
 	}
 

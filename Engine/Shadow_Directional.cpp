@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Shadow_Directional.h"
-#include <Application/CameraHandle.h>
+//#include <Application/CameraHandle.h>
 
 #include <Engine/Effect.h>
 #include <Engine/Engine.h>
@@ -90,15 +90,15 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 void ShadowDirectional::Update()
 {
 	Engine* engine = Engine::GetInstance();
-	Frustum& f = CameraHandle::GetInstance()->GetFrustum();
-	const CU::Vector4f pos = f.GetPosition(); 
+	//Frustum& f = CameraHandle::GetInstance()->GetFrustum();
+	//const CU::Vector4f pos = f.GetPosition(); 
 	CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
-	const CU::Vector3f sun = (cl::AsVector3(pos) + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
+	//const CU::Vector3f sun = (cl::AsVector3(pos) + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
 
-	m_Camera->LookAt(sun, cl::AsVector3(pos), CU::Vector3f(0, 1, 0)); //viewRotation
+	//m_Camera->LookAt(sun, cl::AsVector3(pos), CU::Vector3f(0, 1, 0)); //viewRotation
 
-	m_Camera->SetPosition(sun);
-	m_Camera->UpdateOrthographicProjection(f);
+	//m_Camera->SetPosition(sun);
+	//m_Camera->UpdateOrthographicProjection(f);
 
 	m_Camera->Update();
 

@@ -1,6 +1,7 @@
 #pragma once
+#include <Math/Matrix/Matrix.h>
+
 #include "VertexStructs.h"
-#include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
 #include "engine_shared.h"
 #include "VertexWrapper.h"

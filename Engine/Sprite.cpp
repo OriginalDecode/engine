@@ -2,6 +2,10 @@
 #include "Sprite.h"
 #include "Effect.h"
 #include <Engine/Quad.h>
+#include <Engine/Engine.h>
+#include <Engine/DirectX11.h>
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/Texture.h>
 
 Sprite::~Sprite()
 {

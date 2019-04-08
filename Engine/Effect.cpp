@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Effect.h"
 #include <Engine/IGraphicsContext.h>
+#include <Engine/Texture.h>
 
 Effect::Effect()
 {

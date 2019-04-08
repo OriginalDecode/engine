@@ -3,6 +3,7 @@
 #include "IGraphicsAPI.h"
 #include "engine_shared.h"
 #include <vector>
+#include <unordered_map>
 
 struct IDXGISwapChain;
 struct ID3D11Debug;
@@ -42,7 +43,7 @@ namespace graphics
 		void SaveTextureToDisk(ID3D11ShaderResourceView* texture_resource, const std::wstring& file_name);
 
 		UINT64 GetFrequency() { return m_Frequency.Frequency; }
-		bool Disjointed() { return m_Frequency.Disjoint; }
+		bool Disjointed() { return (bool)m_Frequency.Disjoint; }
 	private:
 
 		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!

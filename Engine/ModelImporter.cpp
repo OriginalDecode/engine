@@ -4,16 +4,6 @@
 
 #include <Engine/Model.h>
 
-
-CModelImporter::CModelImporter()
-	: m_Engine(Engine::GetInstance())
-	, m_Device(&Engine::GetAPI()->GetDevice())
-{
-}
-
-
-
-
 void CModelImporter::AddVertexNormalData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount)
 {
 	ModelData::Layout newLayout;
@@ -122,7 +112,8 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 
 				case aiTextureType_HEIGHT:
 				{
-					DL_ASSERT("No height support!");
+					DL_MESSAGE("Height Support!");
+					//DL_ASSERT("No height support!");
 				}break;
 
 				case aiTextureType_SHININESS:
@@ -132,19 +123,22 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 
 				case aiTextureType_DISPLACEMENT:
 				{
-					DL_ASSERT("No displacement support");
+					//DL_ASSERT("No displacement support");
+					DL_MESSAGE("No displacement support");
 					//newInfo.m_Slot = TextureType::_DISPLACEMENT;
 				}break;
 
 				case aiTextureType_LIGHTMAP:
 				{
-					DL_ASSERT("No lightmap support");
+					//DL_ASSERT("No lightmap support");
+					DL_MESSAGE("No lightmap support");
 					//newInfo.m_Slot =Effect;
 				}break;
 
 				case aiTextureType_UNKNOWN:
 				{
-					DL_ASSERT("Not implemented");
+					//DL_ASSERT("Not implemented");
+					DL_MESSAGE("Not implemented");
 				}break;
 			}
 

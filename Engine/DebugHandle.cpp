@@ -31,6 +31,10 @@
 #include <network/NetworkManager.h>
 #include <CommonLib/Utilities.h>
 #include <Engine/Terrain.h>
+#include <Engine/Texture.h>
+#include <Engine/Model.h>
+#include <Engine/Surface.h>
+#include <Engine/AssetsContainer.h>
 namespace debug
 {
 	const char* TEXTURE_SLOT_NAMES[] = {
@@ -342,7 +346,7 @@ namespace debug
 					PhysicsComponent& phys = em.AddComponent<PhysicsComponent>(m_EditEntity);
 					phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
 
-					Model* pModel = Engine::GetInstance()->GetModel<Model>(cl::Hash("default")).GetData();
+					Model* pModel = AssetsContainer::GetInstance()->GetModel<Model>(cl::Hash("default")).GetData();
 					pModel = pModel->GetChildModels()[0];
 					btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
 					Engine::GetInstance()->GetPhysicsManager()->Add(body);

@@ -9,7 +9,7 @@
 #include <EntitySystem/LightSystem.h>
 #include <EntitySystem/PhysicsSystem.h>
 
-#include "../Application/CameraHandle.h"
+//#include "../Application/CameraHandle.h"
 
 #include "Engine.h"
 #include <EntityManager.h>
@@ -94,36 +94,36 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 	for (TreeDweller* dweller : dweller_list)
 	{
 		Entity e = dweller->GetEntity();
-		CameraHandle* handle = CameraHandle::GetInstance();
-		if (handle)
-		{
-			TranslationComponent& t = GetComponent<TranslationComponent>(e);
-			//GraphicsComponent& c = GetComponent<GraphicsComponent>(e);
-			//DebugComponent& d = GetComponent<DebugComponent>(e);
+		//CameraHandle* handle = CameraHandle::GetInstance();
+		//if (handle)
+		//{
+		//	TranslationComponent& t = GetComponent<TranslationComponent>(e);
+		//	//GraphicsComponent& c = GetComponent<GraphicsComponent>(e);
+		//	//DebugComponent& d = GetComponent<DebugComponent>(e);
 
-			const Frustum& frust = CameraHandle::GetInstance()->GetFrustum();
+		//	//const Frustum& frust = CameraHandle::GetInstance()->GetFrustum();
 
-			//bool visible = false;
+		//	//bool visible = false;
 
-			CU::Vector3f pos = t.GetOrientation().GetPosition();
-
-
-			//visible |= frust.InsideAABB( pos - d.m_MinPoint);
-			//visible |= frust.InsideAABB(pos + d.m_MaxPoint);
-			//CU::Vector4f topLeft = pos + d.m_MaxPoint;
-			//topLeft.x = pos.x - d.m_MinPoint.x;
-			//visible |= frust.InsideAABB(topLeft);
+		//	CU::Vector3f pos = t.GetOrientation().GetPosition();
 
 
-			//CU::Vector4f botRight = pos - d.m_MinPoint;
-			//botRight.x = pos.x + d.m_MaxPoint.x;
-			//visible |= frust.InsideAABB(botRight);
+		//	//visible |= frust.InsideAABB( pos - d.m_MinPoint);
+		//	//visible |= frust.InsideAABB(pos + d.m_MaxPoint);
+		//	//CU::Vector4f topLeft = pos + d.m_MaxPoint;
+		//	//topLeft.x = pos.x - d.m_MinPoint.x;
+		//	//visible |= frust.InsideAABB(topLeft);
 
-			////Would we be able to move this entirely to the GPU?
 
-			m_Components.SetUpdateFlag(e, true);
-			
-		}
+		//	//CU::Vector4f botRight = pos - d.m_MinPoint;
+		//	//botRight.x = pos.x + d.m_MaxPoint.x;
+		//	//visible |= frust.InsideAABB(botRight);
+
+		//	////Would we be able to move this entirely to the GPU?
+
+		//	m_Components.SetUpdateFlag(e, true);
+		//	
+		//}
  	}
 	PROFILE_BLOCK_END;
 

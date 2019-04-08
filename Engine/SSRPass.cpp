@@ -5,6 +5,7 @@
 #include <Engine/IGraphicsContext.h>
 #include <Engine/RenderContext.h>
 #include <Engine/Quad.h>
+#include <Engine/IGraphicsDevice.h>
 
 #ifdef _PROFILE
 #include <Engine/profile_defines.h>
@@ -58,14 +59,14 @@ void SSRPass::Process(Texture* scene, const graphics::RenderContext& rc)
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	auto& ctx = rc.GetContext();
 
-	const CU::Matrix44f& projection = CU::Math::InverseReal(rc.GetEngine().GetCamera()->GetPerspective());
-	const CU::Matrix44f& view = rc.GetEngine().GetCamera()->GetOrientation();
+	const CU::Matrix44f& projection = CU::Math::InverseReal(rc.GetEngine()->GetCamera()->GetPerspective());
+	const CU::Matrix44f& view = rc.GetEngine()->GetCamera()->GetOrientation();
 
 	m_SSRStruct.m_InvProjection = projection;
-	m_SSRStruct.m_Projection = rc.GetEngine().GetCamera()->GetPerspective();
+	m_SSRStruct.m_Projection = rc.GetEngine()->GetCamera()->GetPerspective();
 	m_SSRStruct.m_InvView = view;
 	m_SSRStruct.m_View = CU::Math::Inverse(view);
-	m_SSRStruct.m_CameraPos = rc.GetEngine().GetCamera()->GetPos();
+	m_SSRStruct.m_CameraPos = rc.GetEngine()->GetCamera()->GetPos();
 
 	ctx.ClearRenderTarget(m_Reflection->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, m_Reflection->GetRenderTargetRef(), nullptr);

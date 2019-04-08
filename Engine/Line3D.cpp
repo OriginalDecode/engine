@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Line3D.h"
 #include <DL_Debug.h>
+#include <Engine/IGraphicsDevice.h>
 
 Line3D::Line3D()
 	: m_FirstPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })

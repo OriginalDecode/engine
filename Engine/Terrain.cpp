@@ -2,6 +2,9 @@
 #include "Terrain.h"
 #include "TGA32.h"
 #include <Engine/Effect.h>
+
+#include <Engine/IGraphicsDevice.h>
+
 #define DIVIDE 255.f
 
 bool Terrain::draw_wireframe = false;
@@ -189,7 +192,7 @@ void Terrain::Wireframe(const graphics::RenderContext& rc)
 	rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.SetRasterState(graphics::WIREFRAME);
 
-	ctx.DrawIndexed(this, rc.GetEngine().GetEffect("Data/Shaders/wireframe_terrain.json"));
+	ctx.DrawIndexed(this, rc.GetEngine()->GetEffect("Data/Shaders/wireframe_terrain.json"));
 }
 
 void Terrain::ShadowRender(const graphics::RenderContext& rc)

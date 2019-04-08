@@ -22,13 +22,11 @@
 // Engine
 //----------------------------------------
 
-#include "AssetsContainer.h"
 #include "Camera.h"
 #include "DeferredRenderer.h"
 #include "DirectX11.h"
 #include "Effect.h"
 #include "Engine.h"
-#include "EngineDefines.h"
 #include "EmitterInstance.h"
 #include "FileWatcher.h"
 #include "Font.h"
@@ -36,6 +34,3 @@
 #include "Model.h"
 #include "ShaderFactory.h"
 #include "Text.h"
-#include "Texture.h"
-#include "VertexStructs.h"
-#include "VertexTypes.h"

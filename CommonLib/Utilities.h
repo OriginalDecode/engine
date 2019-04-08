@@ -187,14 +187,8 @@ namespace cl
 
 	GUID StrToGuid(const std::string& str);
 
-
-	struct File
-	{
-		char filename[260];
-	};
-
-
-	std::vector<File> FindFilesInDirectory(const char* directory_path);
+	void GetFolders(std::vector<std::string>& result, const char* path, bool recursive);
+	std::vector<std::string> FindFilesInDirectory(const char* directory_path);
 
 	uint64 Hash(std::string key);
 

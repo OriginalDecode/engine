@@ -132,6 +132,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Timer\;$(SolutionDir)CommonLib\EventManager\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalOptions> /wd "4201"</AdditionalOptions>
     </ClCompile>
     <CustomBuildStep>
       <Message />

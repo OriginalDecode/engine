@@ -7,6 +7,7 @@
 #include <Engine/Quad.h>
 
 #include <Engine/LightModel.h>
+#include <Engine/AssetsContainer.h>
 
 #ifdef _DEBUG
 #include <Engine/DebugRenderer.h>
@@ -15,9 +16,9 @@
 SpotLight::SpotLight()
 {
 	Engine* pEngine = Engine::GetInstance();
-	HashType key = pEngine->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", false);
+	HashType key = AssetsContainer::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", false);
 		
-	m_Model = pEngine->GetModel<Model>(key.m_Hash);
+	m_Model = AssetsContainer::GetInstance()->GetModel<Model>(key.m_Hash);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());
 	model->Initiate("cone.fbx");
 
@@ -126,7 +127,7 @@ void SpotLight::Render(const graphics::RenderContext& render_context)
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//This should be drawn in the entity pass too.
  	render_context.GetContext().SetBlendState(graphics::ALPHA_BLEND);
- 	m_LightQuadBuffer.camera_orientation = render_context.GetEngine().GetCamera()->GetOrientation();
+ 	m_LightQuadBuffer.camera_orientation = render_context.GetEngine()->GetCamera()->GetOrientation();
  	render_context.GetContext().UpdateConstantBuffer(m_QuadBuffer, &m_LightQuadBuffer);
  	render_context.GetContext().VSSetConstantBuffer(2, 1, &m_QuadBuffer);
  	m_LightQuad->Render(true);

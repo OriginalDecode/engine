@@ -26,6 +26,7 @@
 #include <Engine/IGraphicsAPI.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsDevice.h>
+#include <Engine/Texture.h>
 
 constexpr int32 x_offset = 1;
 constexpr int32 y_offset = 1;

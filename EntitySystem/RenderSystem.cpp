@@ -1,7 +1,7 @@
 #include "RenderSystem.h"
 
 #include "GraphicsComponent.h"
-#include "../Engine/Model.h"
+#include <Engine/Model.h>
 #include "TranslationComponent.h"
 #include "LightComponent.h"
 #include "PBLComponent.h"
@@ -12,12 +12,10 @@
 #include "AABBComponent.h"
 #include <Utilities.h>
 
-#include "../Engine/Engine.h"
-
-#include "../Application/CameraHandle.h"
+//#include <Application/CameraHandle.h>
 #include "DebugComponent.h"
 #include <Engine/Engine.h>
-#include "../Engine/profile_defines.h"
+#include <Engine/profile_defines.h>
 #include <Engine.h>
 
 //#define VISIBLE_CHECK
@@ -86,7 +84,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& direction, const CU::Vector4f& pos)
 {
 	CU::Vector4f position = translation + (direction * pos);
-	if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
-		return true;
+	//if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
+		//return true;
 	return true;
 }

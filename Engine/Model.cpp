@@ -9,6 +9,7 @@
 
 #include <Engine/RenderContext.h>
 #include <Engine/IGraphicsContext.h>
+#include <Engine/IGraphicsDevice.h>
 #ifdef _PROFILE
 #include "profile_defines.h"
 #endif
@@ -19,11 +20,13 @@ Model::~Model()
 	if (!m_Surfaces.Empty())
 		m_Surfaces[0]->serialize(m_FileName.c_str());
 
-	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
-	Engine::GetAPI()->ReleasePtr(m_ModelID);
-	Engine::GetAPI()->ReleasePtr(m_IsSelectedBuffer);
-	Engine::GetAPI()->ReleasePtr(m_InstanceBuffer);
-
+	if (graphics::IGraphicsAPI* api = Engine::GetAPI())
+	{
+		api->ReleasePtr(m_ConstantBuffer);
+		api->ReleasePtr(m_ModelID);
+		api->ReleasePtr(m_IsSelectedBuffer);
+		api->ReleasePtr(m_InstanceBuffer);
+	}
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
 

@@ -9,6 +9,7 @@
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
 
+#include <Engine/Texture.h>
 
 DeferredRenderer::DeferredRenderer()
 {

@@ -4,6 +4,7 @@
 
 #include <Engine/DirectX11.h>
 #include <Engine/Engine.h>
+#include <Engine/IGraphicsDevice.h>
 
 
 Atmosphere::~Atmosphere()

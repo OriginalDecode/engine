@@ -2,11 +2,13 @@
 #include "PointLight.h"
 #include "Model.h"
 #include <Engine/Quad.h>
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/AssetsContainer.h>
 PointLight::PointLight()
 {
 	//m_Model = new LightModel;
-	HashType key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", false);
-	m_Model = Engine::GetInstance()->GetModel<Model>(key.m_Hash);
+	HashType key = AssetsContainer::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", false);
+	m_Model = AssetsContainer::GetInstance()->GetModel<Model>(key.m_Hash);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());
 	model->Initiate("cone.fbx");
 
@@ -82,7 +84,7 @@ void PointLight::Render(const CU::Matrix44f&, const CU::Matrix44f&, const graphi
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//This should be drawn in the entity pass too.
 	render_context.GetContext().SetBlendState(graphics::ALPHA_BLEND);
-	m_LightQuadBuffer.camera_orientation = render_context.GetEngine().GetCamera()->GetOrientation();
+	m_LightQuadBuffer.camera_orientation = render_context.GetEngine()->GetCamera()->GetOrientation();
 	render_context.GetContext().UpdateConstantBuffer(m_QuadBuffer, &m_LightQuadBuffer);
 	render_context.GetContext().VSSetConstantBuffer(2, 1, &m_QuadBuffer);
 	m_LightQuad->Render(true);

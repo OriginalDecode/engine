@@ -26,7 +26,8 @@ public:
 
 	void Reset()
 	{
-		Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
+		if (graphics::IGraphicsAPI* api = Engine::GetAPI())
+			Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
 		delete[] m_Data;
 	}
 

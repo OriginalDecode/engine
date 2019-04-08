@@ -43,6 +43,8 @@
 #include "ModelInstance.h"
 #include "RenderNodeGeneral.h"
 #include "Renderer.h"
+#include <Engine/Surface.h>
+#include <Engine/AssetsContainer.h>
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -236,8 +238,8 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
 		c.m_ComponentFlags = debug_flags;
 		c.m_Dweller = pDweller;
-		c.m_MinPoint = CU::Vector4f(engine->GetModel<Model>(cl::Hash("default"))->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
-		c.m_MaxPoint = CU::Vector4f(engine->GetModel<Model>(cl::Hash("default"))->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MinPoint = CU::Vector4f(AssetsContainer::GetInstance()->GetModel<Model>(cl::Hash("default"))->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MaxPoint = CU::Vector4f(AssetsContainer::GetInstance()->GetModel<Model>(cl::Hash("default"))->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
 	}
 #endif
 
@@ -386,7 +388,7 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 	if (is_light && em.HasComponent<GraphicsComponent>(e))
 	{
 		GraphicsComponent& g = em.GetComponent<GraphicsComponent>(e);
-		RefPointer<Model> model = Engine::GetInstance()->GetModel<Model>(g.m_Instances[0].m_Filename.c_str());
+		RefPointer<Model> model = AssetsContainer::GetInstance()->GetModel<Model>(cl::Hash(g.m_Instances[0].m_Filename.c_str()));
 		CU::Vector4f scale = g.m_Instances[0].m_Scale;
 		if (scale.x <= 0.f && scale.y <= 0.f && scale.z <= 0.f)
 		{
@@ -421,7 +423,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, int32 flags)
 	if (!isLight && m_EntityManager->HasComponent<GraphicsComponent>(e))
 	{
 		GraphicsComponent& g = m_EntityManager->GetComponent<GraphicsComponent>(e);
-		RefPointer<Model> model = m_Engine->GetModel<Model>(g.m_Instances[0].m_Filename.c_str());
+		RefPointer<Model> model = AssetsContainer::GetInstance()->GetModel<Model>(cl::Hash(g.m_Instances[0].m_Filename.c_str()));
 		CU::Vector4f scale = g.m_Instances[0].m_Scale;
 		if (scale.x <= 0.f && scale.y <= 0.f && scale.z <= 0.f)
 		{
@@ -479,8 +481,8 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(int32 x_steps, int32
 
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/debug_pbl_instanced.json");
-	uint64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false).m_Hash;
-	Model* model = Engine::GetInstance()->GetModel<Model>(key).GetData();
+	uint64 key = AssetsContainer::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false).m_Hash;
+	Model* model = AssetsContainer::GetInstance()->GetModel<Model>(key).GetData();
 	model->AddSurface(new Surface(e));
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
@@ -709,14 +711,14 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	GraphicsComponent& component = m_EntityManager->GetComponent<GraphicsComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	ModelInstanceCmpt instance;
-	instance.m_ModelID = m_Engine->LoadModelA(
+	instance.m_ModelID = AssetsContainer::GetInstance()->LoadModel<Model>(
 		el["model"].GetString(),
 		"Shaders/debug_pbl_instanced.json",
 		true).m_Hash;
 	instance.m_Filename = el["model"].GetString();
 
-	component.m_MinPos = m_Engine->GetModel<Model>(instance.m_ModelID)->GetMinPoint();
-	component.m_MaxPos = m_Engine->GetModel<Model>(instance.m_ModelID)->GetMaxPoint();
+	component.m_MinPos = AssetsContainer::GetInstance()->GetModel<Model>(instance.m_ModelID)->GetMinPoint();
+	component.m_MaxPos = AssetsContainer::GetInstance()->GetModel<Model>(instance.m_ModelID)->GetMaxPoint();
 
 	CU::Vector3f scale;
 	m_LevelReader.ReadElement(it->value["scale"], scale);

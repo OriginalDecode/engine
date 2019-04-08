@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Material.h"
+#include <Engine/Texture.h>
 
 Material::Material(uint64 key)
 	: m_Key(key)

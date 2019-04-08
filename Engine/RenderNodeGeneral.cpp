@@ -11,7 +11,7 @@ namespace graphics
 	RenderNodeGeneral::RenderNodeGeneral()
 	{
 		Engine* engine = Engine::GetInstance();
-		AssetsContainer* ac = engine->GetAssetsContainer();
+		AssetsContainer* ac = AssetsContainer::GetInstance();
 		const uint64 vtx = ac->LoadShader("deferred_base_instanced.vs", "main");
 		const uint64 fragment = ac->LoadShader("pbl_debug.ps", "main");
 		const uint64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");

@@ -2,6 +2,7 @@
 #include "EdgeDetectionPass.h"
 #include <Engine/Texture.h>
 #include <Engine/Quad.h>
+#include <Engine/IGraphicsDevice.h>
 
 EdgeDetectionPass::EdgeDetectionPass()
 	: IPostprocessPass()

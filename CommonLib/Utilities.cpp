@@ -322,26 +322,52 @@ namespace cl
 		return out;
 	}
 
-	std::vector<File> FindFilesInDirectory(const char* directory_path)
+	void GetFolders(std::vector<std::string>& result, const char* path, bool recursive)
 	{
-		std::vector<File> files;
-#ifdef _WIN32
+		HANDLE hFind;
+		WIN32_FIND_DATA data;
+		std::string folder(path);
+		folder += "\\";
+		std::string mask(folder);
+		mask += "*.*";
 
-		
+		hFind = ::FindFirstFile(mask.c_str(), &data);
+		if (hFind != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				std::string name(folder);
+				name += data.cFileName;
+				if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && !(data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT))
+				{
+					if (strcmp(data.cFileName, ".") != 0 && strcmp(data.cFileName, "..") != 0) //skip these
+					{
+						std::string f(folder);
+						f += data.cFileName;
+						result.push_back(f);
+						if (recursive) //to find all the folders
+							GetFolders(result, name.c_str(), recursive);
+					}
+				}
+			} while (::FindNextFile(hFind, &data));
+		}
+		::FindClose(hFind);
+	}
+
+	std::vector<std::string> FindFilesInDirectory(const char* directory_path)
+	{
+		std::vector<std::string> files;
+#ifdef _WIN32
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = ::FindFirstFile(directory_path, &fd);
 		if (hFind != INVALID_HANDLE_VALUE) {
 			do 
 			{
-				File file;
-				ZeroMemory(&file, 260 * sizeof(char));
-
 				if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
 				{
-					memcpy(&file.filename, fd.cFileName, 260 * sizeof(char));
+					if(strlen(fd.cFileName) > 0)
+						files.push_back(fd.cFileName);
 				}
-				if(strlen(file.filename) > 0)
-					files.push_back(file);
 
 			} while (::FindNextFile(hFind, &fd));
 			::FindClose(hFind);

@@ -3,7 +3,6 @@
 #include "PhysicsDefines.h"
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "RigidBody.h"
-#include <Engine/Engine.h>
 //Had to be included to add to phys world?
 #include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <bullet/btBulletDynamicsCommon.h>

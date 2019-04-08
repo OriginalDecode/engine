@@ -11,6 +11,7 @@
 #include <Engine/VertexWrapper.h>
 #include <Engine/IndexWrapper.h>
 #include <Engine/InstanceWrapper.h>
+#include <Engine/texture.h>
 namespace graphics
 {
 	DX11Context::DX11Context(ID3D11DeviceContext* context)

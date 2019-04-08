@@ -3,6 +3,7 @@
 #include "AssetsContainer.h"
 #include <Randomizer.h>
 #include "VertexStructs.h"
+#include "Texture.h"
 
 CEmitterInstance::~CEmitterInstance()
 {

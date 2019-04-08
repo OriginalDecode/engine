@@ -78,9 +78,9 @@ void Game::Initiate(const std::string& level)
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::GetType());
 	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::GetType());
 
-	//const char* data = "Data/Model/trees/Japanese Maple/LowPoly/Japanese_Maple_LowPoly.fbx";
+	const char* data = "Data/Model/trees/Japanese Maple/LowPoly/Japanese_Maple_LowPoly.fbx";
 	//const char* data = "Data/exported/Japanese_Maple_LowPoly.EMF";
-	const char* data = "Data/exported/cube_100x100.EMF";
+	//const char* data = "Data/exported/cube_100x100.EMF";
 	HashType hash = AssetsContainer::GetInstance()->LoadModel<Model>(data, "Shaders/debug_pbl_instanced.json", false);
 	int tree_count = cl::Rand(2048, 2048, 0);
 	for (int i = 0; i < tree_count; ++i)
@@ -95,8 +95,8 @@ void Game::Initiate(const std::string& level)
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(normalized_x, normalized_z) / 255.f * 128.f;
 
 		CU::Matrix44f orientation;
-		//orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
-		//orientation *= CU::Matrix44f::CreateScaleMatrix({ 0.1f, 0.1f, 0.1f, 1.f });
+		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
+		orientation *= CU::Matrix44f::CreateScaleMatrix({ 0.1f, 0.1f, 0.1f, 1.f });
 		orientation.SetTranslation({ x , y , z  , 1.f });
 
 		ModelInstance instance;

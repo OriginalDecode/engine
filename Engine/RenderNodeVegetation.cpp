@@ -49,7 +49,7 @@ namespace graphics
 			ctx.SetDepthState(graphics::Z_ENABLED, 1);
 		}
 
-		ctx.SetRasterState(graphics::CULL_NONE);
+		ctx.SetRasterState(graphics::CULL_BACK);
 		ctx.SetBlendState(graphics::BLEND_FALSE);
 		ctx.PSSetSamplerState(0, 1, graphics::MSAA_x1);
 		ctx.VSSetSamplerState(0, 1, graphics::MSAA_x1);

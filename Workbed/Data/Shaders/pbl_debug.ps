@@ -103,7 +103,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.m_Metalness = float4(metalness_override.rgb, 1);
 #endif
 
-	output.m_Albedo = float4(1,1,1,1);
+	output.m_Albedo = float4(1,1,1,0);
 
     return output;
 };

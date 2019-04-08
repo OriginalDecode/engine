@@ -8,6 +8,20 @@
 #include "ModelImporter.h"
 #include <CommonLib/File.h>
 
+
+std::ofstream output;
+void _fwrite(const VertexData* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr)
+{
+	fwrite(pObj, element_size, element_count, fileHandle);
+#ifdef OUTPUT_MODEL_EXPORT
+	if (stream)
+		*stream << *pObj << "\n";
+#endif
+}
+
+const bool old = false;
+
+
 void ModelExporter::Export(Model* const pModel, const char* out)
 {
 #ifdef WIN32
@@ -19,7 +33,7 @@ void ModelExporter::Export(Model* const pModel, const char* out)
 	EMFFile file = {};
 	file.m_File = new Core::File(fillename.c_str(), Core::FileMode::WRITE_FILE);
 
-	file.m_File->Write(&file.m_Header, 1, sizeof(EMFHeader));
+	file.m_File->Write(&file.m_Header, sizeof(EMFHeader), 1);
 
 	WriteBlock(pModel, &file);
 
@@ -30,7 +44,7 @@ void ModelExporter::WriteBlock(Model* const pModel, EMFFile* file)
 	Core::File* fileBuffer = file->m_File;
 
 	const int vtx_count = pModel->GetVertexWrapper().GetVertexCount();
-	fileBuffer->Write(&vtx_count, 1, sizeof(int));
+	fileBuffer->Write(&vtx_count, sizeof(int), 1);
 
 	if (vtx_count > 0)
 	{

@@ -1,6 +1,8 @@
 #pragma once
 #include <atomic>
 #include "Work.h"
+#include <string.h>
+
 namespace std
 {
 	class thread;

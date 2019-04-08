@@ -796,6 +796,8 @@ void CModelImporter::Read(std::string path, T* pModel)
 	Core::File file(path.c_str());
 	uint32 position = 0;
 	EMFHeader header = {};
+
+
 	memcpy(&header, &file.GetBuffer()[0], sizeof(EMFHeader));
 	position += sizeof(EMFHeader);
 
@@ -868,6 +870,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 	model_data.myVertexStride = stride * sizeof(float);
 
 	ReadData(data, position, model_data.myVertexCount);
+
 	if (model_data.myVertexCount > 0)
 	{
 		model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(VertexData);

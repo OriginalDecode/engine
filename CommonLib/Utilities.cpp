@@ -384,7 +384,7 @@ namespace cl
 		std::transform(key.begin(), key.end(), key.begin(), tolower);
 
 		uint64 result;
-		MurmurHash3_x86_32(key.c_str(), key.length(), 0, &result);
+		MurmurHash3_x86_32(key.c_str(), (uint32_t)key.length(), 0, &result);
 		return result;
 
 	}

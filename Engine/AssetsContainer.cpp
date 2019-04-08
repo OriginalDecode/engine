@@ -35,8 +35,8 @@ void AssetsContainer::Initiate()
 	m_Models.empty();
 	m_Sprites.empty();
 
-	HashType mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/deferred_base.json", false);
-	mod_key = LoadModel<Model>("data/exported/cube_100x100.EMF", "Shaders/debug_pbl_instanced.json", false);
+	//HashType mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/deferred_base.json", false);
+	HashType mod_key = LoadModel<Model>("Data/Exported/cube_100x100.EMF", "Shaders/debug_pbl_instanced.json", false);
 	uint64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
 

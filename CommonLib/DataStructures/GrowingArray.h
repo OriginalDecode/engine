@@ -126,7 +126,7 @@ namespace CommonUtilities
 	};
 
 	template<typename ObjectType, typename SizeType>
-	GrowingArray<ObjectType, SizeType>::GrowingArray(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
+	GrowingArray<ObjectType, SizeType>::GrowingArray(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag)
 	{
 		Init(aNrOfRecommendedItems, aUseSafeModeFlag);
 	};
@@ -138,7 +138,7 @@ namespace CommonUtilities
 	};
 
 	template<typename ObjectType, typename SizeType>
-	void GrowingArray<ObjectType, SizeType>::Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
+	void GrowingArray<ObjectType, SizeType>::Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag)
 	{
 		//assert(m_HasInited && "Already initiated!");
 
@@ -151,7 +151,7 @@ namespace CommonUtilities
 	};
 
 	template<typename ObjectType, typename SizeType>
-	void GrowingArray<ObjectType, SizeType>::ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
+	void GrowingArray<ObjectType, SizeType>::ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag)
 	{
 		delete[]myData;
 		m_HasInited = false;

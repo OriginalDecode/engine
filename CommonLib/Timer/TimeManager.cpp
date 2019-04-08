@@ -5,36 +5,6 @@
 
 namespace CommonUtilities
 {
-	//TimeManager* TimeManager::myInstance = nullptr;
-
-	//bool TimeManager::Create()
-	//{
-	//	if (myInstance == nullptr)
-	//	{
-	//		myInstance = new TimeManager();
-	//		return true;
-	//	}
-	//
-	//	return false;
-	//}
-	//
-	//bool TimeManager::Destroy()
-	//{
-	//	if (myInstance == nullptr)
-	//	{
-	//		return false;
-	//	}
-	//
-	//	delete(myInstance);
-	//
-	//	return true;
-	//}
-	//
-	//TimeManager* TimeManager::GetInstance()
-	//{
-	//	return myInstance;
-	//}
-
 	TimeManager::TimeManager()
 	{
 		myMasterTimer.Start();

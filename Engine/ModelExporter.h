@@ -18,7 +18,7 @@ namespace Core
 
 struct EMFHeader
 {
-	const char fileExt[3]{ 'E', 'M', 'F' };
+	const char fileExt[4]{ 'E', 'M', 'F', '\0' };
 	bool hasVertices = true;
 	bool hasNormals = true;
 	bool hasBiNormals = true;

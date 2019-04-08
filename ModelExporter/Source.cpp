@@ -6,6 +6,7 @@
 #include "Engine/Model.h"
 #include "../DL_Debug/DL_Debug.h"
 #include <cstdio>
+#include "CommonLib/Timer/TimeManager.h"
 
 void thread_print(std::string toPrint)
 {
@@ -17,6 +18,10 @@ void thread_print(std::string toPrint)
 
 int main(int argc, const char* argv[])
 {
+
+	CU::Timer timer;
+	timer.Start();
+
 	DL_Debug::Debug::Create();
 	std::vector<std::string> folders;
 	cl::GetFolders(folders, "Data\\Model", true);
@@ -49,29 +54,32 @@ int main(int argc, const char* argv[])
 
 	for (auto& filepath : exportList)
 	{
-
-		CModelImporter importer;
-		Model model;
-		importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL);
-		/*
-				threadpool.AddWork(Work([=]() {
-					std::string str("Starting to load ");
-					str += filepath;
-					thread_print(str);
-					CModelImporter importer;
-					Model model;
-					importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL);
-				}));*/
+		threadpool.AddWork(Work([=]() {
+			std::string str("Starting to load ");
+			str += filepath;
+			thread_print(str);
+			CModelImporter importer;
+			Model model;
+			importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL );
+		}));
 	}
 
-	
 
-	while (threadpool.HasWork()) 
+
+	while (threadpool.HasWork() || !threadpool.CurrentWorkFinished())
 	{
 		threadpool.Update();
 	}
 
-	printf("finished exporting\n");
+
+
+	timer.Update();
+	const float time = timer.GetTotalTime().GetSeconds();
+
+	char t[100];
+	sprintf_s(t, "finished exporting after : %.3fs", time);
+
+	thread_print(t);
 
 	threadpool.CleanUp();
 	DL_Debug::Debug::Destroy();

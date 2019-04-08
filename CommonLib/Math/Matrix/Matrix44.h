@@ -175,7 +175,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::CreateScaleMatrix(const Vector4<TYPE>& scale = Vector4<TYPE>(1, 1, 1, 1))
+		Matrix44<TYPE> Matrix44<TYPE>::CreateScaleMatrix(const Vector4<TYPE>& scale)
 		{
 			Matrix44 to_return;
 			to_return.rows[0] = Vector4<TYPE>(scale.x, 0, 0, 0);
@@ -187,7 +187,7 @@ namespace CommonUtilities
 
 
 		template<typename TYPE>
-		CommonUtilities::Math::Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateScaleMatrix(const float x = 1.f, const float y = 1.f, const float z = 1.f, const float w = 1.f)
+		CommonUtilities::Math::Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateScaleMatrix(const float x, const float y, const float z, const float w)
 		{
 			Matrix44<TYPE> to_return;
 			to_return.rows[0] = Vector4<TYPE>(x, 0, 0, 0);

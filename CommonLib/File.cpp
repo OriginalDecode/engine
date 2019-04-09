@@ -36,7 +36,7 @@ namespace Core
 			assert(!"Failed to open file!");
 	}
 
-	void File::Write(const void* data, int element_size, int nof_elements)
+	void File::Write(const void* data, size_t element_size, size_t nof_elements)
 	{
 		if (m_FileSize + (element_size * nof_elements) > m_AllocatedSize)
 		{

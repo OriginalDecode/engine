@@ -20,7 +20,7 @@ namespace Core
 
 		int GetSize() const { return m_FileSize; }
 		const char* const GetBuffer() const { return m_Buffer; }
-		void Write(const void* data, int element_size, int nof_elements);
+		void Write(const void* data, size_t element_size, size_t nof_elements);
 	private:
 
 		void OpenForWrite();

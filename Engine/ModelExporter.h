@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <fstream>
+#include "ModelImporter.h"
 
 class VertexWrapper;
 class IndexWrapper;
@@ -52,17 +53,38 @@ private:
 	void WriteVertices(float* const pVertices, int vertex_count, FILE* file);
 	void WriteIndices(int* const pIndices, int indices_count, FILE* file);
 
+	void WriteBlock(Model* const pModel, FILE* pFile);
+	void WriteSurface(Surface* const pSurface, FILE* pFile);
+	//std::function<return(params...)>();
+
+	using FFileWrite = std::function<void(const void* data, size_t elementSize, size_t elementCount)>;
+
+	void WriteBlock(Model* const pModel, FFileWrite fnc);
+	void WriteSurface(Surface* const pSurface, FFileWrite fnc);
+
+	FILE* m_FileHandle = nullptr;
+	std::ofstream m_OutStream;
+
+	//void Write(const VertexData* pObj, size_t element_size, size_t element_count);
 	
+	template<typename T>
+	void Write(const T* pObj, size_t element_size, size_t element_count);
+
 };
 
-
 template<typename T>
-void _fwrite(const T* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr, std::string debug = "")
+void ModelExporter::Write(const T* pObj, size_t element_size, size_t element_count)
 {
-	fwrite(pObj, element_size, element_count, fileHandle);
-#ifdef OUTPUT_MODEL_EXPORT
-	if(stream)
-		*stream << debug << *pObj << "\n";
-#endif
+	fwrite(pObj, element_size, element_count, m_FileHandle);
+
+	//if (m_OutStream.is_open())
+	//	m_OutStream << *pObj << "\n";
 }
 
+//template<>
+//void ModelExporter::Write(const VertexData* pObj, size_t element_size, size_t element_count)
+//{
+//	fwrite(pObj, element_size, element_count, m_FileHandle);
+//	if (m_OutStream.is_open())
+//		m_OutStream << *pObj;
+//}

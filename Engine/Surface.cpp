@@ -68,10 +68,15 @@ void Surface::AddTexture(const std::string& file_path, TextureSlot slot)
 		sub += ".dds";
 	}
 */
-
-	Texture* texture = Engine::GetInstance()->GetTexture(sub.c_str());
-	m_Material.AddResource(texture, sub, slot);
-	
+	if (Engine::GetInstance())
+	{
+		Texture* texture = Engine::GetInstance()->GetTexture(sub.c_str());
+		m_Material.AddResourceTex(texture, sub, slot);
+	}
+	else
+	{
+		m_Material.AddResource(nullptr, sub, slot);
+	}
 }
 
 void Surface::AddTexture(IShaderResourceView* texture, const std::string& filepath, TextureSlot slot)
@@ -81,7 +86,7 @@ void Surface::AddTexture(IShaderResourceView* texture, const std::string& filepa
 
 void Surface::AddTexture(Texture* texture, const std::string& filepath, TextureSlot slot)
 {
-	m_Material.AddResource(texture, filepath, slot);
+	m_Material.AddResourceTex(texture, filepath, slot);
 }
 
 void Surface::SetEffect(Effect* anEffect)

@@ -24,7 +24,7 @@ public:
 	Material(uint64 key); // This key should be created when we create the material and never changed unless the version changes, which should happen only when we introduce new data and such.
 	void SetEffect(Effect* effect) { m_Effect = effect; }
 	void AddResource(IShaderResourceView* pResource, const std::string& filename, TextureSlot slot);
-	void AddResource(Texture* pResource, const std::string& filename, TextureSlot slot);
+	void AddResourceTex(Texture* pResource, const std::string& filename, TextureSlot slot);
 
 	uint64 GetKey() const { return m_Key; }
 

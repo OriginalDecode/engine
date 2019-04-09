@@ -16,7 +16,7 @@ void Material::AddResource(IShaderResourceView* pResource, const std::string& fi
 	m_Resources.Add(binding);
 }
 
-void Material::AddResource(Texture* pResource, const std::string& filename, TextureSlot slot)
+void Material::AddResourceTex(Texture* pResource, const std::string& filename, TextureSlot slot)
 {
 	AddResource(pResource->GetShaderView(), filename, slot);
 }

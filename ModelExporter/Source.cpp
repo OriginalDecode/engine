@@ -7,6 +7,7 @@
 #include "../DL_Debug/DL_Debug.h"
 #include <cstdio>
 #include "CommonLib/Timer/TimeManager.h"
+#include "Engine/Engine.h"
 
 void thread_print(std::string toPrint)
 {
@@ -18,52 +19,72 @@ void thread_print(std::string toPrint)
 
 int main(int argc, const char* argv[])
 {
-
 	CU::Timer timer;
 	timer.Start();
 
+	std::string targeted_compile = argv[1];
+	bool isFile = false;
+	if(!targeted_compile.empty())
+		isFile = targeted_compile.rfind(".") != targeted_compile.npos;
+
 	DL_Debug::Debug::Create();
 	std::vector<std::string> folders;
-	cl::GetFolders(folders, "Data\\Model", true);
+
+	if(targeted_compile.empty())
+		cl::GetFolders(folders, "Data\\Model", true);
+	else if(!isFile)
+		cl::GetFolders(folders, targeted_compile.c_str(), true);
+
 
 	std::vector<std::string> exportList;
-
-	for (auto& folder : folders)
+	if (!isFile)
 	{
-		std::string _path(folder);
-		_path += "/*.*";
-		std::vector<std::string> files = cl::FindFilesInDirectory(_path.c_str());
-		for (auto& file : files)
+		for (auto& folder : folders)
 		{
-			if (file.find(".dds") != file.npos)
+			std::string _path(folder);
+			_path += "/*.*";
+			std::vector<std::string> files = cl::FindFilesInDirectory(_path.c_str());
+			for (auto& file : files)
 			{
-				//copy texture to different location
-			}
-			else if (file.find(".fbx") != file.npos)
-			{
-				std::string filepath(folder);
-				filepath += "\\" + file;
-				exportList.push_back(filepath);
+				if (file.find(".dds") != file.npos)
+				{
+					//copy texture to different location
+				}
+				else if (file.find(".fbx") != file.npos)
+				{
+					std::string filepath(folder);
+					filepath += "\\" + file;
+					exportList.push_back(filepath);
+				}
 			}
 		}
 	}
 
-
 	Threadpool threadpool;
 	threadpool.Initiate("exporter");
-
-	for (auto& filepath : exportList)
+	if (isFile)
 	{
-		threadpool.AddWork(Work([=]() {
-			std::string str("Starting to load ");
-			str += filepath;
-			thread_print(str);
+		CModelImporter importer;
+		Model model;
+		importer.LoadModel<Model>(targeted_compile, &model, nullptr, ModelImportUtil::IGNORE_FILL);
+	}
+	else
+	{
+		for (auto& filepath : exportList)
+		{
 			CModelImporter importer;
 			Model model;
-			importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL );
-		}));
+			importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL);
+			/*threadpool.AddWork(Work([=]() {
+				std::string str("Starting to load ");
+				str += filepath;
+				thread_print(str);
+				CModelImporter importer;
+				Model model;
+				importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL );
+			}));*/
+		}
 	}
-
 
 
 	while (threadpool.HasWork() || !threadpool.CurrentWorkFinished())

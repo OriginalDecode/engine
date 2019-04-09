@@ -75,11 +75,12 @@ void DebugRenderer::DrawCone(const CU::Matrix44f& orientation, const CU::Vector4
 
 	Renderer* renderer = Engine::GetInstance()->GetRenderer();
 
+#ifdef _DEBUG
 	renderer->m_Line->AddLine(origo, _0deg);
 	renderer->m_Line->AddLine(origo, _90deg);
 	renderer->m_Line->AddLine(origo, _180deg);
 	renderer->m_Line->AddLine(origo, _270deg);
-
+#endif
 	//Draw circle at the base of cone
 	for (int i = 0; i < _360Degrees; i += max)
 	{
@@ -94,7 +95,10 @@ void DebugRenderer::DrawCone(const CU::Matrix44f& orientation, const CU::Vector4
 
 		p0.position = p0.position * orientation;
 		p1.position = p1.position * orientation;
+
+#ifdef _DEBUG
 		renderer->m_Line->AddLine(p0, p1);
+#endif
 	}
 }
 

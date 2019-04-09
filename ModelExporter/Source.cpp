@@ -17,12 +17,16 @@ void thread_print(std::string toPrint)
 	EndTicketMutex(&mutex);
 }
 
+
+void Export(std::string path);
+
 int main(int argc, const char* argv[])
 {
 	CU::Timer timer;
 	timer.Start();
-
-	std::string targeted_compile = argv[1];
+	std::string targeted_compile;
+	if(argc > 1 )
+		targeted_compile = argv[1];
 	bool isFile = false;
 	if(!targeted_compile.empty())
 		isFile = targeted_compile.rfind(".") != targeted_compile.npos;
@@ -64,25 +68,15 @@ int main(int argc, const char* argv[])
 	threadpool.Initiate("exporter");
 	if (isFile)
 	{
-		CModelImporter importer;
-		Model model;
-		importer.LoadModel<Model>(targeted_compile, &model, nullptr, ModelImportUtil::IGNORE_FILL);
+		Export(targeted_compile);
 	}
 	else
 	{
 		for (auto& filepath : exportList)
 		{
-			CModelImporter importer;
-			Model model;
-			importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL);
-			/*threadpool.AddWork(Work([=]() {
-				std::string str("Starting to load ");
-				str += filepath;
-				thread_print(str);
-				CModelImporter importer;
-				Model model;
-				importer.LoadModel<Model>(filepath, &model, nullptr, ModelImportUtil::IGNORE_FILL );
-			}));*/
+			threadpool.AddWork(Work([=]() {
+				Export(filepath);
+			}));
 		}
 	}
 
@@ -107,4 +101,17 @@ int main(int argc, const char* argv[])
 
 	std::getchar();
 	return 0;
+}
+
+void Export(std::string path)
+{
+	std::string str("Starting to load ");
+	str += path;
+	thread_print(str);
+	ModelExporter exporter;
+	exporter.SetOldFormat(false);
+	CModelImporter importer;
+	importer.Init(&exporter);
+	Model model;
+	importer.LoadModel<Model>(path, &model, nullptr, ModelImportUtil::IGNORE_FILL);
 }

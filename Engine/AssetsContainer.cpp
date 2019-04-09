@@ -36,7 +36,7 @@ void AssetsContainer::Initiate()
 	m_Sprites.empty();
 
 	//HashType mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/deferred_base.json", false);
-	HashType mod_key = LoadModel<Model>("Data/exported/cube_100x100.oemf", "Shaders/debug_pbl_instanced.json", false);
+	HashType mod_key = LoadModel<Model>("Data/exported/sphere.oemf", "Shaders/debug_pbl_instanced.json", false);
 	uint64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
 

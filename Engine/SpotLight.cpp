@@ -16,7 +16,7 @@
 SpotLight::SpotLight()
 {
 	Engine* pEngine = Engine::GetInstance();
-	HashType key = AssetsContainer::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", false);
+	HashType key = AssetsContainer::GetInstance()->LoadModel<LightModel>("Data/exported/cone.oemf", "Shaders/deferred_spotlight.json", false);
 		
 	m_Model = AssetsContainer::GetInstance()->GetModel<Model>(key.m_Hash);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());

@@ -69,6 +69,7 @@ namespace Core
 			rewind(hFile);
 
 			m_Buffer = new char[m_FileSize];
+			memset(m_Buffer,0 , m_FileSize);
 
 			fread(m_Buffer, 1, m_FileSize, hFile);
 			fclose(hFile);

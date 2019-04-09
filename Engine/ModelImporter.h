@@ -103,6 +103,11 @@ public:
 	CModelImporter() = default;
 	~CModelImporter() = default;
 
+	void Init(ModelExporter* exporter)
+	{
+		m_Exporter = exporter;
+	}
+
 	enum ImportOptions
 	{
 		NONE = 0,
@@ -151,7 +156,6 @@ public:
 		CU::Vector3f m_MinPoint;
 		CU::Vector3f m_MaxPoint;
 		std::string m_Filename;
-
 	};
 private:
 
@@ -206,6 +210,7 @@ private:
 
 	void AddUVData(uint32 &stride, ModelData &data, uint32 &size, uint32 polygonVertexCount);
 
+	ModelExporter* m_Exporter = nullptr;
 	std::ofstream fileDebugOutput;
 
 };
@@ -231,7 +236,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 	else if (filepath.find("emf") != filepath.npos)
 	{
 		pModel->m_FileName = filepath;
-		Read(filepath, pModel, false);
+		Read(filepath, pModel, true);
 		pModel->SetIsInstanced(instanced);
 		return;
 	}
@@ -309,8 +314,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 
 	char temp[256];
 	sprintf_s(temp, "data/exported/%s", file.c_str());
-	ModelExporter exporter;
-	exporter.Export(pModel, temp);
+	m_Exporter->Export(pModel, temp);
 
 }
 
@@ -345,13 +349,8 @@ void CModelImporter::FillData(const ModelData& data, T* out, std::string filepat
 	Surface* surface = new Surface(m_Effect);
 	for (auto& tex : data.myTextures)
 	{
-
-		std::string new_path;
-		if (!custom_format)
-			new_path += path;
-
 		if(!tex.m_File.empty())
-			surface->AddTexture(new_path + tex.m_File, tex.m_Slot);
+			surface->AddTexture(path + tex.m_File, tex.m_Slot);
 
 	}
 	out->AddSurface(surface);
@@ -821,6 +820,7 @@ void CModelImporter::Read(std::string path, T* pModel, bool skip_header)
 	if (fileDebugOutput.is_open())
 	{
 		fileDebugOutput << path << "\n";
+		fileDebugOutput.flush();
 	}
 
 
@@ -848,9 +848,9 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 	ModelData model_data; // = new ModelData;
 
 	uint32 stride = 0;
-	ModelData::Layout newLayout;
 	//if (header.hasVertices)
 	{
+		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_POS;
 		newLayout.mySize = VERTEX_STRIDE;
 		newLayout.myOffset = 0;
@@ -893,6 +893,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 
 	//if(header.hasTangents)
 	{
+		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_TANGENT;
 		newLayout.mySize = TANGENT_STRIDE;
 		newLayout.myOffset = stride * 4;
@@ -907,6 +908,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 	ReadData(data, position, model_data.myVertexCount);
 
 	fileDebugOutput << "vertex count : " << model_data.myVertexCount << "\n";
+	fileDebugOutput.flush();
 
 	if (model_data.myVertexCount > 0)
 	{
@@ -921,6 +923,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 
 
 		fileDebugOutput << "vertex data : " << "\n";
+		fileDebugOutput.flush();
 		for (int i = 0; i < model_data.myVertexCount * sizeof(VertexData); i += sizeof(VertexData))
 		{
 			VertexData data;
@@ -928,12 +931,14 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 			memcpy(&data, &buffer[i], sizeof(VertexData));
 
 			fileDebugOutput << data;
+			fileDebugOutput.flush();
 		}
 
 	}
 
 	ReadData(data, position, model_data.myIndexCount);
 	fileDebugOutput << "index count : " << model_data.myIndexCount << "\n";
+	fileDebugOutput.flush();
 	if (model_data.myIndexCount > 0)
 	{
 		model_data.m_IndexBufferSize = model_data.myIndexCount * sizeof(int);
@@ -947,6 +952,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 		position += model_data.m_IndexBufferSize;
 
 		fileDebugOutput << "index data : \n";
+		fileDebugOutput.flush();
 
 		for (int i = 0, s = 0; i < model_data.myIndexCount * sizeof(int); i += sizeof(int), s++)
 		{
@@ -954,11 +960,13 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 			{
 				s = 0;
 				fileDebugOutput << "\n";
+				fileDebugOutput.flush();
 			}
 
 			int data = 0;
 			memcpy(&data, &buffer[i], sizeof(int));
 			fileDebugOutput << data << " ";
+			fileDebugOutput.flush();
 		}
 
 
@@ -967,12 +975,14 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 	int surface_count = 0;
 	ReadData(data, position, surface_count);
 	fileDebugOutput << "\nsurface_count " << surface_count << "\n";
+	fileDebugOutput.flush();
 
 	if (surface_count > 0)
 	{
 		int nof_bindings = 0;
 		ReadData(data, position, nof_bindings);
 		fileDebugOutput << "nof_bindings" << nof_bindings << "\n";
+		fileDebugOutput.flush();
 		for (int i = 0; i < nof_bindings; ++i)
 		{
 
@@ -983,12 +993,17 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 
 			char* resource_name = new char[length + 1];
 			fileDebugOutput << "resourcename-length" << length << "\n";
+			fileDebugOutput.flush();
 
 			ZeroMemory(&resource_name[0], length);
 			resource_name[length] = '\0';
 			memcpy(&resource_name[0], &data[position], sizeof(char) * length);
 			info.m_File = resource_name;
 			fileDebugOutput << "\nresource_name : " << resource_name << "\n";
+			fileDebugOutput.flush();
+
+			delete resource_name;
+			resource_name = nullptr;
 
 			position += sizeof(char) * length;
 
@@ -1000,6 +1015,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 
 			model_data.myTextures.Add(info);
 			fileDebugOutput << "\nslot : " << slot << "\n";
+			fileDebugOutput.flush();
 
 
 		}
@@ -1011,6 +1027,7 @@ void CModelImporter::ReadBlock(const char* data, uint32& position, T* pModel)
 	int child_count = 0;
 	ReadData(data, position, child_count);
 	fileDebugOutput << "child_count" << child_count << "\n";
+	fileDebugOutput.flush();
 	for (int i = 0; i < child_count; ++i)
 	{
 

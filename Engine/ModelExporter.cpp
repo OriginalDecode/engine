@@ -9,7 +9,6 @@
 
 
 
-const bool old = true;
 
 
 void ModelExporter::Export(Model* const pModel, const char* out)
@@ -21,13 +20,13 @@ void ModelExporter::Export(Model* const pModel, const char* out)
 	_export += "-export.txt";
 	m_OutStream.open(_export.c_str());
 	std::string filename(out);
-	if (!old)
+	if (!m_OldFormat)
 	{
 		filename += ".emf";
 
 		EMFFile file = {};
 		file.m_File = new Core::File(filename.c_str(), Core::FileMode::WRITE_FILE);
-		file.m_File->Write(&file.m_Header, sizeof(EMFHeader), 1);
+		//file.m_File->Write(&file.m_Header, sizeof(EMFHeader), 1);
 		WriteBlock(pModel, [&](const void* object, size_t szElem, size_t nofElem) { file.m_File->Write(object, szElem, nofElem); });
 	}
 	else
@@ -118,17 +117,30 @@ void ModelExporter::WriteSurface(Surface* const pSurface, FFileWrite fnc)
 	for (const Material::ResourceBinding& rb : material.m_Resources)
 	{
 		const size_t size = rb.m_ResourceName.length();
-		fnc(&size, sizeof(size_t), 1); //4
-		fnc(rb.m_ResourceName.c_str(), size, 1); //len
+		fnc(&size, sizeof(int), 1); //4
+
+		char* temp = new char[size + 1];
+		temp[size] = '\0';
+		ZeroMemory(temp, size);
+		memcpy(&temp[0], &rb.m_ResourceName.c_str()[0], size);
+		fnc(&temp[0], size, 1); //len
+
+		delete temp;
+		temp = nullptr;
 
 		m_OutStream << "resourcename-length" << size << "\n";
 		m_OutStream << rb.m_ResourceName << "\n";
 
 		const size_t slot = rb.m_Slot;
-		fnc(&slot, sizeof(size_t), 1);
+		fnc(&slot, sizeof(int), 1);
 
 		m_OutStream << "slot : " << slot << "\n";
 	}
+}
+
+void ModelExporter::Write(const void* pObj, size_t element_size, size_t element_count)
+{
+	fwrite(pObj, element_size, element_count, m_FileHandle);
 }
 
 EMFFile::~EMFFile()

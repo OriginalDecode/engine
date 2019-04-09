@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#if !defined(_PROFILE) && !defined(_FINAL)
 #include "DebugHandle.h"
 
 #include <Engine/Texture.h>
@@ -857,7 +856,7 @@ namespace debug
 				{
 					static int index = 0;
 					ListBox("", &index, m_LutLables);
-					Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
+					//Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
 				}
 				ImGui::TreePop();
 			}
@@ -1027,8 +1026,3 @@ namespace debug
 // {
 	
 // }
-
-
-
-#endif
-

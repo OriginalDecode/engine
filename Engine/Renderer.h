@@ -43,10 +43,8 @@ namespace graphics
 
 class Renderer
 {
-#if !defined(_PROFILE) && !defined(_FINAL)
 	friend debug::DebugHandle;
 	friend class DebugRenderer;
-#endif
 public:
 	Renderer(Synchronizer* synchronizer);
 	~Renderer();
@@ -64,7 +62,6 @@ public:
 	int RegisterLight();
 	void SetDirection(const CU::Vector3f& dir) { m_Direction = dir; }
 	CU::Vector3f GetLightDirection() { return m_Direction; }
-	Camera* GetDirectionalCamera() { return m_DirectionalShadow.GetCamera(); }
 
 	void MakeCubemap(CU::Vector3f positon, int32 max_resolution, int32 min_resolution = 16);
 
@@ -120,10 +117,7 @@ private:
 	Line3D*						m_Line					= nullptr;
 
 	CEmitterInstance*			m_ParticleEmitter		= nullptr;
-
-	//How do we handle this?
-	ShadowDirectional			m_DirectionalShadow;
-
+	
 	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 

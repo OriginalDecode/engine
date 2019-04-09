@@ -80,13 +80,11 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 	MSG msg;
 	do
 	{
-#if !defined(_PROFILE) && !defined(_FINAL)
 #ifdef _WIN64
 		ImGui_ImplDX11_NewFrame();
 #elif
 #endif
 		//ImGuizmo::BeginFrame();
-#endif
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -116,15 +114,11 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 	return 0;
 }
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-#endif
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-#if !defined(_PROFILE) && !defined(_FINAL)
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 		return true;
-#endif
 
 	switch (message)
 	{

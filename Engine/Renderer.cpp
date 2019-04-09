@@ -25,11 +25,7 @@
 #include <Engine/DX11Device.h>
 #include <Engine/WaterPlane.h>
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-#include <EntitySystem/TranslationComponent.h>
-#include <EntitySystem/GraphicsComponent.h>
 #include <imgui/imgui_impl_dx11.h>
-#endif
 
 #include <Engine/TerrainSystem.h>
 #include <Engine/Quad.h>
@@ -38,6 +34,7 @@
 #include <Engine/RenderNode.h>
 #include <Engine/RenderNodeVegetation.h>
 #include <Engine/RenderNodeGeneral.h>
+#include <Engine/RenderNodeShadows.h>
 
 #include "shader_types.h"
 
@@ -73,7 +70,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 
 	m_ShadowPass.Initiate(this);
-	m_DirectionalShadow.Initiate(2048.f);
+	//m_DirectionalShadow.Initiate(2048.f);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
@@ -109,6 +106,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
+
+	m_RenderNodes.Add(new graphics::RenderNodeShadows);
 
 	// m_Text->SetText("The quick brown fox jumps over the lazy dog");
 	m_Text->SetText("=>?@ABC");
@@ -151,7 +150,6 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_Text);
 
 	m_ShadowPass.CleanUp();
-	m_DirectionalShadow.CleanUp();
 
 	SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
@@ -231,10 +229,10 @@ void Renderer::Render()
 
 	m_Line->Render(m_RenderContext);
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 
 
 	ImGui::Render();
+#if !defined(_PROFILE) && !defined(_FINAL)
 	if (m_CreateCubemaps)
 	{
 		MakeCubemap({ 512.f, 10.f, 512.f }, 128);
@@ -253,7 +251,7 @@ void Renderer::Render()
 
 void Renderer::DrawIBL()
 {
-	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
+	const CU::Matrix44f shadow_mvp; // = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, EShaderTypeFlag_PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
 

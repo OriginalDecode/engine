@@ -3,9 +3,7 @@
 #include <DDSTextureLoader.h>
 #include <ScreenGrab.h>
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 #include <imgui/imgui_impl_dx11.h>
-#endif
 
 #include <sstream>
 
@@ -38,9 +36,7 @@ namespace graphics
 
 	DirectX11::~DirectX11()
 	{
-#if !defined(_PROFILE) && !defined(_FINAL)
 		ImGui_ImplDX11_Shutdown();
-#endif
 		ReleasePtr(m_FrameQuery);
 		SAFE_DELETE(m_Viewport);
 		for (auto it = m_Adapters.begin(); it != m_Adapters.end(); ++it)
@@ -95,11 +91,9 @@ namespace graphics
 		m_Viewport = CreateViewport((uint16)m_CreateInfo.m_WindowWidth, (uint16)m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 		SetDefaultTargets();
 		m_Context->SetViewport(m_Viewport);
-#if !defined(_PROFILE) && !defined(_FINAL)
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
 		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
-#endif
 
 	}
 

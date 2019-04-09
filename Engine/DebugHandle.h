@@ -1,6 +1,5 @@
 #pragma once
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 #include <CommonLib/DataStructures/GrowingArray.h>
 #include <CommonLib/Math/Matrix/Matrix.h>
 #include <CommonLib/EventManager/Subscriber.h>
@@ -174,4 +173,3 @@ namespace debug
 		~DebugHandle();
 	};
 };
-#endif

@@ -1,6 +1,8 @@
 #pragma once
 #include <Math/Matrix/Matrix44.h>
 #include "engine_shared.h"
+#include <string>
+#include <Engine/BaseModel.h>
 class BaseModel;
 class Material;
 class Surface;
@@ -30,7 +32,8 @@ public:
 
 	uint64 GetMaterialKey() const;
 	void SetMaterialKey(uint64 key);
-
+		
+	const std::string& GetModelName() const { return m_Model->GetFileName(); }
 
 private:
 	uint64 m_Key;

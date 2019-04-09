@@ -18,6 +18,7 @@
 #include <Engine/Renderer.h>
 #include <Engine/RenderNodeGeneral.h>
 #include <Engine/RenderNodeVegetation.h>
+#include <Engine/RenderNodeShadows.h>
 #include <Engine/StateStack.h>
 #include <Engine/Synchronizer.h>
 #include <Engine/TerrainSystem.h>
@@ -76,6 +77,7 @@ void Game::Initiate(const std::string& level)
 
 
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::GetType());
+	graphics::IRenderNode* shadow_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeShadows::GetType());
 	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::GetType());
 
 	//const char* data = "Data/Model/trees/Japanese Maple/LowPoly/Japanese_Maple_LowPoly.fbx";
@@ -109,17 +111,18 @@ void Game::Initiate(const std::string& level)
 		instance.SetMaterialKey(cl::Hash("tree"));
 		instance.SetModel(Engine::GetInstance()->GetModelDirect(hash.m_Lower));
 		vegetation_node->AddInstance(instance);
+		shadow_node->AddInstance(instance);
 
 	}
-	HashType suntemple = AssetsContainer::GetInstance()->LoadModel<Model>("Data/exported/SunTemple.emf", "Shaders/debug_pbl_instanced.json", false);
-	ModelInstance instance;
-	instance.SetMaterialKey(cl::Hash("nothing"));
-	instance.SetModel(Engine::GetInstance()->GetModelDirect(suntemple.m_Lower));
-	pNode->AddInstance(instance);
-
+	//HashType suntemple = AssetsContainer::GetInstance()->LoadModel<Model>("Data/exported/SunTemple.emf", "Shaders/debug_pbl_instanced.json", false);
+	//ModelInstance instance;
+	//instance.SetMaterialKey(cl::Hash("nothing"));
+	//instance.SetModel(Engine::GetInstance()->GetModelDirect(suntemple.m_Lower));
+	//pNode->AddInstance(instance);
+	//shadow_node->AddInstance(instance);
 		
 		
-		m_Picker = new CMousePicker;
+	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(0, 20, 0));

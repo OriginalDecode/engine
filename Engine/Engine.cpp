@@ -23,11 +23,9 @@
 
 #include <Engine/IGraphicsDevice.h>
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 #include <Engine/DebugHandle.h>
 #include <imgui/ImGuizmo.h>
 #include <imgui/imgui.h>
-#endif
 
 #include <Engine/AssetFactory.h>
 #include <network/NetworkManager.h>
@@ -109,17 +107,13 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_InputManager = new Input::InputManager(m_Window.GetHWND(), instance_handle);
 
-#ifdef _DEBUG
 	ImGui::CreateContext();
-#endif
 	m_API = new graphics::DirectX11(create_info);
 	m_API->Initiate();
 
 
 	EventManager::Create();
-#if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Create();
-#endif
 
 	AssetFactory::Create();
 	//myAssetsContainer = new AssetsContainer;
@@ -219,9 +213,7 @@ void Engine::Update()
 	m_NetManager->Update();
 	m_Threadpool.Update();
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::GetInstance()->Update();
-#endif
 
 	m_Camera->Update();
 	m_Renderer->Render();

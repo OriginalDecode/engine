@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderNode.h"
+#include <Engine/Shadow_Directional.h>
 
 
 namespace graphics
@@ -20,8 +21,10 @@ namespace graphics
 
 
 	private:
+		CompiledShader* m_Shaders[2];
 
-		std::vector<ModelInstance> m_Models;
+		std::unordered_map<uint64, std::vector<ModelInstance>> m_Models;
+		ShadowDirectional m_DirectionalShadow;
 
 
 	};

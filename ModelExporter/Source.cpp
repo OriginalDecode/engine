@@ -1,3 +1,5 @@
+#define _MODEL_EXPORTER
+
 #include "CommonLib/Utilities.h"
 #include "CommonLib/Threadpool.h"
 #include "Engine/engine_shared.h"

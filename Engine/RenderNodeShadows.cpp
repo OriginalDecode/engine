@@ -2,38 +2,48 @@
 #include "RenderNodeShadows.h"
 #include "ModelInstance.h"
 #include <Engine/AssetsContainer.h>
+#include "Engine/Shadow_Directional.h"
 
 namespace graphics
 {
 	RenderNodeShadows::RenderNodeShadows()
 	{
-		m_DirectionalShadow.Initiate(2048.f);
-
 		const uint64 vtx = AssetsContainer::GetInstance()->LoadShader("deferred_base_instanced.vs", "main");
 		const uint64 fragment = AssetsContainer::GetInstance()->LoadShader("render_depth.ps", "main");
 		m_Shaders[0] = AssetsContainer::GetInstance()->GetShader(vtx);
 		m_Shaders[1] = AssetsContainer::GetInstance()->GetShader(fragment);
 
+#ifdef _DEBUG
 		m_Shaders[0]->RegisterReload(this);
 		m_Shaders[1]->RegisterReload(this);
-
+#endif
 	}
 
 
 	RenderNodeShadows::~RenderNodeShadows()
 	{
-		m_DirectionalShadow.CleanUp();
+	}
+
+	void RenderNodeShadows::Init(ShadowDirectional* shadowDirectional)
+	{
+		m_DirectionalShadow = shadowDirectional; 
 	}
 
 	void RenderNodeShadows::Draw(const RenderContext& rc)
 	{
 		PROFILE_FUNCTION(profiler::colors::Red);
+	
+		
+		m_DirectionalShadow->SetViewport();
+		m_DirectionalShadow->ClearTexture();
+		m_DirectionalShadow->SetTargets();
+		m_DirectionalShadow->Update();
+		m_DirectionalShadow->GetConstBuffer().Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, rc);
+		
 		auto& ctx = rc.GetContext();
 
 		ctx.SetVertexShader(m_Shaders[0]);
 		ctx.SetPixelShader(m_Shaders[1]);
-
-
 
 		ctx.SetRasterState(graphics::CULL_NONE);
 		ctx.SetBlendState(graphics::BLEND_FALSE);
@@ -77,5 +87,4 @@ namespace graphics
 			it->second.push_back(instance);
 		}
 	}
-
 };

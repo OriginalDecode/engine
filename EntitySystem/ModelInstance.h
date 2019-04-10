@@ -33,7 +33,7 @@ public:
 	uint64 GetMaterialKey() const;
 	void SetMaterialKey(uint64 key);
 		
-	const std::string& GetModelName() const { return m_Model->GetFileName(); }
+	const std::string GetModelName() const { return m_Model->GetFileName(); }
 
 private:
 	uint64 m_Key;

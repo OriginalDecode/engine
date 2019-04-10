@@ -1,8 +1,7 @@
 #pragma once
 #include "RenderNode.h"
-#include <Engine/Shadow_Directional.h>
 
-
+class ShadowDirectional;
 namespace graphics
 {
 	class RenderNodeShadows : public IRenderNode
@@ -13,7 +12,7 @@ namespace graphics
 		RenderNodeShadows();
 		~RenderNodeShadows();
 
-
+		void Init(ShadowDirectional* shadowDirectional);
 
 		void Draw(const RenderContext& rc) override;
 		void Reload(CompiledShader* shader) override;
@@ -24,7 +23,7 @@ namespace graphics
 		CompiledShader* m_Shaders[2];
 
 		std::unordered_map<uint64, std::vector<ModelInstance>> m_Models;
-		ShadowDirectional m_DirectionalShadow;
+		ShadowDirectional* m_DirectionalShadow = nullptr;
 
 
 	};

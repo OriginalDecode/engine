@@ -36,6 +36,8 @@
 #include <Engine/RenderNodeGeneral.h>
 #include <Engine/RenderNodeShadows.h>
 
+#include <Engine/Shadow_Directional.h>
+
 #include "shader_types.h"
 
 Renderer::Renderer(Synchronizer* synchronizer)
@@ -104,10 +106,19 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	//m_DeferredRenderer->GetAmbientEffect()->AddShaderResource(m_Background->GetTexture(), TextureSlot::REGISTER_2);
 
+	m_ShadowDirectional = new ShadowDirectional;
+	m_ShadowDirectional->Initiate(2048.f);
+
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
-
 	m_RenderNodes.Add(new graphics::RenderNodeShadows);
+
+	graphics::RenderNodeShadows* node = nullptr;
+	GetNode(graphics::RenderNodeShadows::GetType(), &node);
+	node->Init(m_ShadowDirectional);
+
+	//graphics::RenderNodeShadows* node = static_cast<graphics::RenderNodeShadows*>(GetNode(graphics::RenderNodeShadows::GetType()));
+
 
 	// m_Text->SetText("The quick brown fox jumps over the lazy dog");
 	m_Text->SetText("=>?@ABC");
@@ -158,6 +169,7 @@ Renderer::~Renderer()
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
+	SAFE_DELETE(m_ShadowDirectional);
 
 	m_RenderNodes.DeleteAll();
 
@@ -251,7 +263,7 @@ void Renderer::Render()
 
 void Renderer::DrawIBL()
 {
-	const CU::Matrix44f shadow_mvp; // = m_DirectionalShadow.GetMVP();
+	const CU::Matrix44f shadow_mvp = m_ShadowDirectional->GetMVP();
 	m_PixelBuffer.Bind(0, EShaderTypeFlag_PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
 

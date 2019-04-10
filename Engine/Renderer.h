@@ -35,6 +35,7 @@ class SpotLight;
 class ShadowSpotlight;
 class CommandAllocator;
 class TerrainSystem;
+class ShadowDirectional;
 
 namespace graphics
 {
@@ -55,6 +56,17 @@ public:
 	void Render();
 	void DrawIBL();
 	graphics::IRenderNode* GetNode(uint64 type);
+	template<typename T>
+	void GetNode(uint64 type, T** node)
+	{
+		for (graphics::IRenderNode* renderNode : m_RenderNodes)
+		{
+			if (renderNode->GetNodeType() == type)
+			{
+				*node = static_cast<T*>(renderNode);
+			}
+		}
+	}
 
 
 	TerrainSystem* GetTerrainSystem() const { return m_TerrainSystem; }
@@ -121,7 +133,8 @@ private:
 	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
-	
+	ShadowDirectional* m_ShadowDirectional = nullptr;
+
 	graphics::ConstantBuffer m_PixelBuffer;
 	graphics::ConstantBuffer m_ViewProjection;
 

@@ -21,7 +21,7 @@ namespace graphics
 
 	private:
 		CompiledShader* m_Shaders[2];
-
+		bool m_Processed = false;
 		std::unordered_map<uint64, std::vector<ModelInstance>> m_Models;
 		ShadowDirectional* m_DirectionalShadow = nullptr;
 

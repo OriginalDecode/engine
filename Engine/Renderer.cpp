@@ -39,6 +39,8 @@
 #include <Engine/Shadow_Directional.h>
 
 #include "shader_types.h"
+#include "AssetsContainer.h"
+
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -71,7 +73,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
 
-	m_ShadowPass.Initiate(this);
+	//m_ShadowPass.Initiate(this);
 	//m_DirectionalShadow.Initiate(2048.f);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
@@ -107,7 +109,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	//m_DeferredRenderer->GetAmbientEffect()->AddShaderResource(m_Background->GetTexture(), TextureSlot::REGISTER_2);
 
 	m_ShadowDirectional = new ShadowDirectional;
-	m_ShadowDirectional->Initiate(2048.f);
+	m_ShadowDirectional->Initiate(8096.f);
 
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
@@ -160,7 +162,6 @@ Renderer::~Renderer()
 #endif
 	SAFE_DELETE(m_Text);
 
-	m_ShadowPass.CleanUp();
 
 	SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
@@ -191,33 +192,35 @@ void Renderer::Render()
 
 	m_RenderContext.GetAPI().BeginFrame();
 	m_RenderContext.GetAPI().ResetViewport();
-	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 	m_TerrainSystem->Update();
 
 
 
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	
 	m_GBuffer.SetDepthTarget(m_RenderContext);
-	
-	
+	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
 		node->Draw(m_RenderContext);
 	}
-	//m_WaterPlane->Render(m_RenderContext);
+	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
+	m_GBuffer.SetDepthTarget(m_RenderContext);
 	m_TerrainSystem->Draw();
 
 
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
+	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 	m_RenderContext.GetContext().SetDepthState(graphics::Z_EQUAL, 1);
 	m_TerrainSystem->Draw();
-	//m_WaterPlane->Render(m_RenderContext);
 	
+
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
 		node->Draw(m_RenderContext);
 	}
+	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 
 	DrawIBL();
 
@@ -256,6 +259,9 @@ void Renderer::Render()
 	m_Text->Render(m_RenderContext);
 
 	m_RenderContext.GetAPI().EndFrame();
+
+	AssetsContainer::GetInstance()->Update();
+
 	m_Synchronizer->WaitForLogic();
 	m_Synchronizer->RenderIsDone();
 

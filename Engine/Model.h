@@ -79,6 +79,7 @@ public:
 	const CU::GrowingArray<Model*>& GetChildren() const { return m_Children; }
 
 private:
+	bool ShouldRemoveGPUData();
 	void SetInstanceBuffer(IBuffer* const buffer);
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();

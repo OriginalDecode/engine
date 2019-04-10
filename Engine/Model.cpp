@@ -99,6 +99,13 @@ void Model::Render(const graphics::RenderContext& rc)
 
 }
 
+bool Model::ShouldRemoveGPUData()
+{
+	return (!m_IndexWrapper.GetIndexBuffer() 
+		&& (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer())
+		|| (m_IsRoot || m_GPUData.Empty()));
+}
+
 void Model::SetInstanceBuffer(IBuffer* const buffer)
 {
 	m_InstanceBuffer = buffer;
@@ -158,13 +165,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 		child->RenderInstanced(rc, override_effect);
 	}
 
-	if (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer()))
-	{
-		RemoveGPUData();
-		return;
-	}
-
-	if (m_IsRoot || m_GPUData.Empty())
+	if (ShouldRemoveGPUData())
 	{
 		RemoveGPUData();
 		return;
@@ -197,25 +198,32 @@ void Model::ShadowRender(const graphics::RenderContext& rc)
 void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber100);
+	auto& ctx = rc.GetContext();
+
+	if (m_IsRoot && m_IsInstanced)
+		ctx.UpdateConstantBuffer(m_InstanceBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
+
 	for (Model* child : m_Children)
 		child->ShadowRenderInstanced(rc);
 
-	if (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer()))
+	if (ShouldRemoveGPUData())
 	{
 		RemoveGPUData();
 		return;
 	}
 
-
-	if (m_IsRoot || m_GPUData.Empty())
+	const Material& material = m_Surfaces[0]->GetMaterial();
+	for (const auto& binding : material.GetResourceBindings())
 	{
-		RemoveGPUData();
-		return;
+		if (binding.m_Slot == TextureSlot::REGISTER_0)
+		{
+
+			const IShaderResourceView* resource = binding.m_Resource;
+			ctx.PSSetShaderResource(0, 1, &resource);
+		}
 	}
 
-	UpdateConstantBuffer(rc);
-
-	rc.GetContext().DrawIndexedInstanced(this);
+	ctx.DrawIndexedInstanced(this, m_InstanceBuffer, sizeof(GPUModelData));
 
 	RemoveGPUData();
 }

@@ -8,8 +8,8 @@ namespace graphics
 {
 	RenderNodeShadows::RenderNodeShadows()
 	{
-		const uint64 vtx = AssetsContainer::GetInstance()->LoadShader("deferred_base_instanced.vs", "main");
-		const uint64 fragment = AssetsContainer::GetInstance()->LoadShader("render_depth.ps", "main");
+		const uint64 vtx = AssetsContainer::GetInstance()->LoadShader("render_depth.vs", "instance_main");
+		const uint64 fragment = AssetsContainer::GetInstance()->LoadShader("render_depth.ps", "discard_alpha_0");
 		m_Shaders[0] = AssetsContainer::GetInstance()->GetShader(vtx);
 		m_Shaders[1] = AssetsContainer::GetInstance()->GetShader(fragment);
 
@@ -31,8 +31,14 @@ namespace graphics
 
 	void RenderNodeShadows::Draw(const RenderContext& rc)
 	{
+		if (m_Processed)
+		{
+			m_Processed = false;
+			return;
+		}
+
+
 		PROFILE_FUNCTION(profiler::colors::Red);
-	
 		
 		m_DirectionalShadow->SetViewport();
 		m_DirectionalShadow->ClearTexture();
@@ -65,6 +71,10 @@ namespace graphics
 			model->ShadowRenderInstanced(rc);
 			model = nullptr;
 		}
+
+		Engine::GetAPI()->ResetViewport();
+		m_Processed = true;
+
 	}	
 
 	void RenderNodeShadows::Reload(CompiledShader* shader)

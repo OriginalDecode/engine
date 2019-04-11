@@ -220,7 +220,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
 
 	const bool in_view = shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.z < 1 && shadowVec.z > 0;
-	const bool in_shadow = (sampleValue < compareValue);// && in_view;
+	const bool in_shadow = (sampleValue > compareValue);// && in_view;
 
 	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, -light_dir, half_vec, 1 - roughnessOffsetted), 1);
 

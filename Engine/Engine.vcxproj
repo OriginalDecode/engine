@@ -312,12 +312,10 @@
     <ClInclude Include="Atmosphere.h" />
     <ClInclude Include="AtmosphereConstants.h" />
     <ClInclude Include="AtmosphereModel.h" />
-    <ClInclude Include="BaseAllocator.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BloomPass.h" />
     <ClInclude Include="BlurPass.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DebugHandle.h" />
@@ -328,7 +326,6 @@
     <ClInclude Include="DownsamplePass.h" />
     <ClInclude Include="DX11Context.h" />
     <ClInclude Include="DX11Device.h" />
-    <ClInclude Include="EditObject.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="Engine.h" />
@@ -375,9 +372,7 @@
     <ClInclude Include="LightPass.h" />
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
-    <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="MemorySegmentHandle.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelImporter.h" />
     <ClInclude Include="MotionBlurPass.h" />
@@ -401,10 +396,6 @@
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShaderState.h" />
     <ClInclude Include="ShaderWarningHandler.h" />
-    <ClInclude Include="ShadowPass.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="ShadowSpotlight.h" />
     <ClInclude Include="Shadow_Directional.h" />
     <ClInclude Include="SkySphere.h" />
@@ -448,12 +439,10 @@
     <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="Atmosphere.cpp" />
     <ClCompile Include="AtmosphereModel.cpp" />
-    <ClCompile Include="BaseAllocator.cpp" />
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BloomPass.cpp" />
     <ClCompile Include="BlurPass.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DebugHandle.cpp" />
     <ClCompile Include="DebugRenderer.cpp" />
@@ -466,7 +455,6 @@
     <ClCompile Include="DXBlendStates.cpp" />
     <ClCompile Include="DXDepthstencilStates.cpp" />
     <ClCompile Include="DXSamplerStates.cpp" />
-    <ClCompile Include="EditObject.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EmitterInstance.cpp" />
     <ClCompile Include="Engine.cpp" />
@@ -491,9 +479,7 @@
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
-    <ClCompile Include="LinearAllocator.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelExporter.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
@@ -523,10 +509,6 @@
     <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShaderState.cpp" />
     <ClCompile Include="ShaderWarningHandler.cpp" />
-    <ClCompile Include="ShadowPass.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="ShadowSpotlight.cpp" />
     <ClCompile Include="Shadow_Directional.cpp" />
     <ClCompile Include="SkySphere.cpp" />

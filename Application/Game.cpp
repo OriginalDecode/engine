@@ -97,8 +97,8 @@ void Game::Initiate(const std::string& level)
 		float z = cl::Rand(0.f, 2048.f, 0);
 
 
-		int normalized_x = (x / 2048.f) * 128.f;
-		int normalized_z = (z / 2048.f) * 128.f;
+		int normalized_x = (x / 2048.f) * 1024.f;
+		int normalized_z = (z / 2048.f) * 1024.f;
 
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(normalized_x, normalized_z) / 255.f * 128.f;
 

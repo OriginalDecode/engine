@@ -10,8 +10,6 @@
 
 #include "IGraphicsAPI.h"
 
-#include "EditObject.h"
-
 #include "LevelFactory.h"
 
 #include <Input/InputHandle.h>

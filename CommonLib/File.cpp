@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cassert>
 #include <memory>
+#include <CommonLib/Utilities.h>
 namespace Core
 {
 	File::File(const char* filepath, FileMode mode, int offset)
@@ -40,10 +41,12 @@ namespace Core
 	{
 		if (m_FileSize + (element_size * nof_elements) > m_AllocatedSize)
 		{
-			char* buffer = new char[m_AllocatedSize * 2];
+			const uint64 newSize = cl::nearest_Pow(m_FileSize + (element_size * nof_elements));
+
+			char* buffer = new char[newSize];
 			memcpy(&buffer[0], &m_Buffer[0], m_FileSize);
-			m_AllocatedSize *= 2;
-			delete m_Buffer;
+			m_AllocatedSize = newSize;
+			delete[] m_Buffer;
 			m_Buffer = nullptr;
 			m_Buffer = buffer;
 		}

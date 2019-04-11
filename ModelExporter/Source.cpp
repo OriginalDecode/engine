@@ -1,29 +1,29 @@
 #define _MODEL_EXPORTER
 
-#include "CommonLib/Utilities.h"
+#include "DL_Debug/DL_Debug.h"
+
 #include "CommonLib/Threadpool.h"
+#include "CommonLib/Timer/Timer.h"
+#include "CommonLib/Utilities.h"
+
 #include "Engine/engine_shared.h"
-#include "CommonLib/DataStructures/GrowingArray.h"
 #include "Engine/ModelImporter.h"
+#include "Engine/ModelExporter.h"
 #include "Engine/Model.h"
-#include "../DL_Debug/DL_Debug.h"
+
 #include <cstdio>
-#include "CommonLib/Timer/TimeManager.h"
-#include "Engine/Engine.h"
+#include <vector>
 
-void thread_print(std::string toPrint)
-{
-	static Ticket_Mutex mutex;
-	BeginTicketMutex(&mutex);
-	printf("%s\n", toPrint.c_str());
-	EndTicketMutex(&mutex);
-}
+std::vector<std::string> g_StatusText;
 
-
+void PrintStatus();
+int ThreadVectorPushBack(std::string toPrint);
 void Export(std::string path);
 
 int main(int argc, const char* argv[])
 {
+	const bool isThreaded = true;
+
 	CU::Timer timer;
 	timer.Start();
 	std::string targeted_compile;
@@ -52,11 +52,7 @@ int main(int argc, const char* argv[])
 			std::vector<std::string> files = cl::FindFilesInDirectory(_path.c_str());
 			for (auto& file : files)
 			{
-				if (file.find(".dds") != file.npos)
-				{
-					//copy texture to different location
-				}
-				else if (file.find(".fbx") != file.npos)
+				if (file.find(".fbx") != file.npos)
 				{
 					std::string filepath(folder);
 					filepath += "\\" + file;
@@ -65,10 +61,10 @@ int main(int argc, const char* argv[])
 			}
 		}
 	}
-
+	g_StatusText.reserve(exportList.size());
 	Threadpool threadpool;
 	threadpool.Initiate("exporter");
-	if (isFile)
+	if (isFile || !isThreaded)
 	{
 		Export(targeted_compile);
 	}
@@ -77,7 +73,15 @@ int main(int argc, const char* argv[])
 		for (auto& filepath : exportList)
 		{
 			threadpool.AddWork(Work([=]() {
+				std::string str("Starting to load ");
+				str += filepath;
+				int index = ThreadVectorPushBack(str);
 				Export(filepath);
+				std::string finished("Finished loading ");
+				finished += filepath;
+				g_StatusText[index] = finished;
+				PrintStatus();
+				
 			}));
 		}
 	}
@@ -95,8 +99,7 @@ int main(int argc, const char* argv[])
 
 	char t[100];
 	sprintf_s(t, "finished exporting after : %.3fs", time);
-
-	thread_print(t);
+	printf("%s\n", t);
 
 	threadpool.CleanUp();
 	DL_Debug::Debug::Destroy();
@@ -107,13 +110,33 @@ int main(int argc, const char* argv[])
 
 void Export(std::string path)
 {
-	std::string str("Starting to load ");
-	str += path;
-	thread_print(str);
 	ModelExporter exporter;
 	exporter.SetOldFormat(false);
 	CModelImporter importer;
 	importer.Init(&exporter);
 	Model model;
 	importer.LoadModel<Model>(path, &model, nullptr, ModelImportUtil::IGNORE_FILL);
+}
+
+void PrintStatus()
+{
+	system("cls");
+	for (const std::string& str : g_StatusText)
+	{
+		printf("%s\n", str.c_str());
+	}
+}
+
+int ThreadVectorPushBack(std::string toPrint)
+{
+	static Ticket_Mutex mutex;
+	BeginTicketMutex(&mutex);
+
+	int index = -1;
+	g_StatusText.push_back(toPrint);
+	index = g_StatusText.size() - 1;
+	PrintStatus();
+
+	EndTicketMutex(&mutex);
+	return index;
 }

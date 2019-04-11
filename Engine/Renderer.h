@@ -5,7 +5,6 @@
 
 
 #include "LightStructs.h"
-#include "ShadowPass.h"
 #include "RenderCommand.h"
 #include "PostProcessManager.h"
 
@@ -95,7 +94,6 @@ private:
 	graphics::RenderContext		m_RenderContext;
 
 	graphics_deprecated::LightPass*		m_LightPass = nullptr;
-	ShadowPass					m_ShadowPass;
 
 	PostProcessManager			m_PostProcessManager;
 

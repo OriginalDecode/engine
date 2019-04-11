@@ -13,7 +13,6 @@
 #include <Engine/Window.h>
 #include <Engine/ShaderFactory.h>
 #include <Engine/SystemMonitor.h>
-#include <Engine/MemorySegmentHandle.h>
 #include <Engine/IGraphicsAPI.h>
 #include <Engine/IGraphicsContext.h>
 

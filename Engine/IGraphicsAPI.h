@@ -2,6 +2,7 @@
 
 #include <Engine/engine_shared.h>
 #include <Engine/graphics_flags.h>
+#include "CommonLib/Utilities.h"
 
 #ifndef _WINDEF_
 struct HINSTANCE__;

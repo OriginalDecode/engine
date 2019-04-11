@@ -58,7 +58,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 
 	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
 
-	const double h = 720.0;
+	const double h = 1080.0;
 	double res16x9 = 1.777777777777777777777777777777778; 
 	const double w = h * res16x9;
 

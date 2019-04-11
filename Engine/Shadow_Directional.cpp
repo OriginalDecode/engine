@@ -92,7 +92,6 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 
 void ShadowDirectional::Update()
 {
-#ifndef _MODEL_EXPORTER
 	Engine* engine = Engine::GetInstance();
 	Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
@@ -108,7 +107,6 @@ void ShadowDirectional::Update()
 
 	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
 	const CU::Vector4f cam_dir = m_Camera->GetAt();
-#endif
 }
 
 CU::Matrix44f ShadowDirectional::GetMVP()

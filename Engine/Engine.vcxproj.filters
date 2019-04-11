@@ -88,9 +88,6 @@
     <Filter Include="Debug">
       <UniqueIdentifier>{c870797d-6e95-4414-a67d-acba300a8044}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Memory">
-      <UniqueIdentifier>{74fa6570-4a86-47ca-b567-d9f7b7c3fbef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Factories">
       <UniqueIdentifier>{201dfdf5-6b3a-418b-bf66-9772f05c2a65}</UniqueIdentifier>
     </Filter>
@@ -210,9 +207,6 @@
     <ClInclude Include="LightPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowPass.h">
-      <Filter>Rendering\Passes</Filter>
-    </ClInclude>
     <ClInclude Include="GBuffer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -248,9 +242,6 @@
     </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Statestack</Filter>
-    </ClInclude>
-    <ClInclude Include="EditObject.h">
-      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Utilities</Filter>
@@ -351,9 +342,6 @@
     <ClInclude Include="ShaderState.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="MemorySegmentHandle.h">
-      <Filter>Memory</Filter>
-    </ClInclude>
     <ClInclude Include="RootTreeNode.h">
       <Filter>World</Filter>
     </ClInclude>
@@ -448,15 +436,6 @@
     </ClInclude>
     <ClInclude Include="QuadTree.h">
       <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseAllocator.h">
-      <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandAllocator.h">
-      <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearAllocator.h">
-      <Filter>Memory</Filter>
     </ClInclude>
     <ClInclude Include="DownsamplePass.h" />
     <ClInclude Include="graphics_flags.h" />
@@ -563,9 +542,6 @@
     <ClCompile Include="LightPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowPass.cpp">
-      <Filter>Rendering\Passes</Filter>
-    </ClCompile>
     <ClCompile Include="GBuffer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -604,9 +580,6 @@
     </ClCompile>
     <ClCompile Include="StateStack.cpp">
       <Filter>Statestack</Filter>
-    </ClCompile>
-    <ClCompile Include="EditObject.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="LevelFactory.cpp">
       <Filter>World</Filter>
@@ -686,9 +659,6 @@
     <ClCompile Include="ShaderState.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="MemorySegmentHandle.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
     <ClCompile Include="RootTreeNode.cpp">
       <Filter>World</Filter>
     </ClCompile>
@@ -760,15 +730,6 @@
     </ClCompile>
     <ClCompile Include="QuadTreeNode.cpp">
       <Filter>World</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseAllocator.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandAllocator.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="LinearAllocator.cpp">
-      <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="DownsamplePass.cpp" />
     <ClCompile Include="IGraphicsContext.cpp" />

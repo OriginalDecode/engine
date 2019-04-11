@@ -17,6 +17,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 float4 discard_alpha_0(VS_OUTPUT input) : SV_Target
 {
 	float alpha = DepthBuffer.Sample(sampler0, input.uv).a;
+	if(alpha <= 0)
+		discard;
 
 	//float z = (1000) / (1000 - 0.01) * ( 1 - ( 0.01 / input.pos.z));
 	return input.pos.z;

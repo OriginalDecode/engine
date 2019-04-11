@@ -828,13 +828,6 @@ void CModelImporter::Read(std::string path, T* pModel, bool skip_header)
 	Core::File file(path.c_str());
 	uint32 position = 0;
 
-	if (!skip_header)
-	{
-		EMFHeader header = {};
-		memcpy(&header, &file.GetBuffer()[0], sizeof(EMFHeader));
-		position += sizeof(EMFHeader);
-	}
-
 	ReadBlock(file.GetBuffer(), position, pModel);
 
 	fileDebugOutput.flush();

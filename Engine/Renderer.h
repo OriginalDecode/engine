@@ -55,7 +55,6 @@ public:
 
 	void Render();
 	void DrawIBL();
-	graphics::IRenderNode* GetNode(uint64 type);
 	template<typename T>
 	void GetNode(T** node)
 	{

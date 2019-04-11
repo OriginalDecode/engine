@@ -486,7 +486,8 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(int32 x_steps, int32
 	model->AddSurface(new Surface(e));
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
-	graphics::IRenderNode* general = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::GetType());
+	graphics::RenderNodeGeneral* node = nullptr;
+	Engine::GetInstance()->GetRenderer()->GetNode(&node);
 	
 	for (int32 i = 0; i < x_steps; i++)
 	{
@@ -513,7 +514,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(int32 x_steps, int32
 
 			_instance.SetSurface(new_surface);
 			_instance.SetMaterial(material[v]);
-			general->AddInstance(_instance);
+			node->AddInstance(_instance);
 		}
 
 	}

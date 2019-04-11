@@ -272,18 +272,6 @@ int Renderer::RegisterLight()
 	return (m_Spotlights.Size() - 1);
 }
 
-graphics::IRenderNode* Renderer::GetNode(uint64 type)
-{
-	for (graphics::IRenderNode* node : m_RenderNodes)
-	{
-		if (node->GetNodeType() == type)
-		{
-			return node;
-		}
-	}
-	return nullptr;
-}
-
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "DX11Device.h"
 #include "DX11Context.h"

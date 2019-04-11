@@ -56,7 +56,6 @@ void Game::InitState(StateStack* state_stack)
 	m_StateStack = state_stack;
 	m_Engine = Engine::GetInstance();
 	Initiate("Data/pbr_level/fps_level_01");
-	//Initiate("Data/pbr_level/pbr_level.level");
 	m_Engine->GetInputHandle()->AddController(0);
 
 	timer.Update();
@@ -76,18 +75,21 @@ void Game::Initiate(const std::string& level)
 	// CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 
 
-	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::GetType());
-	graphics::IRenderNode* shadow_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeShadows::GetType());
-	graphics::IRenderNode* vegetation_node = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeVegetation::GetType());
+	Engine* engine = Engine::GetInstance();
+	Renderer* renderer = engine->GetRenderer();
 
-	//const char* data = "Data/Model/trees/Japanese Maple/LowPoly/Japanese_Maple_LowPoly.fbx";
-	//const char* data = "Data/exported/Japanese_Maple_LowPoly.oemf";
+	graphics::RenderNodeGeneral* general_node = nullptr;
+	renderer->GetNode(&general_node);
+
+	graphics::RenderNodeShadows* shadow_node = nullptr;
+	renderer->GetNode(&shadow_node);
+
+	graphics::RenderNodeVegetation* vegetation_node = nullptr;
+	renderer->GetNode(&vegetation_node);
+
+
 	const char* data = "Data/exported/Japanese_Maple_LowPoly.emf";
-	//const char* data2 = "Data/exported/Japanese_Maple_LowPoly.LPMF";
-	//const char* data = "Data/exported/cube_100x100.oemf";
-	//const char* data = "Data/exported/cube_100x100.LPMF";
 	HashType hash = AssetsContainer::GetInstance()->LoadModel<Model>(data, "Shaders/debug_pbl_instanced.json", false);
-	//HashType hash2 = AssetsContainer::GetInstance()->LoadModel<Model>(data2, "Shaders/debug_pbl_instanced.json", false);
 	int tree_count = cl::Rand(128, 128, 0);
 	for (int i = 0; i < tree_count; ++i)
 	{
@@ -114,6 +116,7 @@ void Game::Initiate(const std::string& level)
 		shadow_node->AddInstance(instance);
 
 	}
+
 	//HashType suntemple = AssetsContainer::GetInstance()->LoadModel<Model>("Data/exported/SunTemple.emf", "Shaders/debug_pbl_instanced.json", false);
 	//ModelInstance instance;
 	//instance.SetMaterialKey(cl::Hash("nothing"));
@@ -134,28 +137,6 @@ void Game::Initiate(const std::string& level)
 	CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	m_PauseState.InitState(m_StateStack);
-
-#ifdef _DEBUG
-	EventManager::GetInstance()->Subscribe(DebugEvents_AddEntity, this);
-#endif
-	bool read_camera = false;
-	if (read_camera)
-	{
-		std::ifstream camera_load;
-		std::string line;
-		camera_load.open(camera_file);
-		if (camera_load.is_open())
-		{
-			CU::Matrix44f init_orientation;
-			int i = 0;
-			while (getline(camera_load, line))
-			{
-				init_orientation[i] = stof(line); 
-				i++;
-			}
-			m_Camera->SetOrientation(init_orientation);
-		}
-	}
 }
 
 void Game::EndState()
@@ -214,30 +195,17 @@ void Game::Update(float dt)
 
 void Game::OldUpdate(float dt)
 {
-	//m_FrameCount++;
-	//m_AverageFPS += m_Engine->GetFPS();
-	//m_Time -= dt;
-	//if (m_Time <= 0.f)
-	//{
-	//	m_FPSToPrint = uint32(m_AverageFPS / m_FrameCount);
-	//	m_FrameCount = 0;
-	//	m_AverageFPS = 0.f;
-	//	m_Time = 1.f;
-	//}
+	/*m_FrameCount++;
+	m_AverageFPS += m_Engine->GetFPS();
+	m_Time -= dt;
+	if (m_Time <= 0.f)
+	{
+		m_FPSToPrint = uint32(m_AverageFPS / m_FrameCount);
+		m_FrameCount = 0;
+		m_AverageFPS = 0.f;
+		m_Time = 1.f;
+	}*/
 	Input::InputManager* input = Engine::GetInstance()->GetInputManager();
-	//InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
-	//EventManager* pEventHandle = EventManager::GetInstance();
-	//if (input_wrapper->OnClick(MouseInput::LEFT))
-	//	pEventHandle->SendMessage("left_click");
-
-	//if (input_wrapper->OnDown(KButton::ESCAPE))
-	//	m_StateStack->PopCurrentMainState();
-
-	//if (input_wrapper->OnDown(KButton::NUMADD))
-	//	Engine::GetInstance()->GetRenderer()->font_scale += 0.25f;
-
-	//if (input_wrapper->OnDown(KButton::NUMMINUS))
-	//	Engine::GetInstance()->GetRenderer()->font_scale -= 0.25f;
 
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
@@ -318,64 +286,6 @@ void Game::OldUpdate(float dt)
 
 	if (input->IsDown(Input::A_MOVE_DOWN))
 		m_Camera->Move(eDirection::DOWN, -acceleration);
-
-
-//#if !defined(_PROFILE) && !defined(_FINAL)
-//	if (input_wrapper->OnDown(KButton::P))
-//		m_Engine->GetRenderer()->CreateCubemaps();
-//#endif
-
-	const CU::Vector4f forward = m_Orientation.GetForward();
-	const CU::Vector4f right = m_Orientation.GetRight();
-	const CU::Vector4f up = m_Orientation.GetUp();
-	CU::Vector4f translation = m_Orientation.GetTranslation();
-
-	//static float speed = 10.f;
-	//if (input_wrapper->IsDown(KButton::NUMMINUS))
-	//	speed -= 0.5f * dt;
-	//if (input_wrapper->IsDown(KButton::NUMADD))
-	//	speed += 0.5f * dt;
-
-
-
-	//if (input_wrapper->IsDown(KButton::UP_ARROW))
-	//	translation += forward * speed;
-
-	//if (input_wrapper->IsDown(KButton::DOWN_ARROW))
-	//	translation += forward * -speed;
-
-	//if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
-	//	translation += right * speed;
-
-	//if (input_wrapper->IsDown(KButton::LEFT_ARROW))
-	//	translation += right * -speed;
-
-	//if (input_wrapper->IsDown(KButton::PGDOWN))
-	//	translation += up * -speed;
-
-	//if (input_wrapper->IsDown(KButton::PGUP))
-	//	translation += up * speed;
-
-	//m_Orientation.SetTranslation(translation);
-
-
-	//if (input_wrapper->IsDown(KButton::NUMPAD6))
-	//	m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
-
-	//if (input_wrapper->IsDown(KButton::NUMPAD4))
-	//	m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
-
-	//if (input_wrapper->IsDown(KButton::NUMPAD8))
-	//	m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
-
-	//if (input_wrapper->IsDown(KButton::NUMPAD2))
-	//	m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
-
-	//if (input_wrapper->IsDown(KButton::NUMPAD9))
-	//	m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
-
-	//if (input_wrapper->IsDown(KButton::NUMPAD7))
-	//	m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
 	m_World.Update(dt, m_Paused);
 }

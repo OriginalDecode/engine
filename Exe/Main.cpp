@@ -53,14 +53,14 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 	profiler::startListen();
 #endif/* 1,777777777777777777777777777777778*/
 	DL_Debug::Debug::Create();
-	//double res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = args;
 	std::string input(inputString);
 
 	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
 
-	float w = 1920;
-	float h = 1080;
+	const double h = 720.0;
+	double res16x9 = 1.777777777777777777777777777777778; 
+	const double w = h * res16x9;
 
 	Engine::Create();
 	Engine* engine = Engine::GetInstance();
@@ -70,7 +70,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 	engine->GetVFS().Register("Data/Textures", "Textures");
 	engine->GetVFS().Register("Data/Model", "Models");
 
-	engine->Initiate(w, h, instance_handle, WindowProc);
+	engine->Initiate((float)w, (float)h, instance_handle, WindowProc);
 
 	const bool success = application->Initiate();
 	ASSERT(success, "Failed to initiate game");

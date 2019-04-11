@@ -57,11 +57,11 @@ public:
 	void DrawIBL();
 	graphics::IRenderNode* GetNode(uint64 type);
 	template<typename T>
-	void GetNode(uint64 type, T** node)
+	void GetNode(T** node)
 	{
 		for (graphics::IRenderNode* renderNode : m_RenderNodes)
 		{
-			if (renderNode->GetNodeType() == type)
+			if (renderNode->GetNodeType() == T::GetType())
 			{
 				*node = static_cast<T*>(renderNode);
 			}
@@ -79,7 +79,6 @@ public:
 
 	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 
-	float font_scale = 1.f;
 private:
 	float m_CubemapTimer = 0.f;
 
@@ -110,7 +109,6 @@ private:
 
 	//Do we need to hold these?
 	Camera*						m_Camera				= nullptr;
-	Camera*						m_WaterCamera			= nullptr;
 
 	//Does this have to be a pointer?
 	DeferredRenderer*			m_DeferredRenderer		= nullptr;
@@ -129,9 +127,6 @@ private:
 	Line3D*						m_Line					= nullptr;
 
 	CEmitterInstance*			m_ParticleEmitter		= nullptr;
-	
-	//this should be an object in the world and the render part should be separated
-	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
 	ShadowDirectional* m_ShadowDirectional = nullptr;
 

@@ -51,7 +51,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
 	m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 8, 0);
-	//m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 8, 0);
+
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
@@ -72,10 +72,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
-
-	//m_ShadowPass.Initiate(this);
-	//m_DirectionalShadow.Initiate(2048.f);
-
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
 	myPointLight = new PointLight();
@@ -90,42 +86,21 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
 	m_ViewProjection.Initiate("ViewProj");
-	m_WaterCamera = new Camera;
-	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
-
+	
 	m_Spotlights.Add(new SpotLight);
 
 	m_RenderContext.GetEngine()->LoadEffect("Data/Shaders/wireframe_terrain.json");
 	m_TerrainSystem = new TerrainSystem;
 
-
-
 	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
-
-	m_WaterPlane = new WaterPlane;
-	
-
-	//m_DeferredRenderer->GetAmbientEffect()->AddShaderResource(m_Background->GetTexture(), TextureSlot::REGISTER_2);
 
 	m_ShadowDirectional = new ShadowDirectional;
 	m_ShadowDirectional->Initiate(8096.f);
 
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
-	m_RenderNodes.Add(new graphics::RenderNodeShadows);
-
-	graphics::RenderNodeShadows* node = nullptr;
-	GetNode(graphics::RenderNodeShadows::GetType(), &node);
-	node->Init(m_ShadowDirectional);
-
-	//graphics::RenderNodeShadows* node = static_cast<graphics::RenderNodeShadows*>(GetNode(graphics::RenderNodeShadows::GetType()));
-
-
-	// m_Text->SetText("The quick brown fox jumps over the lazy dog");
-	m_Text->SetText("=>?@ABC");
-	m_Text->SetScale({ 5, 5 });
-	m_Text->SetPosition({ 0.5f, 0.5f });
+	m_RenderNodes.Add(new graphics::RenderNodeShadows(m_ShadowDirectional));
 }
 
 void Renderer::InitiateDebug()
@@ -161,10 +136,6 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_DebugQuad);
 #endif
 	SAFE_DELETE(m_Text);
-
-
-	SAFE_DELETE(m_WaterPlane);
-	SAFE_DELETE(m_WaterCamera);
 	SAFE_DELETE(m_Line);
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(myPointLight);
@@ -191,36 +162,36 @@ void Renderer::Render()
 	PROFILE_FUNCTION(profiler::colors::Magenta);
 
 	m_RenderContext.GetAPI().BeginFrame();
-	m_RenderContext.GetAPI().ResetViewport();
+
 	m_TerrainSystem->Update();
 
+	//Shadow Pass
+	graphics::RenderNodeShadows* shadow_node = nullptr;
+	GetNode(&shadow_node);
+	shadow_node->Draw(m_RenderContext);
 
-
+	m_RenderContext.GetAPI().ResetViewport();
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	
 	m_GBuffer.SetDepthTarget(m_RenderContext);
+
+	//Z Pre Pass
 	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
 		node->Draw(m_RenderContext);
 	}
-	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
-	m_GBuffer.SetDepthTarget(m_RenderContext);
 	m_TerrainSystem->Draw();
 
 
+	//Actual draw
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-
-	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 	m_RenderContext.GetContext().SetDepthState(graphics::Z_EQUAL, 1);
 	m_TerrainSystem->Draw();
-	
 
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
 		node->Draw(m_RenderContext);
 	}
-	m_ViewProjection.Bind(0, EShaderTypeFlag_VERTEX | EShaderTypeFlag_DOMAIN, m_RenderContext);
 
 	DrawIBL();
 
@@ -244,8 +215,6 @@ void Renderer::Render()
 
 	m_Line->Render(m_RenderContext);
 
-
-
 	ImGui::Render();
 #if !defined(_PROFILE) && !defined(_FINAL)
 	if (m_CreateCubemaps)
@@ -255,13 +224,11 @@ void Renderer::Render()
 	}
 
 #endif
-	m_Text->SetScale({ font_scale, font_scale });
-	m_Text->Render(m_RenderContext);
-
+	
 	m_RenderContext.GetAPI().EndFrame();
 
 	AssetsContainer::GetInstance()->Update();
-
+	shadow_node->Reset();
 	m_Synchronizer->WaitForLogic();
 	m_Synchronizer->RenderIsDone();
 

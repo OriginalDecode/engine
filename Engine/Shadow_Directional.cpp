@@ -29,11 +29,11 @@ void ShadowDirectional::Initiate(float buffer_size)
 		desc.m_Height = buffer_size;
 		desc.m_Usage = graphics::DEFAULT_USAGE;
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
-		desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
-		desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
+		desc.m_ShaderResourceFormat = graphics::RGBA32_FLOAT;
+		desc.m_RenderTargetFormat = graphics::RGBA32_FLOAT;
 		desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 		m_ShadowDepth = new Texture;
-		m_ShadowDepth->Initiate(desc, "DirectionalShadows : RTV");
+		m_ShadowDepth->Initiate(desc, false, "DirectionalShadows : RTV");
 	}
 
 	{
@@ -49,7 +49,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_ConstBuffer.RegisterVariable(&m_Camera->GetViewProjection());
 	m_ConstBuffer.Initiate("directional_shadow");
 
-	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView(), TextureSlot::SHADOWMAP);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepth->GetShaderView(), TextureSlot::SHADOWMAP);
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

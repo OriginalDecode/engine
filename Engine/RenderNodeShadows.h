@@ -9,15 +9,13 @@ namespace graphics
 	public:
 		DECLARE_RENDER_NODE(RenderNodeShadows);
 
-		RenderNodeShadows();
-		~RenderNodeShadows();
-
-		void Init(ShadowDirectional* shadowDirectional);
+		RenderNodeShadows(ShadowDirectional* shadowDirectional);
 
 		void Draw(const RenderContext& rc) override;
 		void Reload(CompiledShader* shader) override;
 		void AddInstance(const ModelInstance instance) override;
 
+		void Reset();
 
 	private:
 		CompiledShader* m_Shaders[2];

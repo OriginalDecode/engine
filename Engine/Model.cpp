@@ -197,7 +197,7 @@ void Model::ShadowRender(const graphics::RenderContext& rc)
 
 void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 {
-	PROFILE_FUNCTION(profiler::colors::Amber100);
+	PROFILE_FUNCTION(profiler::colors::Amber);
 	auto& ctx = rc.GetContext();
 
 	if (m_IsRoot && m_IsInstanced)

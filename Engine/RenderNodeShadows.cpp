@@ -6,7 +6,8 @@
 
 namespace graphics
 {
-	RenderNodeShadows::RenderNodeShadows()
+	RenderNodeShadows::RenderNodeShadows(ShadowDirectional* shadowDirectional)
+		: m_DirectionalShadow(shadowDirectional)
 	{
 		const uint64 vtx = AssetsContainer::GetInstance()->LoadShader("render_depth.vs", "instance_main");
 		const uint64 fragment = AssetsContainer::GetInstance()->LoadShader("render_depth.ps", "discard_alpha_0");
@@ -19,24 +20,10 @@ namespace graphics
 #endif
 	}
 
-
-	RenderNodeShadows::~RenderNodeShadows()
-	{
-	}
-
-	void RenderNodeShadows::Init(ShadowDirectional* shadowDirectional)
-	{
-		m_DirectionalShadow = shadowDirectional; 
-	}
-
 	void RenderNodeShadows::Draw(const RenderContext& rc)
 	{
 		if (m_Processed)
-		{
-			m_Processed = false;
 			return;
-		}
-
 
 		PROFILE_FUNCTION(profiler::colors::Red);
 		
@@ -52,9 +39,10 @@ namespace graphics
 		ctx.SetPixelShader(m_Shaders[1]);
 
 		ctx.SetRasterState(graphics::CULL_NONE);
-		ctx.SetBlendState(graphics::BLEND_FALSE);
+		ctx.SetBlendState(graphics::ALPHA_BLEND);
 		ctx.PSSetSamplerState(0, 1, graphics::MSAA_x1);
 		ctx.VSSetSamplerState(0, 1, graphics::MSAA_x1);
+		ctx.SetDepthState(graphics::Z_ENABLED, 1);
 
 		Model * model = nullptr;
 		for (auto& object : m_Models)
@@ -97,4 +85,10 @@ namespace graphics
 			it->second.push_back(instance);
 		}
 	}
+
+	void RenderNodeShadows::Reset()
+	{
+		m_Processed = false;
+	}
+
 };

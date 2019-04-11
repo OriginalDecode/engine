@@ -16,7 +16,7 @@ namespace graphics
 
 
 		IRenderNode() = default;
-		virtual ~IRenderNode() { };
+		virtual ~IRenderNode() = default;
 
 		virtual void Draw(const RenderContext& rc) = 0;
 		virtual void Reload(CompiledShader* shader) = 0;

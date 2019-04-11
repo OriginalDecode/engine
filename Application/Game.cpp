@@ -88,15 +88,15 @@ void Game::Initiate(const std::string& level)
 	//const char* data = "Data/exported/cube_100x100.LPMF";
 	HashType hash = AssetsContainer::GetInstance()->LoadModel<Model>(data, "Shaders/debug_pbl_instanced.json", false);
 	//HashType hash2 = AssetsContainer::GetInstance()->LoadModel<Model>(data2, "Shaders/debug_pbl_instanced.json", false);
-	int tree_count = cl::Rand(2048, 2048, 0);
+	int tree_count = cl::Rand(128, 128, 0);
 	for (int i = 0; i < tree_count; ++i)
 	{
 		float x = cl::Rand(0.f, 2048.f, 0);
 		float z = cl::Rand(0.f, 2048.f, 0);
 
 
-		int normalized_x = (x / 2048.f) * 1024.f;
-		int normalized_z = (z / 2048.f) * 1024.f;
+		int normalized_x = (x / 2048.f) * 128.f;
+		int normalized_z = (z / 2048.f) * 128.f;
 
 		float y = Engine::GetInstance()->GetRenderer()->GetTerrainSystem()->GetHeight(normalized_x, normalized_z) / 255.f * 128.f;
 

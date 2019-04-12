@@ -1,72 +1,84 @@
 #include "Timer.h"
-namespace CommonUtilities
+#include <cassert>
+#include <ctime>
+namespace Base
 {
 	Timer::Timer()
+		: m_IsActive(false)
+		, m_IsPaused(true)
 	{
-		myCurrentActive = false;
-		QueryPerformanceFrequency(&myClockFreq);
 	}
 
-	Timer::~Timer()
-	{
-	}
 
 	void Timer::Update()
 	{
-		if (myCurrentActive == true)
-		{
-			QueryPerformanceCounter(&myEnd);
-			myTime.Update(myLastEnd, myEnd, myClockFreq);
-			myTotalTime.Update(myStart, myEnd, myClockFreq);
-			myLastEnd = myEnd;
-		}
-		else
-		{
-			QueryPerformanceCounter(&myEnd);
-			myTime.Update(myEnd, myEnd, myClockFreq);
-			myLastEnd = myEnd;
-		}
+		
+		m_Prev = m_Current;
+		if (time(&m_Current) == -1)
+			assert(!"Failed to get time!");
+
+		m_Time = (double)m_Prev - (double)m_Current;
+
+
+		//LARGE_INTEGER current = ((m_IsActive == false) && m_IsPaused) ? m_Prev : m_Current;
+
+		//m_TotalTime.Update(m_Start, current, m_Frequency);
+		//m_CurrentTime.Update(m_Prev, current, m_Frequency);
+		//m_Prev = current;
 	}
 
 	void Timer::Start()
 	{
-		myCurrentActive = true;
-		QueryPerformanceCounter(&myStart);
+	
+
+		if (time(&m_Start) == -1)
+			assert(!"Failed to get time!");
+		m_Current = m_Start;
+		m_Prev = m_Start;
+
+		/*m_IsActive = true;
+
+		QueryPerformanceCounter(&m_Start);
 		myLastEnd = myStart;
 		myEnd = myStart;
-
+*/
 	}
 
 	void Timer::Stop()
 	{
-		myCurrentActive = false;
+		//myCurrentActive = false;
 	}
 
 	void Timer::Pause()
 	{
-		myCurrentActive = false;
+		//myCurrentActive = false;
 	}
 
 	void Timer::Resume()
 	{
-		myLastEnd = myEnd;
+		/*m_Prev = m_Current;
 		QueryPerformanceCounter(&myEnd);
 		myStart.QuadPart += (myEnd.QuadPart - myLastEnd.QuadPart);
-		myCurrentActive = true;
+		myCurrentActive = true;*/
 	}
 
-	Time Timer::GetFrameTime()
-	{
-		return myTime;
-	}
+	//const Time& Timer::GetTime() const
+	//{
+	//	return m_CurrentTime;
+	//}
 
-	Time Timer::GetTotalTime()
-	{
-		return myTotalTime;
-	}
+	//const Time& Timer::GetTotalTime() const
+	//{
+	//	return m_TotalTime;
+	//}
 
 	void Timer::ClearTime()
 	{
-		myTotalTime.SetTime(0);
 	}
+
+	float Timer::GetTime()
+	{
+		return m_Time;
+	}
+
 }

@@ -19,37 +19,37 @@ namespace CommonUtilities
 
 		int CreateTimer();
 
-		Timer& GetTimer(int anIndex);
-		inline const time_type GetDeltaTime();
-		inline const time_type GetFPS();
-		inline const time_type GetFrameTime();
+		Base::Timer& GetTimer(int anIndex);
+		inline const float GetDeltaTime();
+		inline const float GetFPS();
+		inline const float GetFrameTime();
 
 		void Pause();
 		void Start();
 
-		Timer& GetMasterTimer() { return myMasterTimer; }
+		Base::Timer& GetMasterTimer() { return myMasterTimer; }
 
 	private:
 		//static TimeManager* myInstance;
 
-		std::vector<Timer> myTimers;
-		Timer myMasterTimer;
+		std::vector<Base::Timer> myTimers;
+		Base::Timer myMasterTimer;
 	};
 
-	const time_type TimeManager::GetDeltaTime()
+	const float TimeManager::GetDeltaTime()
 	{
-		return myMasterTimer.GetFrameTime().GetSeconds();
+		return myMasterTimer.GetTime();
 	}
 
-	const time_type TimeManager::GetFPS()
+	const float TimeManager::GetFPS()
 	{
-		return static_cast<time_type>(1) / GetDeltaTime();
+		return 0.f;
 	}
 
 
-	const time_type TimeManager::GetFrameTime()
+	const float TimeManager::GetFrameTime()
 	{
-		return myMasterTimer.GetFrameTime().GetSeconds();
+		return myMasterTimer.GetTime();
 	}
 
 

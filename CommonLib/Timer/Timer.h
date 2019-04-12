@@ -1,14 +1,14 @@
 #pragma once
-#include <Windows.h>
-#include <iostream>
-#include "Time.h"
-namespace CommonUtilities
+
+
+namespace Base
 {
+	using Time = __int64;
 	class Timer
 	{
 	public:
 		Timer();
-		~Timer();
+		~Timer() = default;
 
 
 		void Update();
@@ -20,21 +20,22 @@ namespace CommonUtilities
 
 		void ClearTime();
 
-		Time GetFrameTime();
-		Time GetTotalTime();
+		float GetTime();
+
+		//const Time& GetTime() const;
+		//const Time& GetTotalTime() const;
 
 
 	private:
 
-		Time myTime;
-		Time myTotalTime;
+		float m_Time = 0.f;
 
-		LARGE_INTEGER myClockFreq;
-		LARGE_INTEGER myStart;
+		Time m_Start = 0; //application start time
 
-		LARGE_INTEGER myEnd;
-		LARGE_INTEGER myLastEnd;
+		Time m_Current = 0; // frame start time
+		Time m_Prev = 0; // prev frame start time
 
-		bool myCurrentActive;
+		bool m_IsActive : 4;
+		bool m_IsPaused : 4;
 	};
 }

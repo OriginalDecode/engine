@@ -1,32 +1,23 @@
 #include "Game.h"
 #include "CameraHandle.h"
-#include "Player.h"
 
 #include <CommonLib/Utilities.h>
 #include <CommonLib/Randomizer.h>
-#include <CommonLib/XML/XMLReader.h>
 
 #include <DL_Debug/DL_Debug.h>
 
 #include <Engine/Camera.h>
-#include <Engine/Effect.h>
 #include <Engine/Engine.h>
-#include <Engine/EngineDefines.h>
 #include <Engine/LevelFactory.h>
-#include <Engine/ModelImporterFlags.h>
-#include <Engine/MousePicker.h>
+
 #include <Engine/Renderer.h>
 #include <Engine/RenderNodeGeneral.h>
 #include <Engine/RenderNodeVegetation.h>
 #include <Engine/RenderNodeShadows.h>
+
 #include <Engine/StateStack.h>
-#include <Engine/Synchronizer.h>
 #include <Engine/TerrainSystem.h>
-#include <Engine/Texture.h>
 
-#include <EntitySystem/EntityManager.h>
-
-#include <EventManager/EventManager.h>
 
 #include <Input/InputManager.h>
 #include <Input/InputHandle.h>
@@ -35,42 +26,20 @@
 
 #include <Math/Vector/Vector.h>
 
-#include <Physics/PhysicsManager.h>
 #include <Engine/AssetsContainer.h>
-
-#ifdef _DEBUG
-#include "../include/hash/DebugEvents.h"
-#endif
-
-
 
 static float s_CamSpeed = 50.f;
 
-static const char* camera_file = "camera_pos";
 void Game::InitState(StateStack* state_stack)
 {
-	CU::TimeManager timer;
-	timer.Update();
-	float t0 = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
-
 	m_StateStack = state_stack;
-	m_Engine = Engine::GetInstance();
 	Initiate("Data/pbr_level/fps_level_01");
-	m_Engine->GetInputHandle()->AddController(0);
-
-	timer.Update();
-	float total = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - t0;
-	std::stringstream ss;
-	ss << "Time to initialize game " << total << " ms\n";
-	OutputDebugStringA(ss.str().c_str());
-
+	Engine::GetInstance()->GetInputHandle()->AddController(0);
 }
 
 
 void Game::Initiate(const std::string& level)
 {
-	m_Synchronizer = m_Engine->GetSynchronizer();
-
 	m_World.Initiate(CU::Vector3f(1024, 1024, 1024)); //Might be a v2 instead and a set y pos 
 	// CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 
@@ -125,9 +94,8 @@ void Game::Initiate(const std::string& level)
 	//shadow_node->AddInstance(instance);
 		
 		
-	m_Picker = new CMousePicker;
 
-	m_Camera = m_Engine->GetCamera();
+	m_Camera = engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(0, 20, 0));
 	m_Orientation.SetPosition(m_Camera->GetPosition());
 
@@ -143,48 +111,16 @@ void Game::EndState()
 {
 	m_World.CleanUp();
 	CameraHandle::Destroy(); //This should be moved to a more logical place.
-	SAFE_DELETE(m_Picker);
-	SAFE_DELETE(m_Player);
 }
 
 void Game::Render(bool render_through)
 {
 }
 
-void Game::HandleEvent(uint64 event, void* data)
-{
-#ifdef _DEBUG
-	if (event == DebugEvents_AddEntity)
-	{
-		TreeDweller* dweller = static_cast<TreeDweller*>(data);
-		m_World.AddDweller(dweller);
-	}
-#endif
-}
-
-void Game::SaveCameraPosition()
-{
-	std::ofstream camera_save;
-	camera_save.open(camera_file, std::ios::trunc);
-
-	if (camera_save.is_open())
-	{
-		for (int32 i = 0; i < 16; i++)
-		{
-			camera_save << m_Camera->GetOrientation()[i];
-			camera_save << "\n";
-		}
-
-		camera_save.flush();
-		camera_save.close();
-	}
-}
-
 void Game::Reload()
 {
 	m_Paused = true;
 	m_World.CleanUp();
-	m_Engine->GetEntityManager().Reset();
 }
 
 void Game::Update(float dt)
@@ -210,7 +146,7 @@ void Game::OldUpdate(float dt)
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 
-	ControllerInput* controller = m_Engine->GetInputHandle()->GetController(0);
+	ControllerInput* controller = Engine::GetInstance()->GetInputHandle()->GetController(0);
 	const ControllerState& input_state = controller->GetState();
 	m_Camera->Update(controller->GetState());
 

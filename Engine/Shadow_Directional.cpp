@@ -17,12 +17,8 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 0.1f, 1000.f);
+	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 0.1f, 100.f);
 
-	// 	m_Camera->SetPosition({ 512, 1, 512});
-	// 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
-		//m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
-	//	m_Camera->Update();
 	{
 		TextureDesc desc;
 		desc.m_Width = buffer_size;
@@ -96,7 +92,7 @@ void ShadowDirectional::Update()
 	Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
 	CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
-	const CU::Vector3f sun = (cl::AsVector3(pos) + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 2.5f)));
+	const CU::Vector3f sun = (cl::AsVector3(pos) + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
 
 	m_Camera->LookAt(sun, cl::AsVector3(pos), CU::Vector3f(0, 1, 0)); //viewRotation
 

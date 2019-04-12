@@ -17,7 +17,7 @@ namespace CommonUtilities
 
 	int TimeManager::CreateTimer()
 	{
-		Timer newTimer;
+		Base::Timer newTimer;
 		newTimer.Start();
 		myTimers.push_back(newTimer);
 		return static_cast<int>(myTimers.size()) - 1;
@@ -37,7 +37,7 @@ namespace CommonUtilities
 		myMasterTimer.Update();
 	}
 
-	Timer& TimeManager::GetTimer(int anIndex)
+	Base::Timer& TimeManager::GetTimer(int anIndex)
 	{
 		assert(anIndex < static_cast<int>(myTimers.size()) && "Too large Index");
 		return myTimers[anIndex];

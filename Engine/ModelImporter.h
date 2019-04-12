@@ -220,7 +220,7 @@ static bool instanced = false;
 template<typename T>
 void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, int options)
 {
-	CU::TimeManager timer;
+	//CU::TimeManager timer;
 	m_Options = options;
 	instanced = false;
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
@@ -243,8 +243,8 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 
 
 
-	timer.Update();
-	float loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
+	//timer.Update();
+	//float loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
 	unsigned int processFlags =
 		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
 									 //aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
@@ -270,9 +270,9 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 	//This code should be moved to release and kept running at release for fast load times in debug.
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filepath, processFlags);
-	timer.Update();
-	float read_time = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
-	DL_MESSAGE("%s took %.1fms to read.", filepath.c_str(), read_time);
+	//timer.Update();
+	//float read_time = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
+	//DL_MESSAGE("%s took %.1fms to read.", filepath.c_str(), read_time);
 
 	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
 	//ASSERT(scene, "ImportModel Failed. Could not read the requested file.");
@@ -293,13 +293,13 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 
 	pModel->SetIsInstanced(instanced);
 
-	timer.Update();
+	//timer.Update();
 
-	float _load_time = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - read_time;
-	DL_MESSAGE("%s took %.1fms to load.", filepath.c_str(), _load_time);
+	//float _load_time = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - read_time;
+	//DL_MESSAGE("%s took %.1fms to load.", filepath.c_str(), _load_time);
 
-	loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
-	DL_MESSAGE("%s took a total of %.1fms to load.", filepath.c_str(), loadTime);
+	//loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
+	//DL_MESSAGE("%s took a total of %.1fms to load.", filepath.c_str(), loadTime);
 
 
 	size_t pos = filepath.rfind("/");

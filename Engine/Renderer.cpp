@@ -72,7 +72,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
-	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
+	m_Direction = CU::Vector3f(0.01f, 1.0f, 0.01f);
 
 	myPointLight = new PointLight();
 
@@ -96,7 +96,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
 	m_ShadowDirectional = new ShadowDirectional;
-	m_ShadowDirectional->Initiate(8096.f);
+	m_ShadowDirectional->Initiate(1024.f);
 
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);

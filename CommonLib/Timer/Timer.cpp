@@ -5,80 +5,58 @@ namespace Base
 {
 	Timer::Timer()
 		: m_IsActive(false)
-		, m_IsPaused(true)
+		, m_IsPaused(false)
 	{
 	}
 
 
 	void Timer::Update()
 	{
-		
+		m_Current = std::chrono::steady_clock::now();
+		std::chrono::duration<float> diff = m_Current - ((!m_IsActive || m_IsPaused) ? m_Current : m_Prev);
+		m_Time = diff.count();
 		m_Prev = m_Current;
-		if (time(&m_Current) == -1)
-			assert(!"Failed to get time!");
-
-		m_Time = (double)m_Prev - (double)m_Current;
-
-
-		//LARGE_INTEGER current = ((m_IsActive == false) && m_IsPaused) ? m_Prev : m_Current;
-
-		//m_TotalTime.Update(m_Start, current, m_Frequency);
-		//m_CurrentTime.Update(m_Prev, current, m_Frequency);
-		//m_Prev = current;
 	}
 
 	void Timer::Start()
 	{
 	
-
-		if (time(&m_Start) == -1)
-			assert(!"Failed to get time!");
+		m_IsActive = true;
+		m_IsPaused = false;
+		m_Start = std::chrono::steady_clock::now();
 		m_Current = m_Start;
 		m_Prev = m_Start;
-
-		/*m_IsActive = true;
-
-		QueryPerformanceCounter(&m_Start);
-		myLastEnd = myStart;
-		myEnd = myStart;
-*/
 	}
 
 	void Timer::Stop()
 	{
-		//myCurrentActive = false;
+		m_IsActive = false;
 	}
 
 	void Timer::Pause()
 	{
-		//myCurrentActive = false;
+		m_IsPaused = true;
 	}
 
 	void Timer::Resume()
 	{
-		/*m_Prev = m_Current;
-		QueryPerformanceCounter(&myEnd);
-		myStart.QuadPart += (myEnd.QuadPart - myLastEnd.QuadPart);
-		myCurrentActive = true;*/
+		if (!m_IsActive)
+		{
+			assert(!"Can't resume a timer that isn't started. Did you mean Start()?");
+			return;
+		}
+
+		m_IsPaused = false;
 	}
 
-	//const Time& Timer::GetTime() const
-	//{
-	//	return m_CurrentTime;
-	//}
-
-	//const Time& Timer::GetTotalTime() const
-	//{
-	//	return m_TotalTime;
-	//}
-
-	void Timer::ClearTime()
-	{
-	}
-
-	float Timer::GetTime()
+	const float Timer::GetTime() const
 	{
 		return m_Time;
+	}
+
+	const float Timer::GetTotalTime() const
+	{
+		return std::chrono::duration<float>(m_Current - m_Start).count();
 	}
 
 }

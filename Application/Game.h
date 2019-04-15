@@ -5,6 +5,8 @@
 
 #include "PauseState.h"
 #include "DebugState.h"
+#include <CommonLib/Timer/Timer.h>
+#include <Math/Matrix/Matrix.h>
 
 class Camera;
 class Game : public State
@@ -28,7 +30,7 @@ private:
 	void Reload();
 	DebugState m_DebugState;
 	CPauseState m_PauseState;
-
+	Base::Timer m_Timer;
 	Camera* m_Camera = nullptr;
 
 	World m_World;

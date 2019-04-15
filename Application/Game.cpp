@@ -105,6 +105,7 @@ void Game::Initiate(const std::string& level)
 	CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	m_PauseState.InitState(m_StateStack);
+	m_Timer.Start();
 }
 
 void Game::EndState()
@@ -125,8 +126,9 @@ void Game::Reload()
 
 void Game::Update(float dt)
 {
+	m_Timer.Update();
 	CameraHandle::GetInstance()->Update();
-	OldUpdate(dt);
+	OldUpdate(m_Timer.GetTime());
 }
 
 void Game::OldUpdate(float dt)

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <chrono>
 
 namespace Base
 {
@@ -18,22 +18,19 @@ namespace Base
 		void Pause();
 		void Resume();
 
-		void ClearTime();
 
-		float GetTime();
-
-		//const Time& GetTime() const;
-		//const Time& GetTotalTime() const;
-
-
+		const float GetTime() const;
+		const float GetTotalTime() const;
 	private:
+
+		using TimePoint = std::chrono::steady_clock::time_point;
+
+		TimePoint m_Start;		// application start time
+		TimePoint m_Prev;		// current frame start time
+		TimePoint m_Current;	// prev frame start time
 
 		float m_Time = 0.f;
 
-		Time m_Start = 0; //application start time
-
-		Time m_Current = 0; // frame start time
-		Time m_Prev = 0; // prev frame start time
 
 		bool m_IsActive : 4;
 		bool m_IsPaused : 4;

@@ -241,8 +241,6 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 		return;
 	}
 
-
-
 	//timer.Update();
 	//float loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
 	unsigned int processFlags =
@@ -277,10 +275,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
 	//ASSERT(scene, "ImportModel Failed. Could not read the requested file.");
 	if (!scene)
-	{
-
 		return;
-	}
 	aiNode* rootNode = scene->mRootNode;
 
 	ProcessNode(rootNode, scene, filepath, pModel);
@@ -292,6 +287,9 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect, 
 #endif
 
 	pModel->SetIsInstanced(instanced);
+
+	if (!m_Exporter)
+		return;
 
 	//timer.Update();
 
@@ -346,15 +344,17 @@ void CModelImporter::FillData(const ModelData& data, T* out, std::string filepat
 		|| filepath.find("lpmf") != filepath.npos
 		|| filepath.find("oemf") != filepath.npos;
 
-	Surface* surface = new Surface(m_Effect);
-	for (auto& tex : data.myTextures)
+	if (custom_format)
 	{
-		if(!tex.m_File.empty())
-			surface->AddTexture(path + tex.m_File, tex.m_Slot);
+		Surface* surface = new Surface(m_Effect);
+		for (auto& tex : data.myTextures)
+		{
+			if (!tex.m_File.empty())
+				surface->AddTexture(path + tex.m_File, tex.m_Slot);
 
+		}
+		out->AddSurface(surface);
 	}
-	out->AddSurface(surface);
-
 
 }
 

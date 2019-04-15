@@ -10,14 +10,15 @@ namespace graphics
 	public:
 		DECLARE_RENDER_NODE(RenderNodeGeneral);
 		RenderNodeGeneral();
-		~RenderNodeGeneral();
+		~RenderNodeGeneral() = default;
 
 		void Draw(const RenderContext& rc) override;
 		void Reload(CompiledShader* shader) override;
 		void AddInstance(const ModelInstance instance) override;
 
 	private:
-		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
+		CompiledShader* m_VertShader = nullptr;
+		CompiledShader* m_FragShader = nullptr;
 		CompiledShader* m_DepthShader = nullptr;
 
 		bool m_DrawDepth = true;

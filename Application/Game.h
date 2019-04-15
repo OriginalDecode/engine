@@ -27,6 +27,12 @@ public:
 
 
 private:
+
+	float m_Time = 0.f;
+	float m_AverageFPS = 0.f;
+	int m_FrameCount = 0;
+	float m_FPSToPrint = 0.f;
+
 	void Reload();
 	DebugState m_DebugState;
 	CPauseState m_PauseState;

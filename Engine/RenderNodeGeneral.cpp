@@ -16,31 +16,26 @@ namespace graphics
 		const uint64 fragment = ac->LoadShader("pbl_debug.ps", "main");
 		const uint64 depth_frag = ac->LoadShader("depth_prepass.ps", "main");
 
-		m_Shaders[EShaderType_VERTEX] = ac->GetShader(vtx);
-		m_Shaders[EShaderType_PIXEL] = ac->GetShader(fragment);
+		m_VertShader = ac->GetShader(vtx);
+		m_FragShader = ac->GetShader(fragment);
 		m_DepthShader = ac->GetShader(depth_frag);
 
 #ifdef _DEBUG
-		m_Shaders[EShaderType_VERTEX]->RegisterReload(this);
-		m_Shaders[EShaderType_PIXEL]->RegisterReload(this);
+		m_VertShader->RegisterReload(this);
+		m_FragShader->RegisterReload(this);
 		m_DepthShader->RegisterReload(this);
 #endif
-	}
-
-	RenderNodeGeneral::~RenderNodeGeneral()
-	{
-
 	}
 
 	void RenderNodeGeneral::Draw(const RenderContext& rc)
 	{
 		PROFILE_FUNCTION(profiler::colors::Red);
 		auto& ctx = rc.GetContext();
-		ctx.SetVertexShader(m_Shaders[EShaderType_VERTEX]);
+		ctx.SetVertexShader(m_VertShader);
 
 		if (!m_DrawDepth)
 		{
-			ctx.SetPixelShader(m_Shaders[EShaderType_PIXEL]);
+			ctx.SetPixelShader(m_FragShader);
 			ctx.SetDepthState(graphics::Z_EQUAL, 1);
 		}
 		else
@@ -83,7 +78,12 @@ namespace graphics
 
 	void RenderNodeGeneral::Reload(CompiledShader* shader)
 	{
-		m_Shaders[shader->m_Type] = shader;
+		if (shader->m_Type == m_DepthShader->m_Type)
+			m_DepthShader = shader;
+		else if (shader->m_Type == m_VertShader->m_Type)
+			m_VertShader = shader;
+		else if (shader->m_Type == m_FragShader->m_Type)
+			m_FragShader = shader;
 	}
 
 

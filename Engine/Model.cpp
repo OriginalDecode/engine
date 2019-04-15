@@ -649,9 +649,6 @@ void Model::SetIsInstanced(bool is_instanced)
 
 void Model::SetSurface0(Surface* surface)
 {
-	if (m_Surfaces.Empty())
-		return;
-	
 	for (Model* c : m_Children)
 	{
 		c->SetSurface0(surface);

@@ -25,14 +25,7 @@ Effect::Effect(const std::string& filepath)
 
 void Effect::AddShaderResource(IShaderResourceView* pResource, int32 slot)
 {
-	/*if (m_UsedReg[slot] != 0)
-	{
-		DL_ASSERT("This slot is already occupied!");
-		return;
-	}*/
-	
 	m_Resources[slot] = pResource;
-	//m_UsedReg[slot] = 1;
 }
 
 void Effect::AddShaderResource(Texture* pResource, int32 slot)

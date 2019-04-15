@@ -41,7 +41,7 @@ void Game::InitState(StateStack* state_stack)
 void Game::Initiate(const std::string& level)
 {
 	m_World.Initiate(CU::Vector3f(1024, 1024, 1024)); //Might be a v2 instead and a set y pos 
-	// CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	 CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 
 
 	Engine* engine = Engine::GetInstance();
@@ -133,18 +133,26 @@ void Game::Update(float dt)
 
 void Game::OldUpdate(float dt)
 {
-	/*m_FrameCount++;
-	m_AverageFPS += m_Engine->GetFPS();
+	m_FrameCount++;
+	float fps = (1 / m_Timer.GetTime()) * 1000.f;
+	m_AverageFPS += fps;
 	m_Time -= dt;
+	debug::DebugHandle* handle = debug::DebugHandle::GetInstance();
+	handle->SetDeltaTime(dt);
+	handle->SetFPS(fps);
 	if (m_Time <= 0.f)
 	{
-		m_FPSToPrint = uint32(m_AverageFPS / m_FrameCount);
+		m_FPSToPrint = m_AverageFPS / m_FrameCount;
+		handle->SetAvgFPS(m_FPSToPrint);
 		m_FrameCount = 0;
 		m_AverageFPS = 0.f;
 		m_Time = 1.f;
-	}*/
-	Input::InputManager* input = Engine::GetInstance()->GetInputManager();
+	}
 
+
+
+
+	Input::InputManager* input = Engine::GetInstance()->GetInputManager();
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 

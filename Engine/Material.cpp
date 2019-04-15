@@ -71,12 +71,7 @@ void Material::Use(Effect* pEffect, bool _override)
 	bool prev = _use->set_shaders;
 	_use->set_shaders = false;
 	_use->Use();
-
 	_use->set_shaders = prev;
-
-
-
-
 }
 
 const CU::GrowingArray<Material::ResourceBinding>& Material::GetResourceBindings() const

@@ -64,6 +64,10 @@ namespace debug
 
 		void SetDebugTexture(Texture* tex);
 
+		void SetFPS(float fps) { m_Fps = fps; }
+		void SetAvgFPS(float avgFps) { m_AvgFps = avgFps; }
+		void SetDeltaTime(float dt) { m_DeltaTime = dt; }
+
 		void RegisterTexture(Texture* texture, const char* name, const char* category = "null");
 		void UnregisterTexture(Texture* t, const char* name);
 		Texture* GetTexture(int32 index);
@@ -93,6 +97,11 @@ namespace debug
 		
 		bool IsActive() const { return m_IsActive; }
 	private:
+
+		float m_DeltaTime = 0.f;
+		float m_Fps = 0.f;
+		float m_AvgFps = 0.f;
+
 		bool m_IsActive = true;
 		enum eVariableType
 		{

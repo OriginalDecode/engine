@@ -61,6 +61,7 @@ void Material::Serialize(std::string file_name)
 
 void Material::Use(Effect* pEffect, bool _override)
 {
+	return;
 	Effect* _use = (pEffect ? pEffect : m_Effect);
 	auto& ctx = Engine::GetAPI()->GetContext();
 	for (ResourceBinding& binding : m_Resources)
